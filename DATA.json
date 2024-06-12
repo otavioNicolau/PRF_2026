@@ -1,0 +1,240 @@
+{
+    "id": 2081744,
+    "nome": "Aula 10",
+    "conteudo": "Defesa do Estado e das instituições democráticas. Forças Armadas (art. 142, CF). Segurança pública (art. 144 da CF). Organização da segurança pública. Atribuições constitucionais da Polícia Rodoviária Federal.",
+    "is_disponivel": true,
+    "visualizada": false,
+    "data_publicacao": "2023-02-25",
+    "pdf": "https://api.estrategiaconcursos.com.br/api/aluno/pdf/download/2081744?clienteId=1275291&resourceType=pdf&resourceId=2081744&expiration=2024-06-12+17%3A12%3A32&signature=87fba8d42ad271f34b6e156bac57c1ae",
+    "funcionalidade_pdf_grifado": true,
+    "pdf_grifado": "https://api.estrategiaconcursos.com.br/api/aluno/pdfGrifado/download/2081744?clienteId=1275291&resourceType=pdf&resourceId=2081744&expiration=2024-06-12+17%3A12%3A32&signature=87fba8d42ad271f34b6e156bac57c1ae",
+    "pdf_simplificado": "https://api.estrategiaconcursos.com.br/api/aluno/pdfSimplificado/download/2081744?clienteId=1275291&resourceType=pdf&resourceId=2081744&expiration=2024-06-12+17%3A12%3A32&signature=87fba8d42ad271f34b6e156bac57c1ae",
+    "is_aluno_finalizado": false,
+    "conteudos_pendentes": 13,
+    "videos": [
+        {
+            "id": 173979,
+            "titulo": "Noções Gerais, Pressupostos, Titularidades, Conselhos",
+            "visualizado": false,
+            "resumo": null,
+            "slide": null,
+            "mapa_mental": null,
+            "posicao": 0,
+            "resolucao": "360p",
+            "resolucoes": {
+                "720p": "https://cdn.estrategiaconcursos.com.br/storage/video/173979/ed_afauth_INT38072_dirconstitucionalnocoesgeraispressupostostitularidadesconselhosa61042_01_720p.mp4?Expires=1718237552&Signature=SvibiDS8AMb1RdRiiZV9j8SDQe1tYVuCirE91Rmwyp4rBOvi1-yILlgdCUmPP-MM0d1y85nF9vQk9yqiNfkbg1qHgVhYdeiJMnkYEHVtlN7-UZZQU6DGop2RYDxW0qW2Sz~xJKDJbEGKy3PsYiSiTEYEXUsatbh7~khHjg7OXdoDoqxyMM3oUVkZGlqXA7IQ1Yt6K8BBxemUVwSSuoAR278LBhFNUa-Cnk0IYMEfVtXU9iWn13SpIwZfJSloVChRkcDApq-5OIbQz6juNK47jV2ub-0pql9ENp-UUST6Pt6awquL13jyXhylUhSzhoJDBZ9OGcNI0iiDhsgTq-zGKg__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "480p": "https://cdn.estrategiaconcursos.com.br/storage/video/173979/ed_afauth_INT38072_dirconstitucionalnocoesgeraispressupostostitularidadesconselhosa61042_01_480p.mp4?Expires=1718237552&Signature=OIlMhc2wV2jOptTJO8QNKS2fvHoIy-GchwKmzP8wF6~iNY6gTeylIdJfreMvnN~678LS9~qa4YkoXU~BI996PRaUU5kXzrpTvn~LzdpwxwJEeazd-diYeqrN6CZJp6E-E1~oL1clzmJxapLUT5GiFmGZ~02XkIJ4ME-Sum2i4L17-kEo9aAEKqFlBfwmwVwBsoC8~RNSKv9WDDIwM8awTzMxI5voQnlxH4UT1AO4h6NUV9jInR3y5F-KKakkPEIp4Tvtld~9oISmyxBmt1NtjNG7xLRcjTMstQYkwUnnjsA7qtV7T7kcOiD20j2MDB6jMKRFHjODfLu27vo~hRJ32A__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "360p": "https://cdn.estrategiaconcursos.com.br/storage/video/173979/ed_afauth_INT38072_dirconstitucionalnocoesgeraispressupostostitularidadesconselhosa61042_01_360p.mp4?Expires=1718237552&Signature=MZxV51bAmUUC4NzHZlJvizfB3d2IYc82HWulmbE6psNonbhg2dEPGBevZRfcuXnKrCITy57z0kyzYMPJshCzsEpXFCjG7d8huCJOqFBv8o2ANEEdd5lYyJ0sx3w0VYip53NbB4RxJrE3FaxUua~N~dgHukEsHA3WBwLgnssJManNYXGZzwXaknx5ZDUZ193tLRrTEmFQ0t-aX8f7RHe0x9q5iiFkv5IbopdSbnLKJvJPN1B6CHoVXX~BMQMGI-ST8NKbeGt7AHh04SNHGrA8IVTLEMpJ03qh34NL087nVYB2PykFpxSRVMMiy9~rwcMGz3cQZ-tYCbcoqW8GFssILQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+            },
+            "anotacoes": null,
+            "audio": "https://cdn.estrategiaconcursos.com.br/storage/video/173979/ed_afauth_INT38072_dirconstitucionalnocoesgeraispressupostostitularidadesconselhosa61042_01_mp3.mp3?Expires=1718237552&Signature=FjyiBOQsxhhssbU798uMA24jMfiUCFHtY8UDBrsvOeECKmWZ2YAF18oA5RGaSOVkSnzR9yQKJmBxJMLG7Fnv-EY39qmsy9dOU4iZow45Vk-fPi8louWguSN0dGZQCQmP-u1kwPevWT9UnFAEccesmYHN5-5m5zGbl6h1J9xV0y6bBlF9N3zCd-NrAh04smXd4eZIXjDmXwzCj-XSDVkdthgvdRFaicMYqS1r7I0YzHkSrk6AZx8Bqtdc-YXmRkh9Arj~jM7OcZXfSlf-SIzHK~GSZp0QHhGb6tRmB68~~5HfemeDZKa2AKX-7oad1p0BSh31UxnxY1D2WBk1758~zQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+            "thumbnail": "https://cdn.estrategiaconcursos.com.br/storage/video/173979/ed_afauth_INT38072_dirconstitucionalnocoesgeraispressupostostitularidadesconselhosa61042_01_thumbnail.jpg?Expires=1718237552&Signature=Ef-JZOcjUpG1kRjbW5TnBlwK9gr8cbcRRsN6sWbMTLIogiMribQlfm4SIg69cVsKN1grI~nU5qi~APdvTnQ7BF6mor2AH9x1yQF7um8h3ByiAZEa3NNfVpkWWICecoDTEE67Vz9MlLhbinVUj7t4Sn2F6kZ7NtvU25gozRkh7vKlRNrYWiyit-nR4H1HBdjI2f3d5H7lTlWxJddAraM~2GlMOm54YSrq99~D72~jmpDbl97k~uinQfA8ThZ1BXdObvz~y8cmjc2Mdq7XlI1aJAIslfBiPKlFbnD48nH28Rv3ux0fgPDp2BVAKDul~EsNh4R~PtTYDg4YvO2syqArbQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+        },
+        {
+            "id": 173980,
+            "titulo": " Estado de Defesa - Parte 01 ",
+            "visualizado": false,
+            "resumo": null,
+            "slide": null,
+            "mapa_mental": null,
+            "posicao": 0,
+            "resolucao": "360p",
+            "resolucoes": {
+                "720p": "https://cdn.estrategiaconcursos.com.br/storage/video/173980/ed_afauth_INT38072_dirconstitucionalestadodedefesapt1a61042_02_720p.mp4?Expires=1718237552&Signature=MYVSezE3M~zRUJxhYy2iWdqBsm6bf4BcD1l4mhoFUCHwHWfYylQh-oyMlcUfi5LH6o56p8BqEvGI0dgouBfg~s1EcXmN~P0hgDhI1oN2zxQ4XCxZW5WP6vV1EBgoYWleHloeRuPB-1oLHxPE4PIgzMIcZub~ToRiFV8R9nku0Zt5GryXuX8lVfKHHRaFFZ8bufGu7QPQmaCaxev2224z4xo41lT5xgyTroZF8O4f8w473~C0Zmv1b-lrdTqLnydtomlQdNrKPe3MTmPIurl5u4HjTA8ulwHmYt~3w~N7QcjiEY3IGR0JjPmN4HcvFhLkK01KY3tRQDNdwSHSa0~Myg__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "480p": "https://cdn.estrategiaconcursos.com.br/storage/video/173980/ed_afauth_INT38072_dirconstitucionalestadodedefesapt1a61042_02_480p.mp4?Expires=1718237552&Signature=SQg8fEkPwam6OmR5lkCsIIEN8gzuoOkmkSsaxXtxYCohKfb-JIcyvnBAVXg2X7BU~K79fLhGE-fa5UZSNEU0zgl79kJr~NUYmCTxlOv3tn9UETZaoI93oE2z8jmbhn5Gay58sSoADNED3HWpLOKKnnZKfDRk~rqzVsVBcdmTBOze9xIVLxmoOrKVnevUYSI0jvML3ExVx~2VPX0Nx07rPqCDVZYpSg2gR8ogCnoq7pJ2SV8ZTwFGEuMihXi7~EeIwHouPw3YKWyzuXSlvMjAljiIzq27R2SuFHJWmflsPoIDDttzBG40efhBbR8NSO6Yqqm1nmmYSpWusmpdzU17oQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "360p": "https://cdn.estrategiaconcursos.com.br/storage/video/173980/ed_afauth_INT38072_dirconstitucionalestadodedefesapt1a61042_02_360p.mp4?Expires=1718237552&Signature=Q0FgUKpZ9xHhAOAJj3PGLzujxLmqakZLbOeNu0m~ReTgmw~VBBLNgpQ0IArHNAI8IAPO13s4srvou5uKEGcg203Hi573dDv64dFlD4nVU~rkTU3wej-gx4G48SxbWTGNC9VOkmMBdDyJ40mjiZiv8Q0ZG7oVpjZRCtvYHlogQGUSMiz5XmEU7~I51cSw69VcF4ywhLkYwaBPuoaDwbgafo~kZEprfRVQkHehxssekvz9Za5u6t7W1u-e9KoiKhnEiBephYQQg1crtADvGaW-KuvAtxOZ01Sk6VWvi~Aw0WWnQaaGbZ5fqU-xpc4N8lYSLghvl7TmgUBCA43faj40Rw__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+            },
+            "anotacoes": null,
+            "audio": "https://cdn.estrategiaconcursos.com.br/storage/video/173980/ed_afauth_INT38072_dirconstitucionalestadodedefesapt1a61042_02_mp3.mp3?Expires=1718237552&Signature=g6ivBAFKvIJrcT0zEZmuDSNAoFJTpXJto9GWSFzOxYIG1Kjsg7nkhhoNG0kYWkhOsXFHPB2fI3uVbA0dMEbCTZ9Nq3kkCMm0PuQN60amyH663GKThh8-0GMaOt3~O--nL02RBQ1D07q-MMH0DFvt5hHv3aVH-9j~nbw3SM0HSra8dnOlJiG7dUGQbj19nIqUZY3I1ECGr2FIN44sVfHf1Edeist1yjZJjQFNrtz6A0j8Bq~xdymE2Hbn9Mw9v1fsVjSwKv~WuUerSV40N1QaMP8JH86VbnOXtrvaN0kORut7s6lFvdmrvXL3gEmoCdSPfMV4b2rxmwTt7O9AaS74zQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+            "thumbnail": "https://cdn.estrategiaconcursos.com.br/storage/video/173980/ed_afauth_INT38072_dirconstitucionalestadodedefesapt1a61042_02_thumbnail.jpg?Expires=1718237552&Signature=Je3IAlZullWJvsNE8twZ4rK7Nqr6blMxnKd--Z~cOdK0227jSf1lvXEjjE2p4NL1bWc9OrDpB2~AUyYnJ4WJckCAeywOHBB64vOu2oNEmtuh6qYKB~6jJtLkUzVzS7hbD63UrNzf8EdbFvMxoVgVPsl3-XtzjoOfboPq4AB95ZR1fZAS2o0K695Dbm3886KA~04mMFbw3ox1Z~-En18F1LTUFoCIEr64vBGq1hwew3thL7Og1a0mKspBfkzLS~RfylacupkH4OMLMQgHtX9zCMPook7~pIJojd-jD3pF0RiKgvvZ2HxyPWP8ZsEzVXewf5vF45hAK9IZR18NStS1Nw__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+        },
+        {
+            "id": 134384,
+            "titulo": "Estado de Defesa - Parte 02",
+            "visualizado": false,
+            "resumo": null,
+            "slide": null,
+            "mapa_mental": null,
+            "posicao": 0,
+            "resolucao": "360p",
+            "resolucoes": {
+                "720p": "https://cdn.estrategiaconcursos.com.br/storage/video/134384/ed_afauth_AUD30671_direitoconstitucionaldefesadoestadoedasinstituicoes2_NULL_720p.mp4?Expires=1718237552&Signature=j7ZRCer4A--TyYsgfn5sxHx4bHAHgeCeiXLDvGCWey64Tojp5OJx3u-p~t6IawP~EGR7UDBu1OXc6vDsOb-X3cScDFfKaqTd9juL9m8WN2nbz3fOeLiCdFe3fKaBcBv9ABlJoB69lZyjEc2kPVTTOpC5A3OQ0cYaBelvX3AzXnNnwYSWbSDCBXqeJVVA-34c~A3zWJD~PCw6LAfoxToBJyzb~xdts766nEvZ68ujS8aCC-sjR8hVx7qodowGgn3f74J~alqfgjpJaqK1GcZGiqcZpSOfWq7t8aLVj~yiFT1Xz9TLzNNGtT0psVyJ5sOUpf~z17ofWK6W0iOI~uu7fg__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "480p": "https://cdn.estrategiaconcursos.com.br/storage/video/134384/ed_afauth_AUD30671_direitoconstitucionaldefesadoestadoedasinstituicoes2_NULL_480p.mp4?Expires=1718237552&Signature=NfrYPdkh-P82W8P8KB-Y~uj3IwHqRfOPLWfwUG6Gomk7BkGYQYXc1eDfUcHfLDgzLN0GyPX7LwsJYtb-JF8R25Ucs4uqle6VwQDes92HvhFyP5c2Eh4FhjALY98BCfVXkJB8UwVzGmFho19-qD115fCW7mxdR3xK7sYCmptkdAY1fG5QjM7eNNK21POG7nwtt4uqYz3EBHoODBvdPwuUJb~uVd4JsG1IxfHzt2UphnVuzMF1SGkqoe8z8LYcCLGsZMhaD7oeuWfUwUlI9e-No8Lv7KN2UPQBOzXm9bDiI4HEeh~QWHhU7DLphepnXs2hI9dhKR5TKg2sPDtXhUA3YA__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "360p": "https://cdn.estrategiaconcursos.com.br/storage/video/134384/ed_afauth_AUD30671_direitoconstitucionaldefesadoestadoedasinstituicoes2_NULL_360p.mp4?Expires=1718237552&Signature=DWQSosYGah~fr2AJ-0-vmSdOnA2p7n4QBahLDYGaWW2BratRDVFNlDGBk57049VuRNnE4sqmrThkE7ZxPnn9IrfPMlv~-Z~84fLbzpGOUYH4kgyd1cp~mBxbAvrDcVX2jDRMM6wBTqvonkEFHf8Cyt~GJ1HJZkDmrRos960YcFI4hExJtbVH-UtlVTjjR91bvTW99gYdZvECWpI4SPPofecLF1e5b5v3tkCu~su2Ts6v3qJbgXs4sttnsR7U5cxwTyzfE6Tc4Ty6rNzOrzhJ-dGaBjcJAPJ2hPe7k-qKn4-hPijNpiFiR-PbKWx-AptiQ~Mipb82VkPGeOaNrKmMIw__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+            },
+            "anotacoes": null,
+            "audio": "https://cdn.estrategiaconcursos.com.br/storage/video/134384/ed_afauth_AUD30671_direitoconstitucionaldefesadoestadoedasinstituicoes2_NULL_mp3.mp3?Expires=1718237552&Signature=V6PwgoLKLGyS1BDZespkfUH3TbjDOGLiA0Ddbwt1I7Acrkp4pJ5uwO3FPcvkvfsl~E5vckXZdEOWknZtdo~eWk~mj0Mu~FGZVOcTLK4SnZSoJ5C9KClQJ7d6T49VxPNxGhSXRMriAlP~1qnbtf97wn~wQrsovjFns3pYzyCcaIABZXWJdFyw1JUvDr9sC9p3zow2Hzk7KpjIvNH3bCD~5cIf9-jJE9d8oQi7DWw5DktHoYKnBfgv3ix3YX4644ck5N6VNMzewL8WxzDSWRG6yiR~Vi3Efa0Ta34m7IuN66F~yeAHqYGCoFaCZZqUIijPyttilj9WnsA3JK-EihC2Fw__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+            "thumbnail": "https://cdn.estrategiaconcursos.com.br/storage/video/134384/ed_afauth_AUD30671_direitoconstitucionaldefesadoestadoedasinstituicoes2_NULL_thumb.jpg?Expires=1718237552&Signature=bkK57DHZ0PUZZnsD2AgmpCdloJonadr2H-WZDIy0vLpHMBpf-DK1A3oa~~IymYABW9RvELOQu7Xu62Moc1G3A-7eJmDwjIsWy6MHG83UQtPz212zqdXqIy0Um5tsm8Uwzh6Wj~WOP4X62xX1SG3V1V55ALpKCQzm8bBlLPb2Ze30OJA6zp~o9jbeQxFElzZvW6NZrVx8tZh6eWNqBxTST4cmO58ugunmseTWGRqV0SEHq5OAnk4eGaROfuKK~AR3zoVtFnnTBhoEjK1wlAd8fLToygRr0vV-BM2HGYwxABSCSaPs-y3-suPgfoLLF1hpuo2BNeowNuzQ-8-UCgkpUg__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+        },
+        {
+            "id": 136729,
+            "titulo": "Estado de Sítio - Parte 1",
+            "visualizado": false,
+            "resumo": null,
+            "slide": "https://api.estrategiaconcursos.com.br/api/video/136729/download/slideshow?clienteId=1275291&resourceType=pdf&resourceId=136729&expiration=2024-06-12+17%3A12%3A32&signature=cf511241f91dd55c968aaafeaf7c7ac0&tipo=slideshow",
+            "mapa_mental": null,
+            "posicao": 0,
+            "resolucao": "360p",
+            "resolucoes": {
+                "720p": "https://cdn.estrategiaconcursos.com.br/storage/video/136729/ed_afauth_AUD32206_direitoconstitucionalestadositiopt1_NULL_720p.mp4?Expires=1718237552&Signature=GVipMsupSYQTyJ8NM3LrIPuyk8QYe2MhwMsh1GWEdR85WPK09~hfMPnoFQHTsoRjPTg9Nxn70HyacpTvEBOJF5z6VOPYiz5JjaI8~tSMSs7SjGeagMFirNFj-CUDqgBUzYl~hixdxMG9XXk0VzMmHvfyZd~N2Isc2in8IS-GvDw4VJ3aHV0FO0vp4alX8x-o5Zd9r-M68tlGShNzbDXh0fffxKrB-3iXBiPBns7V7ojmOLgvK1g0JJ2YPenIFuMTDsvWV~hNpvxjTQ0Me0uVaPZzTHLPXOQFgXrrsm5NAnmlC1XqtXMqt~iBiooDHlI0xr4Qz3Q7U1aDNcYo3NR~rQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "480p": "https://cdn.estrategiaconcursos.com.br/storage/video/136729/ed_afauth_AUD32206_direitoconstitucionalestadositiopt1_NULL_480p.mp4?Expires=1718237552&Signature=CY9NK8D1~55C6bVi1hlXdL-RN6AunOqq8~238tCn9oPqh-0jIipipzf5fCy7eXHGy0I1bdeB1ZUzdLPkl~NFMKa7yUWoGCU7lK8bb004~bFipSXb~HRFkTZaYJGMcpijtF~pT-ff25HeOmGyMTMHsaq0rHZWI9fXqIftmTQcFnjkVV~UZmDXZXch1sre3IVlqAd6E5gwj5zLYsCI10pY-q1VWQ8ROk8y2S60lm1wkl6mLiHAWBbyXtFqzl2CuuhIqlwLnUvoMOTryDhY4XtMQpg11kAjP9gtfbZChKyMZ2fstkCRd~CjL34NOufRnHopVZ0kFOHozvl2WaGGIoPxTg__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "360p": "https://cdn.estrategiaconcursos.com.br/storage/video/136729/ed_afauth_AUD32206_direitoconstitucionalestadositiopt1_NULL_360p.mp4?Expires=1718237552&Signature=fMhnJlL7Uv8L8nmeH5S~nawSzpgqrSAohMHSAUl0QwjH4lbBd8RCiRJOvbJNYF6leVkikv6-iYdh4HlBMhzfqY3AsBaImfuZNz6hBM32EXN-SQOdiwh9MFGdCBoLCrRNWF40HMUYAyPemgxV8l2R9v0wS3UWqbYdAVoSCAUNO21zQAbAB2IWhHpSRCSorz5aIBHvUZdIvZyWmk9V-oYAsNNr0GGr1xpaOXOKGXg2ec2wKYec9oYG7ZkJqoe~Qwjd-V9H~iqtGNp~ECN1wYEiG9Nt4TwBj~NobwDxujz-OKvhUR7NUWZMUUmX7DB9iaXosmKNk3m4BuAlyV~cZxr-9Q__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+            },
+            "anotacoes": null,
+            "audio": "https://cdn.estrategiaconcursos.com.br/storage/video/136729/ed_afauth_AUD32206_direitoconstitucionalestadositiopt1_NULL_mp3.mp3?Expires=1718237552&Signature=GN9pPDNBREMwU9KcoDzv16k5j5-a1zzL~~iXFTOOfOgKLb93pBggH7jtPctkVmd7sJIzlRffO91oY2XXDFmCQVuChm0GMYcPLTE6RHk-EeoH-7BtiPc6-zPT18s8qKINYVktmOjUVJeY0~hDIeSWNV8qpYDmU~IwOXLSUmaXdwPDkd4~pDJ~tYW-s1M9TOLUqUqT25bM5AKJRXMyUM88C7XjQK12zigIjSOjzvtBeUKzokvXDMvqQfseGZeRrEBl6tQxHxuPx99ZENctmbslKh7o-K3sPATdex8PVmMpm2VvwfKN8LfGJlTmawNGb0o4ey1kgzRHU52gMn-lc1w7Xw__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+            "thumbnail": "https://cdn.estrategiaconcursos.com.br/storage/video/136729/ed_afauth_AUD32206_direitoconstitucionalestadositiopt1_NULL_thumb.jpg?Expires=1718237552&Signature=JRyK2ckBUuqCdnVmlHohTdyvczDyh~SQqoDN28s65MSgKjYq0kE-8PDj9Z5yEdeyu1XyKPqHxEavogayZGeIK0iVwwWGDKGPCEuZuw~bG~jgVGAoO-~N8uNQ946N-~U7L0DZw-MK7XDNfpN0MfAhh6VIBvJHyBttpzAR8Myvz5awoKdTCT2Y-zTxro~hi6y5y5C-cz8fZicoP1j4ZWSM73A-1US9JdIH9uKyVIJt39fv2MZ1P2nYrGK8XwPYRo9oNDJ0jUudJfc2nn9PFQfyVzhTQwI6EtEStggPjY3fAlcNybezEzp4m1zG-ahmibKQgc7VyVQ-FT4Zdw8mUpEWLw__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+        },
+        {
+            "id": 136728,
+            "titulo": "Estado de Sítio - Parte 2",
+            "visualizado": false,
+            "resumo": null,
+            "slide": null,
+            "mapa_mental": null,
+            "posicao": 0,
+            "resolucao": "360p",
+            "resolucoes": {
+                "720p": "https://cdn.estrategiaconcursos.com.br/storage/video/136728/ed_afauth_AUD32206_direitoconstitucionalestadositiopt2_NULL_720p.mp4?Expires=1718237552&Signature=RwExkEhxL-uTUyJ9CmdNClltCjQhDsz2-POoOKiX-aAfyHAnKN2nRqr67zyP9WwMEu-Nqa~WGWADTiVX0x4iQvSM~Eh5~3WSg7ijcFynqdJ2wshHGDiVXoQeMRrWxzg52oMX7xdp-cUjqNUjry65Ci6bplDoojSZpfi-TK0YXVk~2fqqp6G40phwSHR9u1pVj7aqO2HQrpKASWrJNwi2lSF2uW7Rq7uQHkjjGa9nOM6g2N5dJIAoPZyaCQdWaCYK9227s9YLI23d7TL7IyWiNGMsd2y4CxJiO7fNiM40108Xubtv34JAKcMgc2PA2mU7-VZYMG3gQDf1R6yXRDWXTQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "480p": "https://cdn.estrategiaconcursos.com.br/storage/video/136728/ed_afauth_AUD32206_direitoconstitucionalestadositiopt2_NULL_480p.mp4?Expires=1718237552&Signature=ZLoXapRutsxmCLFc8nMffqIWC4W8F-hZS2wSSIEk0DEaqKbQbASIiySjg4suzWLlcPjo26~YcxgFDE92eImkIvlP048TVfmjHO~aF9JBLYCrdBdbeXsED~QjiGY4wsoJuMhLCeJTmX1t-Vz4BdvPBPPUUcPvD5vRcpOWQd6Y18xJNokfjmT6rZpolumbWFucksB22wpMyE7zWcWI3EC3TnDRqPIQ5RZ5vVDqll2CXpnq56ms7PP6R-V1kCWbdfjlWrg-8i8DbuGLpgUauYIUqNXr9rXUV4m7gvyiUtEU-h6g5q~uYSbE1Z-fvJzdRYoqv-Ogm1s-E5IAhuBBSBDn6w__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "360p": "https://cdn.estrategiaconcursos.com.br/storage/video/136728/ed_afauth_AUD32206_direitoconstitucionalestadositiopt2_NULL_360p.mp4?Expires=1718237552&Signature=SEwmDA~2Uxy3Sqcc3vH8YfTGOP6dhWfFlrNa-gRcm5LJ7TKAOIS4hna4QWkrZpRkvL6yfFubGgW7NE3K1Xav222QhDr-eKLmChywvddTfPLXdMTRkdPujfNn788ONGhhMXXf8trRa3uBFfHUTKB1NW5x1Ice6eqHl5euqEnnbG4e64x~qllrNY3VU6sH2OuiQ0~ePGFqQ5KRvYbED5KiDoJ2LmUvVsZ5Rq-DzwtpIHmprK8H0fsDy~spFBRtwwkLBxt-jlizb3ceF-BRt~dnG5FP1lFw6qfGBPEt3tf~GYSA8oVoN5IE315qiF7delewbFRORYnXBQG4fjnrnk4CmQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+            },
+            "anotacoes": null,
+            "audio": "https://cdn.estrategiaconcursos.com.br/storage/video/136728/ed_afauth_AUD32206_direitoconstitucionalestadositiopt2_NULL_mp3.mp3?Expires=1718237552&Signature=Mn-Qebp-VmJnIfGoBave5vE6flcZk~HGeWiI-kCpQqLXluTMutqQN0XdhNq283gLFY-mQfF4vZ6YBUuviFTX9YKO3Wg8G6HfsP4Wq2KIkj~pUNMp-hm9ZgTL~X~vZ42qHTYXSziUPMhb1Op8bWdZL9uJsV6rP73YAME6MUZC6KZ6z~BxAhx21W7xAV5vGXTdEJG6vFEzRGBu-wUTXYEnzhR-oQjLpZVtBZxLWAMKqUcOcFhxB0uBd7kArVW7UjRd80hfataZXNxv9BRJ-kZ2c9q2ce~6y8T5jp8-i5KoVftniNyxGRHx0uq4xlmcRMtc7r~bz2uj8ntNc6hulELhsg__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+            "thumbnail": "https://cdn.estrategiaconcursos.com.br/storage/video/136728/ed_afauth_AUD32206_direitoconstitucionalestadositiopt2_NULL_thumb.jpg?Expires=1718237552&Signature=Zi~J8F9N3i-bXKCo1wlxcsRbJVwoJTAxE5oQSk5OSRFUj4lw-iK0PPhcOFlFcxXn1f6O5Ac1Y3F5JeKB2XMZdLU-1Fg7LDJ5SC7CGzjgaX~90051KzZGjxMqqwBvvZX6MkBgfFJziLKXkpuJEh3O7U6V0EYzxF4qRzYD3mVd~UMRPVK1VsJhLGuf4qryZrPoh~ybKpWWWoF-ZWTpmCgrBpfLjcq6Lj9hx8S8yRCmwpb8vuBJOW~CjfDs0jbQWLGRdDpdYLbaxuxeb7yNhZtmt62gUmouM3PzxxgrigE4AVAXFBIXkj05FYCifgBRJMPLv0bFIA~ijhhuXdzdsMaA0Q__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+        },
+        {
+            "id": 136727,
+            "titulo": "Forças Armadas - Noções Gerais, Regulamentação, Patentes, Militar e Cargo Público, Militar e Cargo Eletivo",
+            "visualizado": false,
+            "resumo": null,
+            "slide": "https://api.estrategiaconcursos.com.br/api/video/136727/download/slideshow?clienteId=1275291&resourceType=pdf&resourceId=136727&expiration=2024-06-12+17%3A12%3A32&signature=73ea38f348a7ecb4b8487e1a7ee850aa&tipo=slideshow",
+            "mapa_mental": null,
+            "posicao": 0,
+            "resolucao": "360p",
+            "resolucoes": {
+                "720p": "https://cdn.estrategiaconcursos.com.br/storage/video/136727/ed_afauth_AUD32206_direitoconstitucionalforcasarmadaspt1_NULL_720p.mp4?Expires=1718237552&Signature=JKJodDSf3hxUn56MqlHvEij649T28PRrm4dESnlJBRoD5C2zj24stnzV4pZTYirsnN7lJWJc-Yeee~InCjXynw2fdLS4qN2QfQEDEJ3OYLoA2uvyaA8TiZs4nnTYQCZBLAAZBN5O5zJOcsDq65WThUl7O25Kwc7yRSnhmIkZDZ5Zbz3Hlc302b3-78qY2hn~IPYZYVt9knLF4y0mZcPzS7O4yByDa9SlTrmSgqhEUVan-HX-t03NHkeUFaZ5ZJu9YmzvRpfteKpWkqcMCDSybGPhc6HWEkw1U3GMQSXmkIif7edLD3LzuOlnPoivLgnS1HWpiXNU~s1rnFg2Ohy1vg__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "480p": "https://cdn.estrategiaconcursos.com.br/storage/video/136727/ed_afauth_AUD32206_direitoconstitucionalforcasarmadaspt1_NULL_480p.mp4?Expires=1718237552&Signature=MuRmu-MWJdnZrZjEUQ0A9xHz3l3aL7qy9eo-lxrvt3Jlo14-cejFViMOjRiUcAY0pLYeP~fQ8lucmzTgza2~6YN0Qvm1n9E5OxpA~gx1Bf7un77tArDCIf9VOnqC4gLFFIn1h3QdLb0-lnpkXJIkWevMfVGu~Npxyipb0oD1B9mV-XzNWbUw4JZ1fnniUrIZ6kugji2MTROT7LnSvf~QVK3JM~ZJMMd831fnNQDU9I3Qm-ChCHepYrSUicnH3ifuc7o9kEBgKavo8TUB5dyF20CkWP4rb0L67gNWlHwmy4AgKOmcRuqDGxrb7WobjTVxpFqPwuoo1jFtTYGbiGJwdw__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "360p": "https://cdn.estrategiaconcursos.com.br/storage/video/136727/ed_afauth_AUD32206_direitoconstitucionalforcasarmadaspt1_NULL_360p.mp4?Expires=1718237552&Signature=VEHmIUwiWo5X2Tv5xbn1CSlDriL0oj67E4JweeWbCbeIwyEf9HLf5rN1qA9HV-yQFUmH5JiZ6MYD9A4~J9uzlY2cpPr0RTpQY5v1SFzrjzsqVmlq3iBFBJT8vF3DQJ6pyCNbE1jkmEb3SCF63L7OhDvc0a9n9kVJxLxLPntqxDFNN9uy2bR12mAcBpdD6V~cDGoh9ZStlCsuRD1cbQY2Vwk1jrADzpY0ewM76SEiLbsvPDZHHWb1wu-zl06Y3Ara6PWH3z8D~WrPmJyIDUWayX1H0snx0FPkwkFuz-s~kpEkjFbzcIAjhClW5AhKgZsWgnRRnPmnQNQHoYsEXg17TA__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+            },
+            "anotacoes": null,
+            "audio": "https://cdn.estrategiaconcursos.com.br/storage/video/136727/ed_afauth_AUD32206_direitoconstitucionalforcasarmadaspt1_NULL_mp3.mp3?Expires=1718237552&Signature=YKARJn7ZUNMechDUP3LIM1GlGxXJ0iEbI65VZcaCFi8dXlT6x6Ot0SSAySaeO-wMnvHekQbKelcyEBSnh8718sealwNAJ~6n12sCFTanUl~JcabQcumFVjkXKoKhE1W4vli9A8kG~67-5LefKFrT-W5kVjRNA6iFbxY5IteSomPABBCTVwCje1Z~Zb~GYv2mTeTpXPpMJUivUlNJTsz9ZXJJJ6P89klM-Uiua-6oKRp5wASctkXsbyZFKilRC-Z8tzalFxcmS1tliY9Sa2HRTKmCb5GRNOARAbb7mChxys56JGnEX0hfZIjohwYk6mLNYUHXZsdTUMdNqlIjPDr0jQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+            "thumbnail": "https://cdn.estrategiaconcursos.com.br/storage/video/136727/ed_afauth_AUD32206_direitoconstitucionalforcasarmadaspt1_NULL_thumb.jpg?Expires=1718237552&Signature=LvncoH3BlKF-27xdO1u2tTsMSTw1Q0ub5kQNhddWcKrToFcLSmlSbOWC4GAjRb2N17YzpZpRtEPk~4JlbwiYBb9AkPOqjihjQdxWGhn3mRTcs4D6UksraTFazhfLY6~EGt3VIJXugTFNbNVFwzW6rzgsNrKHmP0PL-CYH~x0h2waTNd9FbK~PMKgWmUQJAhhvp9hoq0tFbQw2OQTvkDtauTasNDCICWCtdabqQkMARbg6dmg0n90c-1e-34uAgWrnmWCAEXScmUjyUgFwWjpFBDzq~JqmenSu71sxzcBEEsPBiXkaK68I3X-Nr0q6y3B9UlxqG9~m7cZyr8ehJlmNg__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+        },
+        {
+            "id": 136726,
+            "titulo": "Forças Armadas - Vedações, Militares e Direitos Sociais, Oficial e Perda do Posto",
+            "visualizado": false,
+            "resumo": null,
+            "slide": null,
+            "mapa_mental": null,
+            "posicao": 0,
+            "resolucao": "360p",
+            "resolucoes": {
+                "720p": "https://cdn.estrategiaconcursos.com.br/storage/video/136726/ed_afauth_AUD32206_direitoconstitucionalforcasarmadaspt2_NULL_720p.mp4?Expires=1718237552&Signature=ifOh8l4q~YqdSzArc0kiju1NqWHJ0BzKLQ1h~~JhF1lPJN8loZ12GUXJhGFYRrH4rmTaZHm9fppb3Rjj-Cvv2jcZlfMwHlgX5EvNIHz1Hie3Xlz-dr5-O3vYxm3foVsPeOPH4PvDIfbcLANOy0zLXa5JjnSB9rjpQRJ1bZIxCTmdGFxscC26OZ04lDeid0eh6Z5Lv~wn1T6~D8YZNYGtvL8WfEMwnjRqug9OSgqwDs1W9P1LrW7Yf6m8JTcYU2IlR7FbMUQDicVfOuiwNDqKx~-bq-eJy2crre04r4mvGtYd-xfNc3Z7Rc~q4COzqommlLHSEHSJZrC3KZmlDPvH3Q__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "480p": "https://cdn.estrategiaconcursos.com.br/storage/video/136726/ed_afauth_AUD32206_direitoconstitucionalforcasarmadaspt2_NULL_480p.mp4?Expires=1718237552&Signature=E~JjUmnWlFU1CmHZUGgS7b~bfXe54k0kbEmWU6RGpW0eEkcAh35gZ8gxgcv4nhZqDEwUd-QXGCOJYvUPZT8ykZoVlIR4tvUF0USUEOdMFAyZ2BdLlYWmw7jLhjIHzYLj0nfDv1TvGvxyVkTkcoDxW8gnVa6heh1C-yOGyciMFfrZ7R2qCambrmyydGhZjOpZZ8gfhpJCTIAfu9Q--~D-gKaW45VIQDl-m857nHciCAKoUH6H6CsoNi-GvVoI3Px0n62jrAulzR7xLwIW~xfKCnxRo-0sEh16zujihSHGd0vgecn~VMi4zf7krLx3RFMxeTKMC494u77RMvmV1zyqLg__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "360p": "https://cdn.estrategiaconcursos.com.br/storage/video/136726/ed_afauth_AUD32206_direitoconstitucionalforcasarmadaspt2_NULL_360p.mp4?Expires=1718237552&Signature=FaQUjfuBAnu~OKHSpJQoeZ1YtPfcuOuJ994neGORtVtKNPLUbDCKKgydN2Mjw4TeXWL-R7vKCpUYtmGTktz57fTnM82z9xNgnd4N1AAa6p4f3bakmk8EJQAB5iPeY3Vvk1sry3RuXqg6~IpHE34KuHgvvKdh1x7BY2--SdHMHmCHxuecCGurXaKGoBjbT8rFQaYpyV87S1ATjyurde3a~NmTpoRgr~RITOk0ML1GL1xG5zqyf61rkTiUGDgKEOGvtLQD0AtyaAXAl2kJspVx28VT13GvkhMQecRkBlFooXbwXrLK~8TeXTq2UiIZ73ZfYo3Xou8bzoXtJ9iKBEgw-g__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+            },
+            "anotacoes": null,
+            "audio": "https://cdn.estrategiaconcursos.com.br/storage/video/136726/ed_afauth_AUD32206_direitoconstitucionalforcasarmadaspt2_NULL_mp3.mp3?Expires=1718237552&Signature=Dyb7P-JmcT31dHcqvC~mfW8Temgt9udtFIYr5sqcGTjMukKwuqrv3wrSIfv7PBlR8sSLHqReqxpqOutOvl0Bc3A2IN8QzIXcFHFq1dyP-TnvnF2xr7chWVEKGMZv2xOdv9PitHEEp5hslNpKS47N3G6MVc8BC4NbkbA7vRUHVkZf2Wk0wpTOcThfqPL7ehIPhUPd3JAZkyEfSLptm6JpE7BpInnvciAlvshxUBG0fBqUJ1oBp1eDKc-iV~lLfovLOBYkG7ElN88h8wUXzLMSZm2G8WS~pBzc9eKr~P9Dc3Ql0VjovPB2M40PqRMUmkTs9sVv7t5ORSYsQzd~Hud03g__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+            "thumbnail": "https://cdn.estrategiaconcursos.com.br/storage/video/136726/ed_afauth_AUD32206_direitoconstitucionalforcasarmadaspt2_NULL_thumb.jpg?Expires=1718237552&Signature=ON-ZeBByI~kBwbquJCPiQawfHXIkiiAwtmKe4yKjt-iTAaMflZ35M9Rdg~ifL7NLM1EFewYvAepns0ktGgVOoSnm8b6eq5KAmuVmeGr2JhbD8ecdDGKbYzOKqDpoWudUslMbm9PDMzuVoQR~8HysxbyzWuw7SM0~lOAsTuf9cdsJiUKYOKRc4KwvqvXKww3Pnl4U5Y4AmGkuF5B9xm8Uf9A7pDQBtuB6o1gwnE1Sy0gyxj4PIglqeCTnTRSNCEjkULbHJxY5B9ubdDvYIO5F25XvuqRVw91Uc9LbtiR4qpsPfDk1APcWg6KWMWScqv8c6X3Ega3rCnQ887s9tFPbyA__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+        },
+        {
+            "id": 136685,
+            "titulo": "Forças Armadas - Serviço Militar Obrigatório",
+            "visualizado": false,
+            "resumo": null,
+            "slide": "https://api.estrategiaconcursos.com.br/api/video/136685/download/slideshow?clienteId=1275291&resourceType=pdf&resourceId=136685&expiration=2024-06-12+17%3A12%3A32&signature=454f01de2e0aeaa5239277cb6f663a4f&tipo=slideshow",
+            "mapa_mental": null,
+            "posicao": 0,
+            "resolucao": "360p",
+            "resolucoes": {
+                "720p": "https://cdn.estrategiaconcursos.com.br/storage/video/136685/ed_afauth_AUD32168_direitoconstitucionalforarma_NULL_720p.mp4?Expires=1718237552&Signature=GDBfDSzjXq3T~G5f0xs6v15GoVxJrvqcTHxcKE9W5DCFAd~eUKO8UNTn1aDF8WVHw8hDWPNfjZQTJ0WjJi1H5rxmuvhbY5ZM-gO0SNPJIoKO4zodRc-8Sj4JOs3hiE7Eu9Lobs~YU5X7X7MBA7qGFqF5nffX0eu2lOVFr-eDu2UQPq9dE5JbfMbdKV7QYAdSOtxb2FUs3AxILPZ3qvXas~WgXj6Bge1Jho0O6F4ndrqTnCf5XQcXXqNRVjdDejovOq5IXSqdoaOHxk3gB3Ya1sqyPtuHNMosame4w571Nbr98xInnah~jGADvDBmH020MzV45T0Bc5t3RRHv9v7WHw__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "480p": "https://cdn.estrategiaconcursos.com.br/storage/video/136685/ed_afauth_AUD32168_direitoconstitucionalforarma_NULL_480p.mp4?Expires=1718237552&Signature=Q5x0Jx6fy4kWu8N2N1VKd0JVX5InfTZRkL--Z2m4vipsR3-VSyV1S34WVdaaTGrfJq1~j0uCT78smbhaw0c765ChWPNO4cZlRZbCMQpEJMW~YJz1lS4iWMvXFCBZc5M8IcDcmo5YWT2osjBExxDh~3t5fCFf1DqowxcXeSp4KShK~T-9O1ASaKhVib6M3p2qdeQveGTh4WAQeSpLhx3sdCsB79895jxBrBUwRTp3rBhnS3vP63094cjIJX7U2jGHsFzuC6wXRbiac-1rfMGlBUJkq3ZprBDLC69JH-jmX6YFs84w0mZyUmVpPxtGh~n1yMvorBFCMZsdmgyLxQjUNA__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "360p": "https://cdn.estrategiaconcursos.com.br/storage/video/136685/ed_afauth_AUD32168_direitoconstitucionalforarma_NULL_360p.mp4?Expires=1718237552&Signature=j1DeW8gIQc1sFajyhZ0IGKlAJVwYcYKKDZaY5vuR88cW3JaTFHd18lJxLbzxA64XfRBwAK-JaB27ZbbNw~OcRq-yFNhT4a9dWQ3z0rVCQlklTLrht0NlCDMKUb-SrStct~6Lw1o2h5-wIhzJHTIXwA0HLnnlYisa1q2lfncLIHdV7HopCvzYIg2lEoqRP7hBYeW9renXPXLMhszC~q-6BS8F8Ss2Nx3AMn0yrce1Fs39Q4tpMi3UywSQ7ZQ-VQf85oZeC2Y8iMQ1n1JEE2bCbVQGpDGhaCFeSI~lNjMHDkUVcH7axhL6cQD1oQQxIFkBj4ue8N6ZHR5t4SS3mHiEag__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+            },
+            "anotacoes": null,
+            "audio": "https://cdn.estrategiaconcursos.com.br/storage/video/136685/ed_afauth_AUD32168_direitoconstitucionalforarma_NULL_mp3.mp3?Expires=1718237552&Signature=EqkOI8c0Z-1ZnvJJAYD9L~lEgZTQcI~JKq3bI0OfumyUZYFa58XvtHByWcHaCmn24CoX-OfBSDgTUl1HcTV7AtkpV5EmJOcx~W2PljNbF0pJnTpVdtwFpcV6LI7WWhfidJRtI~rQS7lfxHUNRCi-uhQFML0C~R5B2QtqMUSsHrolkSRADT6qEXkdBjhur-gicFu1Ppe44BZ9K0HzYUp-BgNPX13inMx9~Tl4FrXBzbnl0eFu3mjdWkofIoeZ~sjdaIa6EYVIR~5-Y9oz3csyWbtURHVXoDrsEv3xwV3j6sWtdAs2~cFaFogdbZILb8v1FMaaUX3k2jt-REtjIh3smA__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+            "thumbnail": "https://cdn.estrategiaconcursos.com.br/storage/video/136685/ed_afauth_AUD32168_direitoconstitucionalforarma_NULL_thumb.jpg?Expires=1718237552&Signature=g7Dnw0AZ3Nmckeg2nrGiipPQ9IYieHCyii0LbA9vCZ-fUdZ5ozMOI~RIw5SxaGOE~60Ht3euTkjs8RyjGhJpeMPMRp22MOsAPrm9AwG7E0blM3rqqw7HGbnvoz6k91NQYjlfySwMWSboLV2iG3KNf1N-8QWhMQkpIfcP33BzGyIDAsg3s5dT0RtwKPFRZ~Gq6fXSGMRkOFTNADxpU2zqzA8vCN~bPAEsxf4CFxFsSeLUI3kv-IhVWD9L4hbazfSCkeeqPgNIUTejDfa4sW~pdLbR8vE0ak1~kvq2oZsqJN0LXG~juRlxgqjlx-zYATbcY6w~3YVS5QT1jJR4P04BZQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+        },
+        {
+            "id": 136683,
+            "titulo": "Segurança Pública - Noções Gerais",
+            "visualizado": false,
+            "resumo": null,
+            "slide": null,
+            "mapa_mental": "https://api.estrategiaconcursos.com.br/api/video/136683/download/mapa_mental?clienteId=1275291&resourceType=pdf&resourceId=136683&expiration=2024-06-12+17%3A12%3A32&signature=0128c1335c11937524973ee835fdec37&tipo=mapa_mental",
+            "posicao": 0,
+            "resolucao": "360p",
+            "resolucoes": {
+                "720p": "https://cdn.estrategiaconcursos.com.br/storage/video/136683/ed_afauth_AUD32168_direitoconstitucionalsegpubp1_NULL_720p.mp4?Expires=1718237552&Signature=Ro5xtWpAn6R4liCjDJ8zAdovwTOHQVVc9tljTkJa1FK5CVUbcnLu1OdOTQeKQoclKXDPcxVycvq0IbCyfJ~cScI5IDhOth6BK30EGZpvA34xSxk4pB2y6qvhtjWzAnhuaOBpb~CxOBJRReLvmeSFYUOICcZ-1ZoU-uIfrraF43zCAbGQsUMZzAUbab9aMzMgNUfvWX5Pxr4A1m7Pr~xMsBeYpvPt~PvjMwk3yNhtp~EnYLwqGLolWMlNrZ0sbZMacP-Qy0VW3~2uJzcMnwtiF~s2hGjwkUxBy2x8r85td8oQGD1bERtZGnMpAZmIeCg4JvL-uk2Ja4OTEFXyH5lznQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "480p": "https://cdn.estrategiaconcursos.com.br/storage/video/136683/ed_afauth_AUD32168_direitoconstitucionalsegpubp1_NULL_480p.mp4?Expires=1718237552&Signature=De7hM36DXnesyVTKn19rfSxXS3uiO-~W60JIBx1YyYkL-F6om8yUZdWSrGAL~SO5SMQobwefLdnURyempq9MegzI-NXCIrL6QFZyqLqN8~UjgZogyQ17PVZA3Wh5rvX5rOTpVFs3Fy9YtOgObG923TbacwwEx~32rDHQoV7TxKOTUixwZi2ce4rjXrOPvoK0Ptq0F-S3e3sJ~7dF3ZK8~~VhWNYabVf-VWNBWbCDMDG7TM9I~nQbBDdpCyCAWuM08szKHo-~1t4CcEEE1w771XlIguwR-2T6JbOgCDBrHZk-XTeAql2gc7yesRM~a2qs8Of6TYy1QU7ScsLQGYAx1A__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "360p": "https://cdn.estrategiaconcursos.com.br/storage/video/136683/ed_afauth_AUD32168_direitoconstitucionalsegpubp1_NULL_360p.mp4?Expires=1718237552&Signature=KeOAvRnSr~s9kSH0dJqsLbSJYvfTR57Nbo2NIElF9ONFqY5EtKKbBNTMfUug4v7IdgXzvAt9FlBUupT5ndLl5n6v6q7kDQo4QA-M1fBc-APn2Xi-L-VzF4tuc5Nx2SDBFaTtR4rkkyYuJ~CRsiveSsg73WtZL6QeCzHTt-hEd7HKTjPdZi8qV6MpzuafVoRR5yo6UkrtI52d~jkU30DMw8CScaJgVO3b3uxpBwbf3XoHwCTA5zT78oeDHAxEKw9xCkUMCLUbxiq-2FUd42QNza~aH8Wrr9uQ8PVoRdVil9AM1qEjx-r7oK61Ies1WHBnyGVXEIPFnocR7I9NNV5nbw__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+            },
+            "anotacoes": null,
+            "audio": "https://cdn.estrategiaconcursos.com.br/storage/video/136683/ed_afauth_AUD32168_direitoconstitucionalsegpubp1_NULL_mp3.mp3?Expires=1718237552&Signature=VmoPxDfgu2ZTxM2HG63fGMXrUrqOKjTrYlrejJz4yrnFw8UTETjgtLOGc~8KgTbg3-Lj9ss~IySFVEKcyZfYey3YJS6ySItDJydQuW1syfHwNJ1L-cMfa6UVwO3E52c91QSgURejucaWR~4r9s83dTgdL36CZyu2mAQTaI4jh1GGqjz9ZvDcQs-Noup-fHT1~Vdq9xeKTHOe~VQAtVdbH4hB3NyY-VFogPn13bBADo1uzppohxugmUIhhwAh~0Cms1u59GUVJSdCNoBvC2Mg44npSXXPnl1mlk8AWSt6WBqAmoO8UD11hpLN5Youch-S1eOq9J7o2iBM3Cn6VBEZlA__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+            "thumbnail": "https://cdn.estrategiaconcursos.com.br/storage/video/136683/ed_afauth_AUD32168_direitoconstitucionalsegpubp1_NULL_thumb.jpg?Expires=1718237552&Signature=N5b8qSMRDO1PBtQR0x9V8Hu0iLTHIh89OfQ4j48lIcrJ5JozZtjK15K4D14nCafLnOAGl8oLuK61rl44uMaJiYreau3w5ezT9PB6zlYz187a7Xy3YogGLgdH6Z4rbFS5TsuXiJuc6CLl8543aQjtfW~A~fLoorgxkFl63pk~sXp3BkmU~sdYZnq9kocBeF9MC3Y1mOwHYnwFxqyB19hj-xF1lJMeuB9WnbISRffPzJNSMzmluELAJsUt-wNETcAbC2UjpCnPwltJC-Z4wNAxGcjpogwyThtnbmaktTfcF5KSaY4MGtqFCZepAKOwKfHjI8r75WigdRo7-DwMZ1uZXQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+        },
+        {
+            "id": 136682,
+            "titulo": "Segurança Pública - Polícia Federal",
+            "visualizado": false,
+            "resumo": null,
+            "slide": null,
+            "mapa_mental": null,
+            "posicao": 0,
+            "resolucao": "360p",
+            "resolucoes": {
+                "720p": "https://cdn.estrategiaconcursos.com.br/storage/video/136682/ed_afauth_AUD32168_direitoconstitucionalsegpubp2_NULL_720p.mp4?Expires=1718237552&Signature=CLtkIzJ7xKbJySu94VvD59X7NrPey93vUMDHxKNYbmloroQ1Y2E0QGSXECZZJ-TrhEy87TrbrgPSO78mtJ9wQh3U9FZTvODRw0Y5xYfp~fBGpNuaI2JLJQD5gfflVsCCh64r8NuYohkcWCPfdzn9TuoqSdyn4tOkRvPaDK57Yf~TW5zbYiPwLQjpFfveB4J2EPsDB4evBsEvx0EXATT7mssttPDPmK8t2jU6NkpMY5yHmHE7QQ5i4oE8tlmWh0bY3U8LVTlYmUU~bqEGNZhPjqx3IRa~AFuML-80K9jZrV0gPWiS5jk~gyn31Y3Cqfk9pvaO5otABCbtIgc19F25Gg__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "480p": "https://cdn.estrategiaconcursos.com.br/storage/video/136682/ed_afauth_AUD32168_direitoconstitucionalsegpubp2_NULL_480p.mp4?Expires=1718237552&Signature=fzuq92idxvXB-vzjirlQT8zeEjgFchr71Y2n10c0SglAv~V~SaFyVmk6-mpC5JTI~45MoUxfKdnb2PMzyUvVMLB-SHuOPkizOA-ftIzMQE1P-FQtN8~uEL1fd956zw1nyiA4~XqJzAeRmARdRqSIdV2yJ~ii1LCqoN-5l6G21QxyG5DiGWy5AvT-sosXcIgIpfWiJ4KIHnm-Ac95fZWl9taRO7WFrmOnpwCRXArcxzapIHO6qKd4B1wb2vHA1pNpz5q7Px0zfS9wAjQQL0REYi2YzjLFkWONSjKf-akYD0NrjL188HeXUNMIHNegiY-DXSKwREp4jyghzVo3GhzYVQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "360p": "https://cdn.estrategiaconcursos.com.br/storage/video/136682/ed_afauth_AUD32168_direitoconstitucionalsegpubp2_NULL_360p.mp4?Expires=1718237552&Signature=B-0Nh1zjmFX74tvhSZ8c-Q404C3IK-Q4MTSkuoZpVxnFZM~XMd85KQOL0Mz6KiE2beR0YJHsm-w2dKpMR-EGpwBAPh4YN-OlwJ5vkoK8hbEwVJdoCuUlNKfWGuOelCUNBaz2J7xE8xfTO~e7mqX075694ssCnmLB70HH9zU3Mh1q~B6mdoXABxRYq52qKilcBnPISKauT22K7HZPXhJbnwAB~dEx2ZaRaW4AXa36gElHoYI-QrTGEcI6XpAfFf0DEwUt7dHV0kD8BYdFKZKFxLtWotNM8Ai15ydMPDCiJJ8hy7H4gk2SVqNFvcBcSzFqKT1AtSSTqu8gZiKTuvQD0g__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+            },
+            "anotacoes": null,
+            "audio": "https://cdn.estrategiaconcursos.com.br/storage/video/136682/ed_afauth_AUD32168_direitoconstitucionalsegpubp2_NULL_mp3.mp3?Expires=1718237552&Signature=P6p1~-cjNGQRWh3Sv6HmTJAF27-P-c1u-3-vCBHlenFNK56hynOsK9x6ZSvpVcU0qvZW2OuDUCFr62bzGv1GCifNTo~TzhDBwNLodfU7Tri6ijueRkHhS3X8k5rKwz5CrT0GUUax7bLjNqD1ZXDJFK3fSj1LdV1hTJQIKyPiCS8IQx2yslwaJbJvuf9l31Z290u57oe8nwXNsyIUPT-D2gpFBGnEnuTchwJZKvnWtvpaKB2hik0xYHUHPh~YbfoHc58b5E7ssMd1-XorXqQLqZtTqnnJu3bmeRCWsRQsQS1WliWQDP1VN44msKVVGk5JIdQaIm10UVkqFGnVMs582w__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+            "thumbnail": "https://cdn.estrategiaconcursos.com.br/storage/video/136682/ed_afauth_AUD32168_direitoconstitucionalsegpubp2_NULL_thumb.jpg?Expires=1718237552&Signature=QTr5~0uBNxVavwsJ7b--5n1daOniZx1BwvThnoS3sU8CElYELUNqpTOZ4iaTsA59s1vfLeslqMEJDIUJ0JIi8HuxaaRu1qjCqayC0QYMPA4cFC7-tNhyaZBR2SF6jg4yXuL2bOcrWKDxUsnxt4a5~pXEjiNCZoXwphwHBUf9SS3XFyBhzPuGrcbZJeP8pro8-v1Y9gC2mc3jXS~xVSxny80xgTgErutPk8n5x5~rZlGV7CDemdXa7~avVZVhRUwZlk0VFswx3rKO31sCJY4ApKHQpy1LFU51daqPE8WZVRLVac38ee0ZjApcDPNavwXMSrxJGZQYNjMwHUe5x3VwBA__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+        },
+        {
+            "id": 136681,
+            "titulo": "Polícia Rodoviária Federal, Polícia Ferroviária Federal, Polícia Civil, Polícia Militar e CBM, Polícia Penal, Polícias do DF",
+            "visualizado": false,
+            "resumo": null,
+            "slide": null,
+            "mapa_mental": null,
+            "posicao": 0,
+            "resolucao": "360p",
+            "resolucoes": {
+                "720p": "https://cdn.estrategiaconcursos.com.br/storage/video/136681/ed_afauth_AUD32168_direitoconstitucionalsegpubp3_NULL_720p.mp4?Expires=1718237552&Signature=ZcBjhvrmLxeeuMtYWUhv1qsxEty3xPzofkhe2noeygow0-THo7y8OHMmY1taWu9VCYKUx422PePvxgyDPzlBaF0bFOGwK8cEj3hVej1OlQjoQkxcJwTSltUho9Q7HOHYdeNGwAZQi41UUAIx83H6yZakrdvGAQakJ5HICEz-3HgEzBlrtGq1zQ11tqWRMCyhvGQl29-cc-icNXx0l1uTTpcNAvITIUcNVXH19Nc0q~MUbURPtSes~oEd1pzzI4mHX2weqEO33lBeC0QUURkfSiuvTiMOpMxuBjC0XKZVEf88k9EPSsor7DcjjkYnTMqi8YcEd1zE-8o0SuaSxrIaXQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "480p": "https://cdn.estrategiaconcursos.com.br/storage/video/136681/ed_afauth_AUD32168_direitoconstitucionalsegpubp3_NULL_480p.mp4?Expires=1718237552&Signature=a7gx1aOrJTYe4MOpIwSJXC5VTMJw~BoS9v1pvtMBVqo0xC3Vu1FvFqJoG7N22ouS3dVcJ1AtAL~Q7nU~-TdHGNIK5w3jzuQzdZVz-~PZAIZp~LkFILHB9QK2~VuhpIEnMGvw~WCu~Z-qJ-l-OifHo3li-er8WhAP1IoAQ79GeAAIVYyy2Ymc54QZtZ4jRpuEGkp9aW9YuqBwlw0UAhu52dxiaeGb~jau2FR3deXW9VECM9EV0VW~HGdBMSE7fELqtiN2V1Ec-knYlTwdhg1FLRNLWmYY1l5mULOMbtikUOECP9KdLe~5s43Ej~pkH9~FtZS4Fv4FIoVrVh7LFOVg3Q__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "360p": "https://cdn.estrategiaconcursos.com.br/storage/video/136681/ed_afauth_AUD32168_direitoconstitucionalsegpubp3_NULL_360p.mp4?Expires=1718237552&Signature=OlxDmWi~~NlTfADMosC2zSo67SC6cP5bS8wNosKRPS0Pr-XJOlvqP1Hbk9~8Is2zeZVoGpvxkTH1DhhbOtlAt68fX4NHM7ivm5msXt~mdyntLuvrPnvSoFJTKg3kUG1aQBqJumdikzQnmOQyhOjPZRz7wf5sEdtKF0QdvcaSk0td9e~PeaMx7t891gjZDUuQeUxSDPSCh7JCwFnjL1Huchf7ubbR1fIPDdz~vH-c1v6PdASvteBUTCQgvMVVyoAHh1170c09hU1AuxeRL82rWscSFJkVgdT~PKTo6surFlW9B3wfnAgLsz5k-KdJ93bYhEvmK-58wslFPxp9-2UCJQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+            },
+            "anotacoes": null,
+            "audio": "https://cdn.estrategiaconcursos.com.br/storage/video/136681/ed_afauth_AUD32168_direitoconstitucionalsegpubp3_NULL_mp3.mp3?Expires=1718237552&Signature=hRsJDf8xuy9XLx1pMCiEH3LSPyE49iv8msmMzJHZWT7iMsGBi9BO5u~HseLXzyuVIpYBRL9arNamBcp4R7XsYHsZknH~ea1KJCixU8QcyxHoMGqnAq1SbJmGOBKTytJ2ppdftuccoZw5ZKeiK0NQ0Tb6cyceJYSx2iH~HGYC45xLDOn2ay7jxyCV7YICVCfEcoruGOmex7euotkICVhLGEUWnkJybRWWTM9DautoYXN7BzyPpkX0LM7njs4imMBrMMmnnYZ5JE9jXQCqtUooUlP-eFfsxS~-bJJe-atin7iBL22qmBkU~9XBM8bbkqDMfFFr03xsgeFRJgu8nhm3Ng__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+            "thumbnail": "https://cdn.estrategiaconcursos.com.br/storage/video/136681/ed_afauth_AUD32168_direitoconstitucionalsegpubp3_NULL_thumb.jpg?Expires=1718237552&Signature=hbuDzy97-tT0aw3cUFcd3As~MnOTBD7CsCrcAyp8XdyutLb7X2jXPRxr4CeUGJAVlqVPhpXa3jbu-RfZBz788kRvgtM84iw3HEo6p9cWDTv8DsMae3MEZNR0WrWz1P7NJfAI0UmE0fRyiY-1EP99Sj3b4ltHkpHUCtknXNQ-KVHMLEFVt9dOAsBrvJeiOfeMhiqSfvG8a4lGZa1aiVQdUogdKRi6fFxfU2tTwlIv-08le6NM~OgVaZuSP2VcQwe6cWBEoeGHPc4ed5lwln4b4bk2iINWJ5kgsNOz4r-Fxfud91aimvmVARDeXHnf42ZDtdAwW~E0iJiisKdIpptX0A__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+        },
+        {
+            "id": 140326,
+            "titulo": "Polícias dos Territórios, Polícia Científica, Guardas Municipais e Segurança Viária",
+            "visualizado": false,
+            "resumo": null,
+            "slide": null,
+            "mapa_mental": null,
+            "posicao": 0,
+            "resolucao": "360p",
+            "resolucoes": {
+                "720p": "https://cdn.estrategiaconcursos.com.br/storage/video/140326/ed_afauth_AUD35049_dirconstpoliciasdosterritorios_NULL_720p.mp4?Expires=1718237552&Signature=caQ5u3h7mfxvVlRvEZ0l2810r2Cxl56bM1tygtXH75QR1r~PK3R0AGk4nW4myKHhhmz~v-v5IsWMzTOpCm-P~vqb9t1rDmV2-lVASjZjiTmyFlMDgTd6MY8QLlKkTaSxRmOYh9b6kCRj-39tNovlBOpPlg5RdGHjRwjgK9P8vb8VkvtPcnrGIQMt4TAktB6pXbFK9aUo6eQpmn58gcdUnDk2181MzVeGyEq8oC5C3mvpk~yxTrqCdOQOgvFtabRi9-IXBZVRIGF8mdM8bsePcCKpxZqNWwmSrlqjKD7spFIh0aXSa4V-T4xRwHLI1Cj3EVZODTPiP-WVbkf2CnKmHA__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "480p": "https://cdn.estrategiaconcursos.com.br/storage/video/140326/ed_afauth_AUD35049_dirconstpoliciasdosterritorios_NULL_480p.mp4?Expires=1718237552&Signature=f-SaivncNBxUvATeTrII1lJZ1t0IreDBLqtIhnjfeMvG0TyhubDSvZFWghyjzsHA4Y60AJiXo2fWVWj46NdYxhWmgchaQQoLpKN1ahD2upJiQIAuCNWoymPVoBhaS8MmieRud6tP51kZfEEhloPsLvKYMq0WKtWLkXEI7crBK4cvW9D3G~N9cqp8T-NtMskIUNZEc3-IzsK7voPN33ZPkRrT4M9R~spoYAGYWFhZII0UAeROb8HySWI8S0bS7gTSWSMd60DbKMzLjmzDwt9CgOyuBz1bdQ-mHqgfbwc3Y-eH2Re8U85nReLpwfI5zVXKHIIlKbNGJijSsPz1oCPdjw__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+                "360p": "https://cdn.estrategiaconcursos.com.br/storage/video/140326/ed_afauth_AUD35049_dirconstpoliciasdosterritorios_NULL_360p.mp4?Expires=1718237552&Signature=HUTpjZRkA5nrpxCQVKXMlSCeBSMH~-VyBiE3ioevAXzYz5xxY~EZFvO-~6N4bu7ONu0r69hqNub7IT0XMRpGza3HWPvmzO20i5nhUxh3uwZbro~pfNyA9IJkYrPO-P8XxHxn7LuVqTgx10L7XBt4piEhLyEC6BegeAyvzm0gZ3pmXdZaMC3VSxL9fen3auWCDtmwXven1n2Qk00W5Pz6uogEMiYbJn6s69KF7mm~81EjuWaTAi2iRmXxzmnOIPDgnK1AyFznP9oj7ijz1yHgaMljHiCRO1-hRNlNiTubwGb50kD77l3xDDf6eqS-PeCqnYiB8xStMV1w1OiaVfVlLQ__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+            },
+            "anotacoes": null,
+            "audio": "https://cdn.estrategiaconcursos.com.br/storage/video/140326/ed_afauth_AUD35049_dirconstpoliciasdosterritorios_NULL_mp3.mp3?Expires=1718237552&Signature=es90M7b5TaJtj7px0QhE2iCXXee7Rppv4Xsi2VnMDI3JgmOrUWzecse~D1RPrOYp5h~LsF-TYEZFZJ7lYtWJcZohMnNvB6~2on~qov3PF2BdvTM9-8yTp4G0qBDFmELzwrxeW2BC1wR7987535J59O4pgBcanBFs~xhJSte6o6SepCDuLQas9W3CdOtMJaHViKIqBRz-RHj0j4--~g8Njy2ybD5yl8Pdja5PBKj6imOg1ZU6oUWwBDzUqoFdJ1YvzSErt83ORIiFEgz~wpNp5gM7CG2rff2TvXOOT-6nKPj4mX-hAaIbpPpmtBT1YvocAxVjxdhcZSMQApqukhoukg__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ",
+            "thumbnail": "https://cdn.estrategiaconcursos.com.br/storage/video/140326/ed_afauth_AUD35049_dirconstpoliciasdosterritorios_NULL_thumb.jpg?Expires=1718237552&Signature=cLxPj5cLjOx20zJGnIZwt0a0tuMtf2SPGB55hbnm2ClszQ0aEq7-7iOLXtnfcVeYpREnuVTnAa7nK7x8cMlrszwTHTKxN-5HKpIuiFT7GdatK4U-0gR3RlRD2LNmBnqObdU4jWM8yGoN3vGdLbVfXiswkop3BVH7ReyyI58NsGjgS7OP3PemqzDCRZb24LYPT1-eXPvlWf9Fa2COgkSNiIqhb-XQoxgWastm6LK4xHv02xEqiyNxZpOwjp5RlX5M89TDNq66IBbI~NufL-jxLBPidwUkYFhFsZm~YV31DVraJSaRIu3lStM7~lfauPX8QyFcMeGhM4R0zrbjvKl05A__&Key-Pair-Id=APKAIMR3QKSK2UDRJITQ"
+        }
+    ],
+    "tec_concursos": "https://concursos.estrategia.com/cadernos-e-simulados/cadernos/6e43d9b9-2659-4a97-8f0d-34174aa5a617",
+    "livestream": null,
+    "livestream_link": null,
+    "livestream_data": null,
+    "livestream_senha": null,
+    "conferencia_hora": null,
+    "conferencia_link": null,
+    "baixado": null
+}

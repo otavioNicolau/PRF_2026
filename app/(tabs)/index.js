@@ -61,15 +61,15 @@ export default function Home() {
 
 
 
-  useEffect(() => {
-    async function setup() {
-      const allRows = await db.getAllAsync('SELECT * FROM test');
-      for (const row of allRows) {
-        console.log(row.id, row.value, row.intValue);
-      }
-    }
-    setup();
-  }, []);
+  // useEffect(() => {
+  //   async function setup() {
+  //     const allRows = await db.getAllAsync('SELECT * FROM test');
+  //     for (const row of allRows) {
+  //       console.log(row.id, row.value, row.intValue);
+  //     }
+  //   }
+  //   setup();
+  // }, []);
 
 
 

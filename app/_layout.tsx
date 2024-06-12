@@ -21,7 +21,14 @@ export default function RootLayout() {
 
 async function migrateDbIfNeeded(db: SQLiteDatabase) {
 
-  await db.execAsync(`PRAGMA journal_mode = WAL; CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY NOT NULL, value TEXT NOT NULL, intValue INTEGER);`);
+  // await db.execAsync(`
+  //   PRAGMA journal_mode = WAL; 
+  //   CREATE TABLE IF NOT EXISTS test (
+  //   id INTEGER PRIMARY KEY NOT NULL, value TEXT NOT NULL, intValue INTEGER
+  //   );
+  // `);
+
+  await db.execAsync(`PRAGMA journal_mode = WAL; CREATE TABLE IF NOT EXISTS video ( id INTEGER PRIMARY KEY NOT NULL, id_video INTEGER, titulo TEXT NOT NULL, resolucao_720p TEXT, resolucao_480p TEXT, resolucao_360p TEXT); `);
 
 }
 
