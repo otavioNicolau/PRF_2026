@@ -1,11 +1,11 @@
-import { Stack, Link, useLocalSearchParams } from 'expo-router';
 import React, { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, FlatList, ScrollView, Linking, Pressable, SafeAreaView, RefreshControl } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Slide } from '~/components/Slide';
+import { Stack, Link, useLocalSearchParams } from 'expo-router';  // Importando os componentes necessários
 
-export default function Aulas() {
+const Aulas = () => {
   const { id } = useLocalSearchParams();
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -13,17 +13,38 @@ export default function Aulas() {
   const [refreshing, setRefreshing] = useState(false);
 
   const url = `https://api.estrategiaconcursos.com.br/api/aluno/curso/${id}`;
-  const headers = {
-    Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiMThmMzVlMTYyMDQzM2ZhMzBmYTMzMmM5NTViZjA2MDI4ZjJlOWNkZTc0NWFlYmVkMTdiNDhkZGIxNGM2Nzc3OGY1NmM5MzIyYmQzYmVhZDAiLCJpYXQiOjE3MTY1Nzg5MjAuNjY2ODk5LCJuYmYiOjE3MTY1Nzg5MjAuNjY2OTAxLCJleHAiOjE3MTkxNzA5MjAuNjYzMDY0LCJzdWIiOiIxMjc1MjkxIiwic2NvcGVzIjpbXX0.W5JrkijGjq0YnYjaEgiT3RMePare3GUBCtnS9yNDrnt99t2G6WgT-BfZTnj3DorVFAV6Ae4e12wOcb3BYMlhzGexPOgHpUkH_eAYkvGZqFbPWR9BG50hs20dlBDYFIf9EUe1IVjMbZZ5wwV4XJQD46GS1PQtl2VNoFN8_dIv7L0bGPT1Zm9Gn_SSxCDATKgik7k-MJr-CCSnmTbNMcZol6U1uON8B-3SzBYfI4aC7Tg7XnmA_DGhZEDE_jqSloLM8E5pLJOJ9mQlJ2wqgOHbAzRy0VotRau14eUZPABbv3nLd2IgwtPYCMqU-CQpGw9WO7XSnEEQWoIuCOOBdnBZBIX5uook5x_QwVPQWqx31n4X0yA-ZsBIePTXP4-eYtmqdMVjx_JIfKC5_ImcomoqR5XS1UcvBr4IEDMXRfKl9hHNp8zdZqRpXQfpRT9v9SnMMu38RpHwsIPQtfBN980MGsDXD8RufY8ZkNcHKmeXPm-_JNeJSzgrkHZcNe0IqlTgPF27mlPtfLaHycB4VBdvhBLH7zKG30Dke-i2ZS_ts1LioEVQVOTtALYCjA72AUhAblQc3J7JKn1zQ3RcdmzZ7e8TmVhrp16u-JBrbr3U1dWIhTMkdZZcQ7OYtpiuaxiZoSEP_xVdkxY4A2Mdt9rIBF0VZIn71RiSCb6eB3XH_CI',
+
+  // Função para obter o token da API
+  const getToken = async () => {
+    try {
+      const response = await axios.get('https://teal-crostata-aea03c.netlify.app/api/config');
+      const token = response.data.BEARER_TOKEN;
+      await AsyncStorage.setItem('BEARER_TOKEN', token);
+      return token;
+    } catch (error) {
+      console.error('Erro ao obter o token:', error);
+      throw error;
+    }
   };
 
+  // Função para buscar os dados da API
   const fetchData = async () => {
     try {
+      let token = await AsyncStorage.getItem('BEARER_TOKEN');
+      if (!token) {
+        token = await getToken(); // Obtém um novo token se não estiver armazenado
+      }
+
+      const headers = {
+        Authorization: `${token}`,
+      };
+
       const response = await axios.get(url, { headers });
       await AsyncStorage.setItem(url, JSON.stringify(response.data.data));
       setData(response.data.data);
       setError(null);
     } catch (err) {
+      console.error('Erro ao buscar os dados:', err);
       const cachedData = await AsyncStorage.getItem(url);
       if (cachedData) {
         setData(JSON.parse(cachedData));
@@ -150,7 +171,7 @@ export default function Aulas() {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const VideoList = ({ videos }) => {
   return (
@@ -217,7 +238,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
-
   },
   sectionTitle: {
     fontSize: 20,
@@ -266,3 +286,5 @@ const styles = StyleSheet.create({
     height: 45,
   },
 });
+
+export default Aulas;

@@ -1,12 +1,12 @@
 import { Stack, Link } from 'expo-router';
 import { Slide } from '~/components/Slide';
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, ActivityIndicator, FlatList, ScrollView, SafeAreaView, RefreshControl } from 'react-native';
+import { View, Button, Text, StyleSheet, ActivityIndicator, FlatList, ScrollView, SafeAreaView, RefreshControl } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const { height: screenHeight } = Dimensions.get('window');
-const { width: screenWidth } = Dimensions.get('window');
+import { useSQLiteContext } from 'expo-sqlite';
+
 
 // URL da API
 const url = 'https://api.estrategiaconcursos.com.br/api/aluno/curso';
@@ -14,9 +14,11 @@ const url = 'https://api.estrategiaconcursos.com.br/api/aluno/curso';
 // Função para obter o token
 const getToken = async () => {
   try {
+    // console.log('Obtendo token...');
     const response = await axios.get('https://teal-crostata-aea03c.netlify.app/api/config');
-    const token = `Bearer ${response.data.BEARER_TOKEN}`;
+    const token = `${response.data.BEARER_TOKEN}`;
     await AsyncStorage.setItem('BEARER_TOKEN', token);
+    // console.log('Token obtido:', token);
     return token;
   } catch (error) {
     console.error('Erro ao obter o token:', error);
@@ -29,15 +31,20 @@ const fetchCourseData = async () => {
   try {
     let token = await AsyncStorage.getItem('BEARER_TOKEN');
     if (!token) {
+      // console.log('Token não encontrado no AsyncStorage, obtendo novo token');
       token = await getToken();
     }
-    
+
+    // console.log('Usando token para buscar dados do curso:', token);
     const response = await axios.get(url, { headers: { Authorization: token } });
+    // console.log('Dados do curso obtidos:', response.data.data);
     await AsyncStorage.setItem(url, JSON.stringify(response.data.data));
     return response.data.data;
   } catch (error) {
+    console.error('Erro ao buscar os dados do curso:', error);
     const cachedData = await AsyncStorage.getItem(url);
     if (cachedData) {
+      // console.log('Usando dados em cache');
       return JSON.parse(cachedData);
     }
     throw error;
@@ -45,19 +52,37 @@ const fetchCourseData = async () => {
 };
 
 export default function Home() {
-  
-
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
+  const db = useSQLiteContext();
+
+
+
+  useEffect(() => {
+    async function setup() {
+      const allRows = await db.getAllAsync('SELECT * FROM test');
+      for (const row of allRows) {
+        console.log(row.id, row.value, row.intValue);
+      }
+    }
+    setup();
+  }, []);
+
+
+
+
   const initializeData = async () => {
     try {
+      // console.log('Inicializando dados');
       await getToken();  // Garantir que o token esteja obtido antes de buscar os dados
       const courseData = await fetchCourseData();
       setData(courseData);
+      // console.log('Dados carregados com sucesso:', courseData);
     } catch (error) {
+      console.error('Erro ao inicializar os dados:', error);
       setError(error);
     } finally {
       setIsLoading(false);
@@ -74,7 +99,9 @@ export default function Home() {
     try {
       const courseData = await fetchCourseData();
       setData(courseData);
+      // console.log('Dados atualizados com sucesso:', courseData);
     } catch (error) {
+      console.error('Erro ao atualizar os dados:', error);
       setError(error);
     } finally {
       setRefreshing(false);
@@ -94,7 +121,7 @@ export default function Home() {
           },
           title: 'PROJETO RPF 2026'
         }} />
-        <Text style={styles.errorText}>Erro ao carregar os dados.</Text>
+        <Text style={styles.errorText}>Erro ao carregar os dados: {error.message}</Text>
         <Button title="Tentar Novamente" onPress={handleRefresh} color="#1E90FF" />
       </View>
     );
@@ -120,7 +147,7 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.containerArea}>
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} colors={['#1E90FF']} />
@@ -139,27 +166,31 @@ export default function Home() {
 
         <Slide />
 
-        {data.concursos.map(concurso => (
-          <View key={concurso.id} style={styles.stepContainer}>
-            <Text style={styles.subtitle}>{concurso.titulo.toUpperCase()}</Text>
-            <FlatList
-              horizontal
-              data={concurso.cursos}
-              keyExtractor={item => item.id.toString()}
-              renderItem={({ item }) => (
-                <Link href={{ pathname: '/aulas', params: { id: item.id } }} >
-                  <View style={styles.cursoContainer}>
-                    <Text style={styles.cursoNome}>{item.nome.toUpperCase()}</Text>
-                    <Text style={styles.cursoInfo}>DATA DE INÍCIO: {item.data_inicio}</Text>
-                    <Text style={styles.cursoInfo}>DATA DE RETIRADA: {item.data_retirada}</Text>
-                    <Text style={styles.cursoInfo}>TOTAL DE AULAS: {item.total_aulas}</Text>
-                    <Text style={styles.cursoInfo}>TOTAL DE AULAS VISUALIZADAS: {item.total_aulas_visualizadas}</Text>
-                  </View>
-                </Link>
-              )}
-            />
-          </View>
-        ))}
+        {data && data.concursos ? (
+          data.concursos.map(concurso => (
+            <View key={concurso.id} style={styles.stepContainer}>
+              <Text style={styles.subtitle}>{concurso.titulo.toUpperCase()}</Text>
+              <FlatList
+                horizontal
+                data={concurso.cursos}
+                keyExtractor={item => item.id.toString()}
+                renderItem={({ item }) => (
+                  <Link href={{ pathname: '/aulas', params: { id: item.id } }}>
+                    <View style={styles.cursoContainer}>
+                      <Text style={styles.cursoNome}>{item.nome.toUpperCase()}</Text>
+                      <Text style={styles.cursoInfo}>DATA DE INÍCIO: {item.data_inicio}</Text>
+                      <Text style={styles.cursoInfo}>DATA DE RETIRADA: {item.data_retirada}</Text>
+                      <Text style={styles.cursoInfo}>TOTAL DE AULAS: {item.total_aulas}</Text>
+                      <Text style={styles.cursoInfo}>TOTAL DE AULAS VISUALIZADAS: {item.total_aulas_visualizadas}</Text>
+                    </View>
+                  </Link>
+                )}
+              />
+            </View>
+          ))
+        ) : (
+          <Text style={styles.errorText}>Não há dados disponíveis.</Text>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

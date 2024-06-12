@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "PRF_2026",
+    "name": "PRF2026",
     "slug": "prf2026",
     "version": "1.0.0",
-    "scheme": "PRF2026",
+    "scheme": ["PRF2026"],
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -46,18 +46,25 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff",
-        "permissions": ["WRITE_EXTERNAL_STORAGE", "READ_EXTERNAL_STORAGE"]
-
+        "permissions": [
+          "WRITE_EXTERNAL_STORAGE",
+          "READ_EXTERNAL_STORAGE"
+        ]
       },
-      "package": "com.otavio.nicollau.PRF2026"
+      "package": "com.otavio.nicollau.PRF2026",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "extra": {
       "router": {
         "origin": false
       },
       "eas": {
-        "projectId": "3dad7cc9-c357-44c5-8eb8-2dd11ded9305"
+        "projectId": "442ea135-51ae-4fe7-9fbc-9536a9c2f90b"
       }
-    }
+    },
+    "owner": "day.nicollau"
   }
 }
