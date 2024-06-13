@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Button, Text, StyleSheet, ActivityIndicator, FlatList, ScrollView, SafeAreaView, RefreshControl } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 import { useSQLiteContext } from 'expo-sqlite';
-
 
 // URL da API
 const url = 'https://api.estrategiaconcursos.com.br/api/aluno/curso';
@@ -52,6 +52,20 @@ const fetchCourseData = async () => {
 };
 
 export default function Home() {
+
+  useEffect(() => {
+    // Trava a orientação da tela em horizontal
+    const lockOrientation = async () => {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT );
+    };
+    lockOrientation();
+    // Desbloqueia a orientação da tela ao desmontar o componente
+    return () => {
+      ScreenOrientation.unlockAsync();
+    };
+  }, []);
+
+
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -110,17 +124,21 @@ export default function Home() {
 
   if (error) {
     return (
+      
       <View style={[styles.container, styles.center, { backgroundColor: '#1B1B1B' }]}>
-        <Stack.Screen options={{
-          headerStyle: {
-            backgroundColor: '#1B1B1B',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          title: 'PROJETO RPF 2026'
-        }} />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: '#1B1B1B',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+            title: filename,
+          }}
+        />
         <Text style={styles.errorText}>Erro ao carregar os dados: {error.message}</Text>
         <Button title="Tentar Novamente" onPress={handleRefresh} color="#1E90FF" />
       </View>

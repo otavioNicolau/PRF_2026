@@ -2,19 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Pressable, Alert, ActivityIndicator, Linking } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { FontAwesome } from '@expo/vector-icons';
-import { useLocalSearchParams, useNavigation } from 'expo-router'; // Verifique se o caminho do import está correto
-import { Stack, Link } from 'expo-router';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { Stack } from 'expo-router';
+import { useSQLiteContext } from 'expo-sqlite';
 
 const VideoList = ({ videos }) => {
+
+  
+  const db = useSQLiteContext();
   const [downloadProgress, setDownloadProgress] = useState({});
   const [downloading, setDownloading] = useState({});
   const [downloadedVideos, setDownloadedVideos] = useState({});
 
-  // Verifica e atualiza a lista de vídeos baixados
+  const insertVideo = async (db, id_video, titulo, resolucao_720p, resolucao_480p, resolucao_360p, uri) => {
+    try {
+      await db.runAsync(
+        `INSERT INTO videos (id_video, titulo, resolucao_720p, resolucao_480p, resolucao_360p, uri) VALUES (?, ?, ?, ?, ?, ?);`,
+        [id_video, titulo, resolucao_720p, resolucao_480p, resolucao_360p, uri]
+      );
+    } catch (error) {
+      console.error('Erro ao inserir vídeo:', error);
+    }
+  };
+
+  const deleteVideo = async (db, id_video) => {
+    try {
+      await db.runAsync(`DELETE FROM videos WHERE id_video = ?;`, [id_video]);
+    } catch (error) {
+      console.error('Erro ao deletar vídeo:', error);
+    }
+  };
+
   const checkDownloadedVideos = async () => {
     try {
       const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
-      const downloadedVideoIds = files.map(file => file.split('.').slice(0, -1).join('.')); // Obtém apenas os IDs dos vídeos baixados
+      const downloadedVideoIds = files.map(file => file.split('.').slice(0, -1).join('.'));
       const downloadedVideosObj = {};
       downloadedVideoIds.forEach(id => {
         downloadedVideosObj[id] = true;
@@ -28,11 +50,6 @@ const VideoList = ({ videos }) => {
   useEffect(() => {
     checkDownloadedVideos();
   }, []);
-
-  // Função para obter o título limpo (sem acentos e caracteres especiais)
-  const cleanVideoTitle = (title) => {
-    return title.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  };
 
   const getVideoUrl = (resolucoes) => {
     if (!resolucoes) {
@@ -51,26 +68,25 @@ const VideoList = ({ videos }) => {
     }
 
     try {
-      const cleanTitle = cleanVideoTitle(video.titulo);
-      const videoExists = !!downloadedVideos[cleanTitle];
+      const videoExists = !!downloadedVideos[video.id];
 
       if (videoExists) {
         Alert.alert('Aviso', 'Este vídeo já foi baixado.');
         return;
       }
 
-      setDownloading((prev) => ({ ...prev, [cleanTitle]: true }));
+      setDownloading((prev) => ({ ...prev, [video.id]: true }));
       const downloadResumable = FileSystem.createDownloadResumable(
         videoUrl,
-        `${FileSystem.documentDirectory}${cleanTitle}.mp4`,
+        `${FileSystem.documentDirectory}${video.id}.mp4`,
         {},
         (progress) => {
           const progressValue = (progress.totalBytesWritten / progress.totalBytesExpectedToWrite) * 100;
-          setDownloadProgress((prev) => ({ ...prev, [cleanTitle]: progressValue }));
+          setDownloadProgress((prev) => ({ ...prev, [video.id]: progressValue }));
           if (progressValue === 100) {
             setTimeout(() => {
-              setDownloadProgress((prev) => ({ ...prev, [cleanTitle]: 0 }));
-              setDownloading((prev) => ({ ...prev, [cleanTitle]: false }));
+              setDownloadProgress((prev) => ({ ...prev, [video.id]: 0 }));
+              setDownloading((prev) => ({ ...prev, [video.id]: false }));
               checkDownloadedVideos(); // Atualiza a lista de vídeos baixados após o download
             }, 1000);
           }
@@ -78,8 +94,7 @@ const VideoList = ({ videos }) => {
       );
 
       const { uri } = await downloadResumable.downloadAsync();
-      // console.log('Downloaded to:', uri);
-      // Alert.alert('Sucesso', 'Download concluído com sucesso!');
+      await insertVideo(db, video.id, video.titulo, video.resolucoes['720p'], video.resolucoes['480p'], video.resolucoes['360p'], uri);
     } catch (error) {
       console.error('Erro ao baixar o vídeo:', error);
       Alert.alert('Erro', 'Erro ao baixar o vídeo. Por favor, tente novamente.');
@@ -88,8 +103,7 @@ const VideoList = ({ videos }) => {
 
   const handleDelete = async (video) => {
     try {
-      const cleanTitle = cleanVideoTitle(video.titulo);
-      const fileUri = `${FileSystem.documentDirectory}${cleanTitle}.mp4`;
+      const fileUri = `${FileSystem.documentDirectory}${video.id}.mp4`;
       const fileInfo = await FileSystem.getInfoAsync(fileUri);
 
       if (!fileInfo.exists) {
@@ -98,7 +112,7 @@ const VideoList = ({ videos }) => {
       }
 
       await FileSystem.deleteAsync(fileUri);
-      // Alert.alert('Sucesso', 'Vídeo excluído com sucesso!');
+      await deleteVideo(db, video.id);
       checkDownloadedVideos(); // Atualiza a lista de vídeos baixados após a exclusão
     } catch (error) {
       console.error('Erro ao excluir o vídeo:', error);
@@ -111,30 +125,28 @@ const VideoList = ({ videos }) => {
       {videos.map((video, index) => (
         <View key={index} style={styles.videoBox}>
           <View style={styles.buttonsContainer}>
-            {!downloading[cleanVideoTitle(video.titulo)] && !downloadedVideos[cleanVideoTitle(video.titulo)] ? (
+            {!downloading[video.id] && !downloadedVideos[video.id] ? (
               <Pressable
                 style={[styles.actionButton]}
                 onPress={() => handleDownload(video)}
               >
-                <FontAwesome name="download" size={24} color="#fff" />
+                <FontAwesome name="download" size={16} color="#fff" />
               </Pressable>
-            ) : downloading[cleanVideoTitle(video.titulo)] ? (
+            ) : downloading[video.id] ? (
               <Pressable style={[styles.actionButton]}>
-                <ActivityIndicator size="small" color="#fff" />
-                <Text style={styles.progressText}>{`${downloadProgress[cleanVideoTitle(video.titulo)]?.toFixed(0) || 0}%`}</Text>
+                {/* <ActivityIndicator size="small" color="#fff" /> */}
+                <Text style={styles.progressText}>{`${downloadProgress[video.id]?.toFixed(0) || 0}%`}</Text>
               </Pressable>
             ) : (
               <Pressable
                 style={[styles.actionButton]}
                 onPress={() => handleDelete(video)}
               >
-                <FontAwesome name="trash" size={24} color="#fff" />
+                <FontAwesome name="trash" size={16} color="#fff" />
               </Pressable>
             )}
           </View>
-
           <Text style={[styles.videoLink, styles.whiteText]}>{video.titulo}</Text>
-          
         </View>
       ))}
     </View>
@@ -159,7 +171,6 @@ export default function Aula() {
           },
           title: aulaJson.nome,
         }} />
-
         <View key={aulaJson.id} style={styles.aulaContainer}>
           <View style={styles.cursoContainer}>
             <Text style={[styles.cursoNome, styles.whiteText]}>{aulaJson.nome.toUpperCase()}</Text>
@@ -223,12 +234,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  cursoNome:{
+  cursoNome: {
     fontSize: 25,
     fontWeight: 'bold',
     marginTop: 1,
     marginBottom: 5,
-
   },
   cursoContainer: {
     flexDirection: 'column',
@@ -259,8 +269,8 @@ const styles = StyleSheet.create({
     borderColor: '#ffffff',
     marginBottom: 10,
     padding: 10,
-    width:'99%',
-    flexDirection: 'row', // Adicionado para ajustar o layout dos vídeos na lista
-    alignItems: 'center', // Adicionado para centralizar verticalmente o conteúdo
+    width: '99%',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

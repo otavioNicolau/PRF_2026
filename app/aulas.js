@@ -4,6 +4,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Slide } from '~/components/Slide';
 import { Stack, Link, useLocalSearchParams } from 'expo-router';  // Importando os componentes necessários
+import * as ScreenOrientation from 'expo-screen-orientation';
+
 
 const Aulas = () => {
   const { id } = useLocalSearchParams();
@@ -13,6 +15,21 @@ const Aulas = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const url = `https://api.estrategiaconcursos.com.br/api/aluno/curso/${id}`;
+
+
+  useEffect(() => {
+    // Trava a orientação da tela em horizontal
+    const lockOrientation = async () => {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    };
+    lockOrientation();
+    // Desbloqueia a orientação da tela ao desmontar o componente
+    return () => {
+      ScreenOrientation.unlockAsync();
+    };
+  }, []);
+
+
 
   // Função para obter o token da API
   const getToken = async () => {
@@ -65,6 +82,9 @@ const Aulas = () => {
     setRefreshing(true);
     fetchData();
   };
+
+
+
 
   if (error) {
     return (

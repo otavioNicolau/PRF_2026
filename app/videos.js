@@ -8,6 +8,20 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 export default function Videos() {
+
+  useEffect(() => {
+    // Trava a orientação da tela em horizontal
+    const lockOrientation = async () => {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+    };
+    lockOrientation();
+    // Desbloqueia a orientação da tela ao desmontar o componente
+    return () => {
+      ScreenOrientation.unlockAsync();
+    };
+  }, []);
+
+
   useEffect(() => {
     // Desbloqueia todas as orientações
     ScreenOrientation.unlockAsync();

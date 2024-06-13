@@ -3,11 +3,28 @@ import { View, Text, StyleSheet, SafeAreaView, ScrollView, Pressable, Alert, Act
 import { FontAwesome } from '@expo/vector-icons';
 import { Stack, Link } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ScreenOrientation from 'expo-screen-orientation';
+
 
 const EditalVerticalizado = () => {
   const [editais, setEditais] = useState({});
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+
+  useEffect(() => {
+    // Trava a orientação da tela em horizontal
+    const lockOrientation = async () => {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    };
+    lockOrientation();
+    // Desbloqueia a orientação da tela ao desmontar o componente
+    return () => {
+      ScreenOrientation.unlockAsync();
+    };
+  }, []);
+
+
 
   // Função para carregar os editais ao montar o componente
   useEffect(() => {
@@ -26,7 +43,7 @@ const EditalVerticalizado = () => {
 
       const response = await fetch('https://teal-crostata-aea03c.netlify.app/api/edital_prf');
       const data = await response.json();
-      
+
       if (data && data.EDITAL) {
         const groupedEditais = groupBy(data.EDITAL, 'materia');
         setEditais(groupedEditais);
