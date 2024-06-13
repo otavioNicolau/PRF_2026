@@ -139,10 +139,10 @@ const VideoList = ({ videos }) => {
               </Pressable>
             ) : (
               <Pressable
-                style={[styles.actionButton]}
+                style={[styles.actionButtonRed]}
                 onPress={() => handleDelete(video)}
               >
-                <FontAwesome name="trash" size={16} color="#fff" />
+                <FontAwesome name="trash" size={14} color="#fff" />
               </Pressable>
             )}
           </View>
@@ -253,9 +253,18 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     backgroundColor: '#A5B99C',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    // borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  actionButtonRed: {
+    backgroundColor: 'rgb(255, 0, 0)',
     paddingHorizontal: 15,
     paddingVertical: 8,
-    borderRadius: 5,
+    // borderRadius: 5,
     flexDirection: 'row',
     alignItems: 'center',
     marginRight: 10,
