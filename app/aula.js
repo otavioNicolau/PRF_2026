@@ -121,6 +121,19 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     }
   };
 
+
+  // Função para consultar se o vídeo está assistido no banco de dados
+  const checkIfWatched = async (videoId) => {
+    try {
+      const result = await db.getAllAsync('SELECT watched FROM videos WHERE id_video = ?;', [videoId]);
+      return result.length > 0 && result[0].watched === 1;
+    } catch (error) {
+      console.error('Erro ao consultar vídeo assistido:', error);
+      return false;
+    }
+  };
+
+
   const markAsWatched = async (video) => {
     try {
       const watched = !!watchedVideos[video.id];
@@ -156,6 +169,24 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
   };
 
 
+  useEffect(() => {
+    // Atualiza o estado de watchedVideos com base no banco de dados
+    const updateWatchedStatus = async () => {
+      const updatedWatchedVideos = {};
+      for (const video of videos) {
+        const isWatched = await checkIfWatched(video.id);
+        updatedWatchedVideos[video.id] = isWatched;
+      }
+      setWatchedVideos(updatedWatchedVideos);
+    };
+
+    updateWatchedStatus();
+  }, []);
+
+  const handleMarkAsWatched = (video) => {
+    markAsWatched(video);
+  };
+
   return (
     <View>
       {videos.map((video, index) => (
@@ -171,7 +202,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
                 </Pressable>
                 <Pressable
                   style={[styles.actionButton, watchedVideos[video.id] ? styles.watchedButton : null]}
-                  onPress={() => markAsWatched(video)}
+                  onPress={() => handleMarkAsWatched(video)}
                 >
                   <FontAwesome name={watchedVideos[video.id] ? 'eye' : 'eye-slash'} size={16} color="#fff" />
                 </Pressable>
@@ -190,7 +221,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
                 </Pressable>
                 <Pressable
                   style={[styles.actionButton, watchedVideos[video.id] ? styles.watchedButton : null]}
-                  onPress={() => markAsWatched(video)}
+                  onPress={() => handleMarkAsWatched(video)}
                 >
                   <FontAwesome name={watchedVideos[video.id] ? 'eye' : 'eye-slash'} size={16} color="#fff" />
                 </Pressable>
@@ -220,7 +251,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
 };
 
 export default function Aula() {
-  
+
   const { aula, materia } = useLocalSearchParams();
   const aulaJson = JSON.parse(aula);
   const navigation = useNavigation();
