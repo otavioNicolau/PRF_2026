@@ -5,13 +5,12 @@ import { Video } from 'expo-av';
 import { MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+import { useSQLiteContext } from 'expo-sqlite';
 
 export default function VideosD() {
-  const { video, filename } = useLocalSearchParams();
+  const { video, titulo, id_video } = useLocalSearchParams();
   const videoRef = useRef(null);
+  const db = useSQLiteContext();
   const [videoSpeed, setVideoSpeed] = useState(1.0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -34,9 +33,9 @@ export default function VideosD() {
   useEffect(() => {
     const loadVideoPosition = async () => {
       try {
-        const savedPosition = await AsyncStorage.getItem(`videoPosition-${filename}`);
-        if (savedPosition !== null) {
-          const position = parseInt(savedPosition, 10);
+        const result = await db.getFirstAsync('SELECT position FROM videos WHERE id_video = ?;', [id_video]);
+        if (result) {
+          const position = result.position;
           setVideoPosition(position);
           if (videoRef.current) {
             await videoRef.current.setPositionAsync(position);
@@ -48,19 +47,36 @@ export default function VideosD() {
     };
 
     loadVideoPosition();
-  }, [filename]);
+  }, [id_video]);
 
   useEffect(() => {
+
     const saveVideoPosition = async () => {
       try {
-        await AsyncStorage.setItem(`videoPosition-${filename}`, videoPosition.toString());
+        const result = await db.getAllAsync('SELECT COUNT(*) AS count FROM videos WHERE id_video = ?;', [id_video]);
+        const count = result[0]?.count || 0;
+
+        if (count > 0) {
+          // Update if record exists
+          await db.runAsync(
+            'UPDATE videos SET titulo = ?, position = ? WHERE id_video = ?;',
+            [titulo, videoPosition, id_video]
+          );
+        } else {
+          // Insert if record does not exist
+          await db.runAsync(
+            'INSERT INTO videos (id_video, titulo, position) VALUES (?,?,?);',
+            [id_video, titulo, videoPosition]
+          );
+        }
       } catch (e) {
         console.error(e);
       }
     };
 
+
     saveVideoPosition();
-  }, [videoPosition, filename]);
+  }, [id_video, titulo, videoPosition]);
 
   const increaseSpeed = useCallback(() => {
     setVideoSpeed(prevSpeed => Math.min(prevSpeed + 0.25, 2.0));
@@ -136,7 +152,7 @@ export default function VideosD() {
       <Stack.Screen
         options={{
           headerShown: false,
-          title: filename,
+          title: titulo,
         }}
       />
       <TouchableWithoutFeedback onPress={handleTouchScreen}>
@@ -215,7 +231,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   controlButton: {
-    padding: 10,
+    padding: 10
   },
   controlText: {
     color: '#fff',

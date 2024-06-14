@@ -17,8 +17,8 @@ const VideoList = ({ videos }) => {
   const insertVideo = async (db, id_video, titulo, resolucao_720p, resolucao_480p, resolucao_360p, uri) => {
     try {
       await db.runAsync(
-        `INSERT INTO videos (id_video, titulo, resolucao_720p, resolucao_480p, resolucao_360p, uri) VALUES (?, ?, ?, ?, ?, ?);`,
-        [id_video, titulo, resolucao_720p, resolucao_480p, resolucao_360p, uri]
+        `INSERT INTO videos (id_video, titulo, resolucao_720p, resolucao_480p, resolucao_360p, uri, position) VALUES (?, ?, ?, ?, ?, ?, ?);`,
+        [id_video, titulo, resolucao_720p, resolucao_480p, resolucao_360p, uri,0]
       );
     } catch (error) {
       console.error('Erro ao inserir vídeo:', error);
@@ -95,6 +95,8 @@ const VideoList = ({ videos }) => {
 
       const { uri } = await downloadResumable.downloadAsync();
       await insertVideo(db, video.id, video.titulo, video.resolucoes['720p'], video.resolucoes['480p'], video.resolucoes['360p'], uri);
+      console.log('ID:', video.id);
+
     } catch (error) {
       console.error('Erro ao baixar o vídeo:', error);
       Alert.alert('Erro', 'Erro ao baixar o vídeo. Por favor, tente novamente.');
@@ -150,14 +152,14 @@ const VideoList = ({ videos }) => {
           {downloadedVideos[video.id] ? (
             <Link
               style={[styles.videoLink, styles.videoText, styles.whiteText]}
-              href={{ pathname: '/videos2', params: { video: `${FileSystem.documentDirectory}${video.id}.mp4`, filename: video.titulo } }}
+              href={{ pathname: '/videos2', params: { video: `${FileSystem.documentDirectory}${video.id}.mp4`, titulo: video.titulo, id_video: video.id   } }}
             >
               <Text style={[styles.videoLink, styles.whiteText]}>{video.titulo}</Text>
             </Link>
           ) : (
             <Link
               style={[styles.videoLink, styles.videoText, styles.whiteText]}
-              href={{ pathname: '/videos2', params: { video: getVideoUrl(video.resolucoes), filename: video.titulo } }}
+              href={{ pathname: '/videos2', params: { video: getVideoUrl(video.resolucoes), titulo: video.titulo, id_video: video.id   } }}
             >
               <Text style={[styles.videoLink, styles.whiteText]}>{video.titulo}</Text>
             </Link>

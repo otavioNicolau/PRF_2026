@@ -29,7 +29,7 @@ const DownloadedVideosScreen = () => {
 
   const loadDownloadedVideos = async () => {
     try {
-      const allVideos = await db.getAllAsync('SELECT * FROM videos');
+      const allVideos = await db.getAllAsync('SELECT * FROM videos WHERE uri IS NOT NULL;');
       const uniqueVideos = {};
       allVideos.forEach(row => {
         const video = {
@@ -37,6 +37,9 @@ const DownloadedVideosScreen = () => {
           uri: row.uri,
           filename: row.id_video + '.mp4',
           titulo: row.titulo,
+          id_video: row.id_video,
+          position: row.position
+
         };
         if (!uniqueVideos[video.id]) {
           uniqueVideos[video.id] = video;
@@ -139,14 +142,17 @@ const DownloadedVideosScreen = () => {
               <View style={styles.videoInfo}>
                 <Link
                   style={[styles.videoLink, styles.videoText, styles.whiteText]}
-                  href={{ pathname: '/videos2', params: { video: video.uri, filename: video.filename } }}
-                >
+                  href={{ pathname: '/videos2', params: { video: `${FileSystem.documentDirectory}${video.id}.mp4`, titulo: video.titulo, id_video: video.id   } }}
+                  >
                   <Text style={styles.videoTitle}>{video.titulo}</Text>
+                  <Text style={styles.videoTitle}> position: {video.position}</Text>
+                  <Text style={styles.videoTitle}> ID: {video.id_video}</Text>
+
                 </Link>
                 <Link
                   style={[styles.videoLink, styles.videoText, styles.whiteText]}
-                  href={{ pathname: '/videos2', params: { video: video.uri, filename: video.filename } }}
-                >
+                  href={{ pathname: '/videos2', params: { video: `${FileSystem.documentDirectory}${video.id}.mp4`, titulo: video.titulo, id_video: video.id   } }}
+                  >
                   {video.filename && <Text style={styles.filenameText}>Nome do Arquivo {video.filename}</Text>}
                 </Link>
               </View>

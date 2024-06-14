@@ -26,13 +26,16 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
   //   DROP TABLE IF EXISTS videos;
   // `);
 
+  // await db.execAsync(`
+  //   DROP TABLE IF EXISTS video_positions;
+  // `);
 
   await db.execAsync(`
     PRAGMA journal_mode = 'wal';
     CREATE TABLE IF NOT EXISTS videos (
       id INTEGER PRIMARY KEY NOT NULL,
-      id_video INTEGER,
-      titulo TEXT NOT NULL,
+      id_video TEXT,
+      titulo TEXT,
       resolucao_720p TEXT,
       resolucao_480p TEXT,
       resolucao_360p TEXT,
@@ -40,7 +43,16 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
       position INTEGER DEFAULT 0  -- Adicionando a coluna para armazenar a posição do vídeo
     );
   `);
-  
+
+
+  // await db.execAsync(`
+  //   PRAGMA journal_mode = 'wal';
+  //   CREATE TABLE IF NOT EXISTS video_positions (
+  //     filename TEXT PRIMARY KEY,
+  //     position INTEGER
+  //   );
+  // `);
 
 }
+
 
