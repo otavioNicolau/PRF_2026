@@ -152,10 +152,10 @@ const Aulas = () => {
         {data.aulas.map((aula) => (
           <View key={aula.id} style={styles.aulaContainer}>
             <View style={styles.cursoContainer}>
-              <Link style={[styles.aulaContainer]} href={{ pathname: '/aula', params: { aula: JSON.stringify(aula) } }} >
+              <Link style={[styles.aulaContainer]} href={{ pathname: '/aula', params: { aula: JSON.stringify(aula), materia: data.nome } }} >
                 <Text style={[styles.cursoNome, styles.whiteText]}>{aula.nome.toUpperCase()}</Text>
               </Link>
-              <Link style={[styles.aulaContainer]} href={{ pathname: '/aula', params: { aula: JSON.stringify(aula) } }} >
+              <Link style={[styles.aulaContainer]} href={{ pathname: '/aula', params: { aula: JSON.stringify(aula), materia: data.nome } }} >
                 <Text style={styles.whiteText}>{aula.conteudo}</Text>
               </Link>
               {/* <Link style={[styles.aulaContainer]} href={{ pathname: '/aula', params: { aula: JSON.stringify(aula) } }} >

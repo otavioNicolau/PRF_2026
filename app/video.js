@@ -7,7 +7,7 @@ import Slider from '@react-native-community/slider';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useSQLiteContext } from 'expo-sqlite';
 
-export default function VideosD() {
+export default function Video1() {
   const { video, titulo, id_video } = useLocalSearchParams();
   const videoRef = useRef(null);
   const db = useSQLiteContext();

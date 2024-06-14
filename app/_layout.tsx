@@ -36,11 +36,15 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
       id INTEGER PRIMARY KEY NOT NULL,
       id_video TEXT,
       titulo TEXT,
+      aula TEXT,
+      materia TEXT,
+      assunto TEXT,
       resolucao_720p TEXT,
       resolucao_480p TEXT,
       resolucao_360p TEXT,
       uri TEXT,
-      position INTEGER DEFAULT 0  -- Adicionando a coluna para armazenar a posição do vídeo
+      position INTEGER DEFAULT 0,
+      watched BOOLEAN DEFAULT 0
     );
   `);
 

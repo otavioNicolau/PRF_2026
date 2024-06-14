@@ -28,7 +28,7 @@
       "typedRoutes": true,
       "tsconfigPaths": true
     },
-    "orientation": "PORTRAIT",
+    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {

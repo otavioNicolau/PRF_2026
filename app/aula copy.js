@@ -148,7 +148,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
       }
 
       setWatchedVideos((prev) => ({ ...prev, [video.id]: true }));
-
+      
     } catch (error) {
       console.error('Erro ao marcar como assistido:', error);
       Alert.alert('Erro', 'Erro ao marcar o vídeo como assistido. Por favor, tente novamente.');
@@ -181,20 +181,12 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
                 <Text style={styles.progressText}>{`${downloadProgress[video.id]?.toFixed(0) || 0}%`}</Text>
               </Pressable>
             ) : (
-              <>
-                <Pressable
-                  style={[styles.actionButtonRed]}
-                  onPress={() => handleDelete(video)}
-                >
-                  <FontAwesome name="trash" size={14} color="#fff" />
-                </Pressable>
-                <Pressable
-                  style={[styles.actionButton, watchedVideos[video.id] ? styles.watchedButton : null]}
-                  onPress={() => markAsWatched(video)}
-                >
-                  <FontAwesome name={watchedVideos[video.id] ? 'eye' : 'eye-slash'} size={16} color="#fff" />
-                </Pressable>
-              </>
+              <Pressable
+                style={[styles.actionButtonRed]}
+                onPress={() => handleDelete(video)}
+              >
+                <FontAwesome name="trash" size={14} color="#fff" />
+              </Pressable>
             )}
           </View>
 
@@ -220,7 +212,6 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
 };
 
 export default function Aula() {
-  
   const { aula, materia } = useLocalSearchParams();
   const aulaJson = JSON.parse(aula);
   const navigation = useNavigation();

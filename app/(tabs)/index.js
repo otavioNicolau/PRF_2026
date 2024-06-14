@@ -74,20 +74,6 @@ export default function Home() {
   const db = useSQLiteContext();
 
 
-
-  // useEffect(() => {
-  //   async function setup() {
-  //     const allRows = await db.getAllAsync('SELECT * FROM test');
-  //     for (const row of allRows) {
-  //       console.log(row.id, row.value, row.intValue);
-  //     }
-  //   }
-  //   setup();
-  // }, []);
-
-
-
-
   const initializeData = async () => {
     try {
       // console.log('Inicializando dados');
@@ -128,7 +114,7 @@ export default function Home() {
       <View style={[styles.container, styles.center, { backgroundColor: '#1B1B1B' }]}>
         <Stack.Screen
           options={{
-            headerShown: false,
+            headerShown: true,
             headerStyle: {
               backgroundColor: '#1B1B1B',
             },
@@ -242,7 +228,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderWidth: 0.5,
     borderColor: '#ccc',
-    marginRight: 10,
+    marginRight: 5,
   },
   cursoNome: {
     fontSize: 16,
