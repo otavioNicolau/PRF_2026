@@ -30,12 +30,19 @@ const DownloadedVideosScreen = () => {
   const loadDownloadedVideos = async () => {
     try {
       const allVideos = await db.getAllAsync('SELECT * FROM videos');
-      const videos = allVideos.map((row) => ({
-        id: row.id_video,
-        uri: row.uri,
-        filename: row.id_video + '.mp4',
-        titulo: row.titulo,
-      }));
+      const uniqueVideos = {};
+      allVideos.forEach(row => {
+        const video = {
+          id: row.id_video,
+          uri: row.uri,
+          filename: row.id_video + '.mp4',
+          titulo: row.titulo,
+        };
+        if (!uniqueVideos[video.id]) {
+          uniqueVideos[video.id] = video;
+        }
+      });
+      const videos = Object.values(uniqueVideos);
       setDownloadedVideos(videos);
     } catch (error) {
       console.error('Erro ao carregar vídeos baixados:', error);
@@ -43,6 +50,7 @@ const DownloadedVideosScreen = () => {
       setRefreshing(false);
     }
   };
+  
 
   const handleDelete = async (videoId) => {
     try {

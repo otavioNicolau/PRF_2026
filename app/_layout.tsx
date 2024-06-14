@@ -23,7 +23,7 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
 
 
   // await db.execAsync(`
-  //   DROP TABLE IF EXISTS video;
+  //   DROP TABLE IF EXISTS videos;
   // `);
 
 
@@ -36,9 +36,11 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
       resolucao_720p TEXT,
       resolucao_480p TEXT,
       resolucao_360p TEXT,
-      uri TEXT
+      uri TEXT,
+      position INTEGER DEFAULT 0  -- Adicionando a coluna para armazenar a posição do vídeo
     );
   `);
+  
 
 }
 

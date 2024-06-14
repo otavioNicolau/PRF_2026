@@ -158,7 +158,7 @@ const Aulas = () => {
               <Link style={[styles.aulaContainer]} href={{ pathname: '/aula', params: { aula: JSON.stringify(aula) } }} >
                 <Text style={styles.whiteText}>{aula.conteudo}</Text>
               </Link>
-              <Link style={[styles.aulaContainer]} href={{ pathname: '/aula', params: { aula: JSON.stringify(aula) } }} >
+              {/* <Link style={[styles.aulaContainer]} href={{ pathname: '/aula', params: { aula: JSON.stringify(aula) } }} >
                 <Text style={[styles.videoTitle, styles.whiteText]}>ARQUIVOS:</Text>
               </Link>
 
@@ -184,7 +184,7 @@ const Aulas = () => {
                 </>
               )}
 
-              <VideoList videos={aula.videos} />
+              <VideoList videos={aula.videos} /> */}
             </View>
           </View>
         ))}

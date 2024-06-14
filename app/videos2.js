@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView, TouchableWithoutFeedback } from 'react-native';
 import { Video } from 'expo-av';
 import { MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
@@ -17,6 +17,7 @@ export default function VideosD() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [videoPosition, setVideoPosition] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
+  const [controlsVisible, setControlsVisible] = useState(true);
 
   useEffect(() => {
     const lockOrientation = async () => {
@@ -86,6 +87,8 @@ export default function VideosD() {
       videoRef.current.playAsync();
     }
     setIsPlaying(!isPlaying);
+    setControlsVisible(true); // Mostra os controles ao clicar no vídeo
+    startControlsTimer(); // Reinicia o temporizador ao clicar no vídeo
   };
 
   const handlePlaybackStatusUpdate = (status) => {
@@ -105,6 +108,29 @@ export default function VideosD() {
     }
   };
 
+  const startControlsTimer = () => {
+    setControlsVisible(true); // Mostra os controles ao iniciar o temporizador
+    clearTimeout(timerId); // Limpa o temporizador existente
+    const timerId = setTimeout(() => {
+      setControlsVisible(false); // Oculta os controles após 3 segundos de inatividade
+    }, 3000);
+  };
+
+  const handleTouchScreen = () => {
+    setControlsVisible(true); // Mostra os controles ao tocar na tela
+    startControlsTimer(); // Reinicia o temporizador ao tocar na tela
+  };
+
+  const formatTime = (timeInMillis) => {
+    if (!timeInMillis) return '00:00';
+    const totalSeconds = timeInMillis / 1000;
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = Math.floor(totalSeconds % 60);
+    const paddedMinutes = String(minutes).padStart(2, '0');
+    const paddedSeconds = String(seconds).padStart(2, '0');
+    return `${paddedMinutes}:${paddedSeconds}`;
+  };
+
   return (
     <SafeAreaView style={styles.containerArea}>
       <Stack.Screen
@@ -113,34 +139,37 @@ export default function VideosD() {
           title: filename,
         }}
       />
-      <View style={[styles.videoContainer, isFullscreen && styles.fullscreenVideoContainer]}>
-        <Video
-          ref={videoRef}
-          source={{ uri: video }}
-          style={styles.video}
-          resizeMode="contain"
-          rate={videoSpeed}
-          onFullscreenUpdate={handleFullscreenUpdate}
-          shouldPlay
-          onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
-          useNativeControls={isFullscreen}
-        />
-        {!isFullscreen && (
-          <View style={styles.controlsContainer}>
-            <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={1}
-              value={videoPosition / videoDuration}
-              onValueChange={handleSliderValueChange}
-              minimumTrackTintColor="#FFFFFF"
-              maximumTrackTintColor="#000000"
-              thumbTintColor="#FFFFFF"
-            />
-            <View style={styles.controlsOverlay}>
+      <TouchableWithoutFeedback onPress={handleTouchScreen}>
+        <View style={[styles.videoContainer, isFullscreen && styles.fullscreenVideoContainer]}>
+          <Video
+            ref={videoRef}
+            source={{ uri: video }}
+            style={styles.video}
+            resizeMode="contain"
+            rate={videoSpeed}
+            onFullscreenUpdate={handleFullscreenUpdate}
+            shouldPlay
+            onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+            useNativeControls={isFullscreen}
+          />
+          {!isFullscreen && controlsVisible && (
+            <View style={styles.controlsContainer}>
               <TouchableOpacity onPress={togglePlayPause} style={styles.controlButton}>
-                <MaterialIcons name={isPlaying ? "pause" : "play-arrow"} size={24} color="white" />
+                <MaterialIcons name={isPlaying ? "pause" : "play-arrow"} size={32} color="white" />
               </TouchableOpacity>
+              <Slider
+                style={styles.slider}
+                minimumValue={0}
+                maximumValue={1}
+                value={videoDuration > 0 ? videoPosition / videoDuration : 0}
+                onValueChange={handleSliderValueChange}
+                minimumTrackTintColor="#FFFFFF"
+                maximumTrackTintColor="#000000"
+                thumbTintColor="#FFFFFF"
+              />
+              <Text style={styles.timeDisplay}>
+                {formatTime(videoPosition)} / {formatTime(videoDuration)}
+              </Text>
               <TouchableOpacity onPress={decreaseSpeed} style={styles.controlButton}>
                 <MaterialIcons name="remove" size={24} color="white" />
               </TouchableOpacity>
@@ -149,9 +178,9 @@ export default function VideosD() {
                 <MaterialIcons name="add" size={24} color="white" />
               </TouchableOpacity>
             </View>
-          </View>
-        )}
-      </View>
+          )}
+        </View>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 }
@@ -180,32 +209,26 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     paddingVertical: 10,
-  },
-  controlsOverlay: {
+    paddingHorizontal: 20,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   controlButton: {
-    backgroundColor: '#666',
     padding: 10,
-    marginHorizontal: 10,
   },
   controlText: {
     color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginHorizontal: 10,
-  },
-  title: {
     fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 16,
-    color: '#fff',
-    textAlign: 'center',
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  timeDisplay: {
+    color: '#FFF',
+    fontSize: 16,
   },
   slider: {
-    width: '100%',
-    height: 40,
+    flex: 1,
+    marginHorizontal: 10,
   },
 });

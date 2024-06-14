@@ -3,12 +3,12 @@ import { View, Text, StyleSheet, SafeAreaView, ScrollView, Pressable, Alert, Act
 import * as FileSystem from 'expo-file-system';
 import { FontAwesome } from '@expo/vector-icons';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { Stack } from 'expo-router';
+import { Stack, Link } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 
 const VideoList = ({ videos }) => {
 
-  
+
   const db = useSQLiteContext();
   const [downloadProgress, setDownloadProgress] = useState({});
   const [downloading, setDownloading] = useState({});
@@ -146,12 +146,29 @@ const VideoList = ({ videos }) => {
               </Pressable>
             )}
           </View>
-          <Text style={[styles.videoLink, styles.whiteText]}>{video.titulo}</Text>
+
+          {downloadedVideos[video.id] ? (
+            <Link
+              style={[styles.videoLink, styles.videoText, styles.whiteText]}
+              href={{ pathname: '/videos2', params: { video: `${FileSystem.documentDirectory}${video.id}.mp4`, filename: video.titulo } }}
+            >
+              <Text style={[styles.videoLink, styles.whiteText]}>{video.titulo}</Text>
+            </Link>
+          ) : (
+            <Link
+              style={[styles.videoLink, styles.videoText, styles.whiteText]}
+              href={{ pathname: '/videos2', params: { video: getVideoUrl(video.resolucoes), filename: video.titulo } }}
+            >
+              <Text style={[styles.videoLink, styles.whiteText]}>{video.titulo}</Text>
+            </Link>
+          )}
         </View>
       ))}
     </View>
   );
 };
+
+
 
 export default function Aula() {
   const { aula } = useLocalSearchParams();
