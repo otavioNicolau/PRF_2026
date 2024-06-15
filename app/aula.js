@@ -2,23 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Pressable, Alert, ActivityIndicator, Linking } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { FontAwesome } from '@expo/vector-icons';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { Stack, Link } from 'expo-router';
+import { useLocalSearchParams, Stack, Link, useNavigation } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 
 const VideoList = ({ videos, aula, assunto, materia }) => {
+  const navigation = useNavigation();
 
   const db = useSQLiteContext();
   const [downloadProgress, setDownloadProgress] = useState({});
   const [downloading, setDownloading] = useState({});
   const [downloadedVideos, setDownloadedVideos] = useState({});
-  const [watchedVideos, setWatchedVideos] = useState({}); // Estado para controlar os vídeos watcheds
+  const [watchedVideos, setWatchedVideos] = useState({});
 
   const insertVideo = async (db, id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri) => {
     try {
       await db.runAsync(
         `INSERT INTO videos (id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?);`,
-        [id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri,]
+        [id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri]
       );
     } catch (error) {
       console.error('Erro ao inserir vídeo:', error);
@@ -47,9 +47,9 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     }
   };
 
-  useEffect(() => {
-    checkDownloadedVideos();
-  }, []);
+  // useEffect(() => {
+  //   checkDownloadedVideos();
+  // }, []);
 
   const getVideoUrl = (resolucoes) => {
     if (!resolucoes) {
@@ -121,8 +121,6 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     }
   };
 
-
-  // Função para consultar se o vídeo está assistido no banco de dados
   const checkIfWatched = async (videoId) => {
     try {
       const result = await db.getAllAsync('SELECT watched FROM videos WHERE id_video = ?;', [videoId]);
@@ -133,128 +131,274 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     }
   };
 
-
   const markAsWatched = async (video) => {
     try {
-      const watched = !!watchedVideos[video.id];
+      const isWatched = watchedVideos[video.id]; // Verifica se o vídeo já está marcado como assistido
 
-      if (watched) {
-        Alert.alert('Aviso', 'Este vídeo já foi marcado como assistido.');
-        return;
-      }
-
-      const result = await db.getAllAsync('SELECT COUNT(*) AS count FROM videos WHERE id_video = ?;', [video.id]);
-      const count = result[0]?.count || 0;
-
-      if (count > 0) {
-        // Update if record exists
-        await db.runAsync(
-          'UPDATE videos SET watched = 1 WHERE id_video = ?;',
-          [video.id]
-        );
+      if (isWatched) {
+        // Se já estiver marcado, desmarca
+        await db.runAsync('UPDATE videos SET watched = 0 WHERE id_video = ?;', [video.id]);
+        setWatchedVideos((prev) => ({ ...prev, [video.id]: false })); // Atualiza o estado local para desmarcado
+        // Alert.alert('Aviso', 'Vídeo desmarcado como assistido.');
       } else {
-        // Insert if record does not exist
-        await db.runAsync(
-          'INSERT INTO videos (id_video, titulo, watched) VALUES (?,?,?);',
-          [video.id, video.titulo, 1]
-        );
+        // Se não estiver marcado, marca como assistido
+        const result = await db.getAllAsync('SELECT COUNT(*) AS count FROM videos WHERE id_video = ?;', [video.id]);
+        const count = result[0]?.count || 0;
+
+        if (count > 0) {
+          await db.runAsync('UPDATE videos SET watched = 1 WHERE id_video = ?;', [video.id]);
+        } else {
+          await db.runAsync('INSERT INTO videos (id_video, titulo, watched) VALUES (?,?,?);', [video.id, video.titulo, 1]);
+        }
+
+        setWatchedVideos((prev) => ({ ...prev, [video.id]: true })); // Atualiza o estado local para marcado
+        // Alert.alert('Aviso', 'Vídeo marcado como assistido.');
       }
-
-      setWatchedVideos((prev) => ({ ...prev, [video.id]: true }));
-
     } catch (error) {
       console.error('Erro ao marcar como assistido:', error);
       Alert.alert('Erro', 'Erro ao marcar o vídeo como assistido. Por favor, tente novamente.');
     }
   };
 
-
-  useEffect(() => {
-    // Atualiza o estado de watchedVideos com base no banco de dados
-    const updateWatchedStatus = async () => {
-      const updatedWatchedVideos = {};
-      for (const video of videos) {
-        const isWatched = await checkIfWatched(video.id);
-        updatedWatchedVideos[video.id] = isWatched;
-      }
-      setWatchedVideos(updatedWatchedVideos);
-    };
-
-    updateWatchedStatus();
-  }, []);
+  const updateWatchedStatus = async () => {
+    const updatedWatchedVideos = {};
+    for (const video of videos) {
+      const isWatched = await checkIfWatched(video.id);
+      updatedWatchedVideos[video.id] = isWatched;
+    }
+    setWatchedVideos(updatedWatchedVideos);
+  };
 
   const handleMarkAsWatched = (video) => {
     markAsWatched(video);
   };
 
+  useEffect(() => {
+    checkDownloadedVideos();
+    updateWatchedStatus();
+  }, [videos]);
+
   return (
     <View>
       {videos.map((video, index) => (
-        <View key={index} style={styles.videoBox}>
-          <View style={styles.buttonsContainer}>
-            {!downloading[video.id] && !downloadedVideos[video.id] ? (
-              <>
-                <Pressable
-                  style={[styles.actionButton]}
-                  onPress={() => handleDownload(video)}
-                >
-                  <FontAwesome name="download" size={16} color="#fff" />
-                </Pressable>
-                <Pressable
-                  style={[styles.actionButton, watchedVideos[video.id] ? styles.watchedButton : null]}
-                  onPress={() => handleMarkAsWatched(video)}
-                >
-                  <FontAwesome name={watchedVideos[video.id] ? 'eye' : 'eye-slash'} size={16} color="#fff" />
-                </Pressable>
-              </>
-            ) : downloading[video.id] ? (
-              <Pressable style={[styles.actionButton]}>
-                <Text style={styles.progressText}>{`${downloadProgress[video.id]?.toFixed(0) || 0}%`}</Text>
-              </Pressable>
-            ) : (
-              <>
-                <Pressable
-                  style={[styles.actionButtonRed]}
-                  onPress={() => handleDelete(video)}
-                >
-                  <FontAwesome name="trash" size={14} color="#fff" />
-                </Pressable>
-                <Pressable
-                  style={[styles.actionButton, watchedVideos[video.id] ? styles.watchedButton : null]}
-                  onPress={() => handleMarkAsWatched(video)}
-                >
-                  <FontAwesome name={watchedVideos[video.id] ? 'eye' : 'eye-slash'} size={16} color="#fff" />
-                </Pressable>
-              </>
-            )}
-          </View>
-
+        <View key={index}>
           {downloadedVideos[video.id] ? (
-            <Link
-              style={[styles.videoLink, styles.videoText, styles.whiteText]}
-              href={{ pathname: '/video', params: { video: `${FileSystem.documentDirectory}${video.id}.mp4`, titulo: video.titulo, id_video: video.id } }}
+            <Pressable
+              onPress={() =>
+                navigation.navigate('video', {
+                  video: `${FileSystem.documentDirectory}${video.id}.mp4`,
+                  titulo: video.titulo,
+                  id_video: video.id,
+                })
+              }
+              style={({ pressed }) => ({
+                backgroundColor: pressed ? '#333333' : '#1B1B1B',
+                marginTop: 5,
+                marginBottom: 5,
+                marginLeft: 5,
+                marginRight: 5,
+                width: '98%',
+              })}
             >
-              <Text style={[styles.videoLink, styles.whiteText]}>{video.titulo}</Text>
-            </Link>
+              <View style={styles.videoBox}>
+                <View style={styles.buttonsContainer}>
+                  {!downloading[video.id] && !downloadedVideos[video.id] ? (
+                    <>
+                      <Pressable
+                        style={[styles.actionButton]}
+                        onPress={() => handleDownload(video)}
+                      >
+                        <FontAwesome name="download" size={16} color="#fff" />
+                      </Pressable>
+                      <Pressable
+                        style={[
+                          styles.actionButton,
+                          watchedVideos[video.id] ? styles.watchedButton : null,
+                        ]}
+                        onPress={() => handleMarkAsWatched(video)}
+                      >
+                        <FontAwesome
+                          name={watchedVideos[video.id] ? 'eye' : 'eye-slash'}
+                          size={16}
+                          color="#fff"
+                        />
+                      </Pressable>
+                    </>
+                  ) : downloading[video.id] ? (
+                    <Pressable style={[styles.actionButton]}>
+                      <Text style={styles.progressText}>{`${downloadProgress[video.id]?.toFixed(
+                        0
+                      ) || 0}%`}</Text>
+                    </Pressable>
+                  ) : (
+                    <>
+                      <Pressable
+                        style={[styles.actionButtonRed]}
+                        onPress={() => handleDelete(video)}
+                      >
+                        <FontAwesome name="trash" size={14} color="#fff" />
+                      </Pressable>
+                      <Pressable
+                        style={[
+                          styles.actionButton,
+                          watchedVideos[video.id] ? styles.watchedButton : null,
+                        ]}
+                        onPress={() => handleMarkAsWatched(video)}
+                      >
+                        <FontAwesome
+                          name={watchedVideos[video.id] ? 'eye' : 'eye-slash'}
+                          size={16}
+                          color="#fff"
+                        />
+                      </Pressable>
+                    </>
+                  )}
+                </View>
+                <Text style={[styles.videoLink, styles.whiteText]}>
+                  {video.titulo}
+                </Text>
+              </View>
+            </Pressable>
           ) : (
-            <Link
-              style={[styles.videoLink, styles.videoText, styles.whiteText]}
-              href={{ pathname: '/video', params: { video: getVideoUrl(video.resolucoes), titulo: video.titulo, id_video: video.id } }}
+            <Pressable
+              onPress={() =>
+                navigation.navigate('video', {
+                  video: getVideoUrl(video.resolucoes),
+                  titulo: video.titulo,
+                  id_video: video.id,
+                })
+              }
+              style={({ pressed }) => ({
+                backgroundColor: pressed ? '#333333' : '#1B1B1B',
+                marginTop: 5,
+                marginBottom: 5,
+                marginLeft: 5,
+                marginRight: 5,
+                width: '98%'
+              })}
             >
-              <Text style={[styles.videoLink, styles.whiteText]}>{video.titulo}</Text>
-            </Link>
+              <View style={styles.videoBox}>
+                <View style={styles.buttonsContainer}>
+                  {!downloading[video.id] && !downloadedVideos[video.id] ? (
+                    <>
+                      <Pressable
+                        style={[styles.actionButton]}
+                        onPress={() => handleDownload(video)}
+                      >
+                        <FontAwesome name="download" size={16} color="#fff" />
+                      </Pressable>
+                      <Pressable
+                        style={[
+                          styles.actionButton,
+                          watchedVideos[video.id] ? styles.watchedButton : null,
+                        ]}
+                        onPress={() => handleMarkAsWatched(video)}
+                      >
+                        <FontAwesome
+                          name={watchedVideos[video.id] ? 'eye' : 'eye-slash'}
+                          size={16}
+                          color="#fff"
+                        />
+                      </Pressable>
+                    </>
+                  ) : downloading[video.id] ? (
+                    <>
+                      <Pressable style={[styles.actionButton]}>
+                        <Text style={styles.progressText}>{`${downloadProgress[video.id]?.toFixed(
+                          0
+                        ) || 0}%`}</Text>
+                      </Pressable>
+                      <Pressable
+                        style={[
+                          styles.actionButton,
+                          watchedVideos[video.id] ? styles.watchedButton : null,
+                        ]}
+                        onPress={() => handleMarkAsWatched(video)}
+                      >
+                        <FontAwesome
+                          name={watchedVideos[video.id] ? 'eye' : 'eye-slash'}
+                          size={16}
+                          color="#fff"
+                        />
+                      </Pressable>
+                    </>
+                  ) : (
+                    <>
+                      <Pressable
+                        style={[styles.actionButtonRed]}
+                        onPress={() => handleDelete(video)}
+                      >
+                        <FontAwesome name="trash" size={14} color="#fff" />
+                      </Pressable>
+                      <Pressable
+                        style={[
+                          styles.actionButton,
+                          watchedVideos[video.id] ? styles.watchedButton : null,
+                        ]}
+                        onPress={() => handleMarkAsWatched(video)}
+                      >
+                        <FontAwesome
+                          name={watchedVideos[video.id] ? 'eye' : 'eye-slash'}
+                          size={16}
+                          color="#fff"
+                        />
+                      </Pressable>
+                    </>
+                  )}
+                </View>
+                <Text style={[styles.videoLink, styles.whiteText]}>
+                  {video.titulo}
+                </Text>
+              </View>
+            </Pressable>
           )}
         </View>
       ))}
     </View>
   );
+
 };
 
 export default function Aula() {
+  const navigation = useNavigation();
 
   const { aula, materia } = useLocalSearchParams();
+  const [loading, setLoading] = useState(true);
   const aulaJson = JSON.parse(aula);
-  const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Simulação de carregamento de dados (você pode substituir por sua lógica de carregamento)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Stack.Screen options={{
+          headerStyle: {
+            backgroundColor: '#1B1B1B',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          title: 'AULA',
+        }} />
+        <ActivityIndicator size="large" color="#ffffff" />
+        <Text style={[styles.whiteText]}>Carregando</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -281,18 +425,38 @@ export default function Aula() {
             ) : (
               <>
                 {aulaJson.pdf && (
-                  <Pressable onPress={() => Linking.openURL(aulaJson.pdf)} style={styles.link}>
+                  <Pressable
+                    onPress={() => Linking.openURL(aulaJson.pdf)}
+                    style={({ pressed }) => ({
+                      backgroundColor: pressed ? '#333333' : '#1B1B1B',
+                      marginBottom:10,
+                    })}
+                  >
                     <Text style={[styles.linkText, styles.A5B99CText]}>PDF NORMAL</Text>
                   </Pressable>
                 )}
                 {aulaJson.pdf_grifado && (
-                  <Pressable onPress={() => Linking.openURL(aulaJson.pdf_grifado)} style={styles.link}>
+                  <Pressable
+                    onPress={() => Linking.openURL(aulaJson.pdf_grifado)}
+                    style={({ pressed }) => ({
+                      backgroundColor: pressed ? '#333333' : '#1B1B1B',
+                      marginBottom:10,
+
+                    })}
+                  >
                     <Text style={[styles.linkText, styles.A5B99CText]}>PDF GRIFADO</Text>
                   </Pressable>
                 )}
                 {aulaJson.pdf_simplificado && (
-                  <Pressable onPress={() => Linking.openURL(aulaJson.pdf_simplificado)} style={styles.link}>
-                    <Text style={[styles.linkText, styles.A5B99CText]}>PDF SIMPLIFICADO</Text>
+                  <Pressable
+                    onPress={() => Linking.openURL(aulaJson.pdf_simplificado)}
+                    style={({ pressed }) => ({
+                      backgroundColor: pressed ? '#333333' : '#1B1B1B',
+                      marginBottom:10,
+
+                    })}
+                  >
+                    <Text style={[styles.A5B99CText]}>PDF SIMPLIFICADO</Text>
                   </Pressable>
                 )}
               </>
@@ -324,9 +488,16 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   A5B99CText: {
-    color: '#A5B99C',
+
+    color: '#fff',
     fontWeight: 'bold',
-    textDecorationLine: 'underline',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 0.5,
+    borderColor: '#ffffff',
+
   },
   videoTitle: {
     fontSize: 16,
@@ -334,7 +505,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-
   materia: {
     textAlign: 'center',
     fontSize: 20,
@@ -353,13 +523,15 @@ const styles = StyleSheet.create({
   },
   cursoContainer: {
     flexDirection: 'column',
-    alignItems: 'flex-start',
+    // alignItems: 'flex-start',
     justifyContent: 'flex-start',
     marginBottom: 10,
+
   },
   buttonsContainer: {
-    flexDirection: 'row',
+    flexDirection: 'col',
     justifyContent: 'flex-start',
+    gap: 10,
     marginTop: 10,
   },
   actionButton: {
@@ -386,12 +558,19 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   videoBox: {
+
     borderWidth: 1,
     borderColor: '#ffffff',
-    marginBottom: 10,
+    // marginBottom: 10,
     padding: 10,
-    width: '99%',
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1B1B1B',
   },
 });

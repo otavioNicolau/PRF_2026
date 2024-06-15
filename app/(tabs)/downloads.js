@@ -2,32 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, SectionList, Pressable, Alert, RefreshControl, Image } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { FontAwesome } from '@expo/vector-icons';
-import { Stack, Link } from 'expo-router';
+import { Stack, useNavigation, Link } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useSQLiteContext } from 'expo-sqlite';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 
 const DownloadedVideosScreen = () => {
+  const navigation = useNavigation();
+
   const db = useSQLiteContext();
   const [downloadedVideos, setDownloadedVideos] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
+  const lockOrientation = async () => {
+    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+  };
+
   useEffect(() => {
-    const lockOrientation = async () => {
-      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-    };
+
+    loadDownloadedVideos();
     lockOrientation();
 
     return () => {
       ScreenOrientation.unlockAsync();
     };
+
   }, []);
 
-  useEffect(() => {
-    loadDownloadedVideos();
-  }, []);
+
 
   const loadDownloadedVideos = async () => {
+
     try {
       const allVideos = await db.getAllAsync('SELECT * FROM videos WHERE uri IS NOT NULL;');
       const uniqueVideos = {};
@@ -76,7 +81,7 @@ const DownloadedVideosScreen = () => {
 
       await FileSystem.deleteAsync(fileUri);
       await db.runAsync('DELETE FROM videos WHERE id_video = ?', [videoId]);
-      Alert.alert('Sucesso', 'Vídeo excluído com sucesso!');
+      // Alert.alert('Sucesso', 'Vídeo excluído com sucesso!');
       loadDownloadedVideos();
     } catch (error) {
       console.error('Erro ao excluir o vídeo:', error);
@@ -165,26 +170,42 @@ const DownloadedVideosScreen = () => {
             <View>
               <Text style={styles.subSectionHeader}>{item.title.toUpperCase()}</Text>
               {item.data.map(video => (
-                <View key={video.id} style={styles.videoBox}>
-                  {/* <Image source={{ uri: video.thumbnailUri }} style={styles.thumbnail} resizeMode="cover" /> */}
-                  <View style={styles.videoInfo}>
-                    <Link
-                      style={[styles.videoLink, styles.videoText, styles.whiteText]}
-                      href={{ pathname: '/video', params: { video: `${FileSystem.documentDirectory}${video.id}.mp4`, titulo: video.titulo, id_video: video.id } }}
-                    >
+
+                <Pressable
+                  onPress={() => navigation.navigate('video', { video: `${FileSystem.documentDirectory}${video.id}.mp4`, titulo: video.titulo, id_video: video.id })}
+                  onLongPress={() =>
+                    Alert.alert(
+                      `Excluir vídeo: ${video.titulo}`,
+                      'Tem certeza que deseja excluir este vídeo?',
+                      [
+                        {
+                          text: 'Cancelar',
+                          style: 'cancel'
+                        },
+                        {
+                          text: 'Confirmar',
+                          onPress: () => handleDelete(video.id)
+                        }
+                      ],
+                      { cancelable: true }
+                    )
+                  }
+                  style={({ pressed }) => ({
+                    backgroundColor: pressed ? '#333333' : '#1B1B1B',
+                    marginTop: 5,
+                    marginBottom: 5,
+                    marginLeft: 5,
+                    marginRight: 5
+                  })}
+                >
+
+                  <View key={video.id} style={styles.videoBox}>
+                    <View style={styles.videoInfo}>
                       <Text style={styles.videoTitle}>{video.titulo}</Text>
-                    </Link>
-                    <Link
-                      style={[styles.videoLink, styles.videoText, styles.whiteText]}
-                      href={{ pathname: '/video', params: { video: `${FileSystem.documentDirectory}${video.id}.mp4`, titulo: video.titulo, id_video: video.id } }}
-                    >
                       <Text style={styles.videoText}>{video.assunto}</Text>
-                    </Link>
+                    </View>
                   </View>
-                  <Pressable style={styles.actionButton} onPress={() => handleDelete(video.id)}>
-                    <FontAwesome name="trash" size={24} color="#fff" />
-                  </Pressable>
-                </View>
+                </Pressable>
               ))}
             </View>
           ) : null
@@ -230,8 +251,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderWidth: 1,
     borderColor: '#ccc',
-    margin: 5,
-    padding: 5,
+    padding: 10,
 
   },
   videoInfo: {

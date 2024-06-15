@@ -33,7 +33,7 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
   await db.execAsync(`
     PRAGMA journal_mode = 'wal';
     CREATE TABLE IF NOT EXISTS videos (
-      id INTEGER PRIMARY KEY NOT NULL,
+      id INTEGER PRIMARY KEY NOT NULL ,
       id_video TEXT,
       titulo TEXT,
       aula TEXT,
@@ -48,6 +48,14 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
     );
   `);
 
+  await db.execAsync(`
+    PRAGMA journal_mode = 'wal';
+      CREATE TABLE IF NOT EXISTS edital (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        mateira_id INTEGER,
+        observacao TEXT
+    );
+  `);
 
   // await db.execAsync(`
   //   PRAGMA journal_mode = 'wal';

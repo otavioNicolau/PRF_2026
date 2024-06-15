@@ -3,11 +3,13 @@ import { View, Text, ActivityIndicator, StyleSheet, FlatList, ScrollView, Linkin
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Slide } from '~/components/Slide';
-import { Stack, Link, useLocalSearchParams } from 'expo-router';  // Importando os componentes necessários
+import { Stack, Link,useNavigation, useLocalSearchParams } from 'expo-router';  // Importando os componentes necessários
 import * as ScreenOrientation from 'expo-screen-orientation';
 
 
 const Aulas = () => {
+  const navigation = useNavigation();
+
   const { id } = useLocalSearchParams();
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -118,6 +120,8 @@ const Aulas = () => {
           title: 'AULA'
         }} />
         <ActivityIndicator size="large" color="#ffffff" />
+        <Text style={[styles.whiteText]}>Carregando</Text>
+
       </View>
     );
   }
@@ -150,68 +154,26 @@ const Aulas = () => {
         <Text style={[styles.sectionTitle, styles.whiteText]}>AULAS:</Text>
 
         {data.aulas.map((aula) => (
-          <View key={aula.id} style={styles.aulaContainer}>
-            <View style={styles.cursoContainer}>
-              <Link style={[styles.aulaContainer]} href={{ pathname: '/aula', params: { aula: JSON.stringify(aula), materia: data.nome } }} >
+          <Pressable key={aula.id}
+            onPress={() => navigation.navigate('aula', { aula: JSON.stringify(aula), materia: data.nome })}
+            style={({ pressed }) => ({
+              backgroundColor: pressed ? '#333333' : '#1B1B1B',
+              marginTop: 5,
+              marginBottom: 5,
+              marginLeft: 5,
+              marginRight: 5
+            })}
+          >
+            <View  style={styles.aulaContainer}>
+              <View style={styles.cursoContainer}>
                 <Text style={[styles.cursoNome, styles.whiteText]}>{aula.nome.toUpperCase()}</Text>
-              </Link>
-              <Link style={[styles.aulaContainer]} href={{ pathname: '/aula', params: { aula: JSON.stringify(aula), materia: data.nome } }} >
                 <Text style={styles.whiteText}>{aula.conteudo}</Text>
-              </Link>
-              {/* <Link style={[styles.aulaContainer]} href={{ pathname: '/aula', params: { aula: JSON.stringify(aula) } }} >
-                <Text style={[styles.videoTitle, styles.whiteText]}>ARQUIVOS:</Text>
-              </Link>
-
-              {!aula.pdf && !aula.pdf_grifado && !aula.pdf_simplificado ? (
-                <Text style={styles.whiteText}>NENHUM PDF DISPONÍVEL</Text>
-              ) : (
-                <>
-                  {aula.pdf && (
-                    <Pressable onPress={() => Linking.openURL(aula.pdf)} style={styles.link}>
-                      <Text style={[styles.linkText, styles.A5B99CText]}>PDF NORMAL</Text>
-                    </Pressable>
-                  )}
-                  {aula.pdf_grifado && (
-                    <Pressable onPress={() => Linking.openURL(aula.pdf_grifado)} style={styles.link}>
-                      <Text style={[styles.linkText, styles.A5B99CText]}>PDF GRIFADO</Text>
-                    </Pressable>
-                  )}
-                  {aula.pdf_simplificado && (
-                    <Pressable onPress={() => Linking.openURL(aula.pdf_simplificado)} style={styles.link}>
-                      <Text style={[styles.linkText, styles.A5B99CText]}>PDF SIMPLIFICADO</Text>
-                    </Pressable>
-                  )}
-                </>
-              )}
-
-              <VideoList videos={aula.videos} /> */}
+              </View>
             </View>
-          </View>
+          </Pressable>
         ))}
       </ScrollView>
     </SafeAreaView>
-  );
-};
-
-const VideoList = ({ videos }) => {
-  return (
-    <View>
-      <FlatList
-        horizontal
-        data={videos}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <Link style={[styles.videoLink, styles.videoText, styles.whiteText]}
-            href={{
-              pathname: '/videos',
-              params: { video: JSON.stringify(item) },
-            }}
-          >
-            <Text>{item.titulo}</Text>
-          </Link>
-        )}
-      />
-    </View>
   );
 };
 
@@ -271,14 +233,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  aulaContainer: {
-    marginBottom: 16,
-  },
+
   cursoContainer: {
     padding: 10,
     borderWidth: 0.5,
     borderColor: '#ccc',
-    backgroundColor: '#1B1B1B',
+    // backgroundColor: '#1B1B1B',
   },
   cursoNome: {
     fontSize: 16,

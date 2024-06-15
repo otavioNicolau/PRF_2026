@@ -1,12 +1,10 @@
-import { Stack, Link } from 'expo-router';
+import { Stack, useNavigation, Link } from 'expo-router';
 import { Slide } from '~/components/Slide';
 import React, { useEffect, useState } from 'react';
-import { View, Button, Text, StyleSheet, ActivityIndicator, FlatList, ScrollView, SafeAreaView, RefreshControl } from 'react-native';
+import { View, Button, Pressable, Text, StyleSheet, ActivityIndicator, FlatList, ScrollView, SafeAreaView, RefreshControl } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ScreenOrientation from 'expo-screen-orientation';
-
-import { useSQLiteContext } from 'expo-sqlite';
 
 // URL da API
 const url = 'https://api.estrategiaconcursos.com.br/api/aluno/curso';
@@ -51,30 +49,35 @@ const fetchCourseData = async () => {
   }
 };
 
+
 export default function Home() {
-
-  useEffect(() => {
-    // Trava a orientação da tela em horizontal
-    const lockOrientation = async () => {
-      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT );
-    };
-    lockOrientation();
-    // Desbloqueia a orientação da tela ao desmontar o componente
-    return () => {
-      ScreenOrientation.unlockAsync();
-    };
-  }, []);
-
+  const navigation = useNavigation();
 
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  const db = useSQLiteContext();
 
+  useEffect(() => {
+
+    initializeData();
+
+    // Trava a orientação da tela em horizontal
+    const lockOrientation = async () => {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    };
+
+    lockOrientation();
+    // Desbloqueia a orientação da tela ao desmontar o componente
+    return () => {
+      ScreenOrientation.unlockAsync();
+    };
+
+  }, []);
 
   const initializeData = async () => {
+
     try {
       // console.log('Inicializando dados');
       await getToken();  // Garantir que o token esteja obtido antes de buscar os dados
@@ -88,10 +91,6 @@ export default function Home() {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    initializeData();
-  }, []);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -110,7 +109,7 @@ export default function Home() {
 
   if (error) {
     return (
-      
+
       <View style={[styles.container, styles.center, { backgroundColor: '#1B1B1B' }]}>
         <Stack.Screen
           options={{
@@ -145,6 +144,8 @@ export default function Home() {
           title: 'PROJETO RPF 2026'
         }} />
         <ActivityIndicator size="large" color="#ffffff" />
+        <Text style={[styles.whiteText]}>Carregando</Text>
+
       </View>
     );
   }
@@ -179,7 +180,18 @@ export default function Home() {
                 data={concurso.cursos}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
-                  <Link href={{ pathname: '/aulas', params: { id: item.id } }}>
+                  <Pressable
+                    onPress={() => navigation.navigate('aulas', { id: item.id })}
+                    style={({ pressed }) => ({
+                      backgroundColor: pressed ? '#333333' : '#1B1B1B',
+                      marginTop: 5,
+                      marginBottom: 5,
+                      marginLeft: 5,
+                      marginRight: 5
+                    })}
+                  >
+
+                    {/*  <Link href={{ pathname: '/aulas', params: { id: item.id } }}> */}
                     <View style={styles.cursoContainer}>
                       <Text style={styles.cursoNome}>{item.nome.toUpperCase()}</Text>
                       <Text style={styles.cursoInfo}>DATA DE INÍCIO: {item.data_inicio}</Text>
@@ -187,7 +199,7 @@ export default function Home() {
                       <Text style={styles.cursoInfo}>TOTAL DE AULAS: {item.total_aulas}</Text>
                       <Text style={styles.cursoInfo}>TOTAL DE AULAS VISUALIZADAS: {item.total_aulas_visualizadas}</Text>
                     </View>
-                  </Link>
+                  </Pressable>
                 )}
               />
             </View>
@@ -225,10 +237,12 @@ const styles = StyleSheet.create({
     width: 300,
     height: 180,
     padding: 10,
-    marginBottom: 10,
+    // marginBottom: 10,
     borderWidth: 0.5,
     borderColor: '#ccc',
-    marginRight: 5,
+  },
+  whiteText: {
+    color: '#ffffff',
   },
   cursoNome: {
     fontSize: 16,
