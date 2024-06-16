@@ -64,7 +64,7 @@ export default function Logs() {
         `DELETE FROM edital WHERE id = ?;`,
         [logId]
       );
-      Alert.alert('Sucesso', 'Log excluído com sucesso!');
+      // Alert.alert('Sucesso', 'Log excluído com sucesso!');
       loadLogs(db, assuntoJson.id); // Recarregar logs após exclusão
       countLogs(db, assuntoJson.id); // Atualizar o número de logs após exclusão
     } catch (error) {

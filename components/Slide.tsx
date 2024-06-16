@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
 const { height: screenHeight } = Dimensions.get('window');
 const { width: screenWidth } = Dimensions.get('window');
-import slide1 from '~/assets/slides/18.png';
+import slide1 from '~/assets/PRF.png';
 
 export const Slide = () => {
   return (

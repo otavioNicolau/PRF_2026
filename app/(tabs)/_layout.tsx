@@ -13,7 +13,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Cursos',
-          tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="graduation-cap" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
               <HeaderButton />

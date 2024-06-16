@@ -141,7 +141,9 @@ export default function Home() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          title: 'PROJETO RPF 2026'
+          title: 'PROJETO RPF',
+          headerTitleAlign: 'center',
+
         }} />
         <ActivityIndicator size="large" color="#ffffff" />
         <Text style={[styles.whiteText]}>Carregando</Text>
@@ -166,7 +168,7 @@ export default function Home() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          title: 'PROJETO RPF 2026'
+          title: 'PROJETO RPF'
         }} />
 
         <Slide />

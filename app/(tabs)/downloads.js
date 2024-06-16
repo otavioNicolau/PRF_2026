@@ -144,6 +144,18 @@ const DownloadedVideosScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <Stack.Screen options={{
+        headerStyle: {
+          backgroundColor: '#1B1B1B',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        title: 'DOWNLOADS',
+        headerTitleAlign: 'center',
+
+      }} />
       <View style={styles.container}>
         <SectionList
           sections={getSections()}
@@ -154,7 +166,7 @@ const DownloadedVideosScreen = () => {
                 <Text style={styles.subSectionHeader}>{item.title.toUpperCase()}</Text>
                 {item.data.map(video => (
                   <Pressable
-                    key={video.id} 
+                    key={video.id}
                     onPress={() => navigation.navigate('video', { video: `${FileSystem.documentDirectory}${video.id}.mp4`, titulo: video.titulo, id_video: video.id })}
                     onLongPress={() =>
                       Alert.alert(

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, SectionList, Pressable, RefreshControl } from 'react-native';
-import { useNavigation } from 'expo-router';
+import { useNavigation, Stack } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 
 const EditalVerticalizado = () => {
@@ -116,6 +116,18 @@ const EditalVerticalizado = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <Stack.Screen options={{
+        headerStyle: {
+          backgroundColor: '#1B1B1B',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        title: 'EDITAL VERTICALIZADO',
+        headerTitleAlign: 'center',
+        
+      }} />
       <View style={styles.container}>
         <View style={styles.filtersContainer}>
           <Text style={styles.filterTitle}>FILTRAR POR PESO:</Text>
