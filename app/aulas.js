@@ -146,10 +146,10 @@ const Aulas = () => {
         }} />
         <Slide />
         <Text style={[styles.title, styles.whiteText]}>{data.nome.toUpperCase()}</Text>
-        <Text style={styles.whiteText}>Data de Início: {data.data_inicio}</Text>
-        <Text style={styles.whiteText}>Data de Retirada: {data.data_retirada}</Text>
-        <Text style={styles.whiteText}>Total de Aulas: {data.total_aulas}</Text>
-        <Text style={styles.whiteText}>Total de Aulas Visualizadas: {data.total_aulas_visualizadas}</Text>
+        <Text style={styles.label}>Data de Início: {data.data_inicio}</Text>
+        <Text style={styles.label}>Data de Retirada: {data.data_retirada}</Text>
+        <Text style={styles.label}>Total de Aulas: {data.total_aulas}</Text>
+        <Text style={styles.label}>Total de Aulas Visualizadas: {data.total_aulas_visualizadas}</Text>
 
         <Text style={[styles.sectionTitle, styles.whiteText]}>AULAS:</Text>
 
@@ -166,7 +166,7 @@ const Aulas = () => {
           >
             <View  style={styles.aulaContainer}>
               <View style={styles.cursoContainer}>
-                <Text style={[styles.cursoNome, styles.whiteText]}>{aula.nome.toUpperCase()}</Text>
+                <Text style={[styles.cursoNome, styles.label]}>{aula.nome.toUpperCase()}</Text>
                 <Text style={styles.whiteText}>{aula.conteudo}</Text>
               </View>
             </View>
@@ -178,6 +178,18 @@ const Aulas = () => {
 };
 
 const styles = StyleSheet.create({
+  label: {
+    color: '#A5B99C',
+    fontSize: 14,
+    marginBottom: 5,
+    fontWeight: 'bold',
+  },
+  value: {
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 10,
+  },
+
   safeArea: {
     flex: 1,
     backgroundColor: '#1B1B1B',

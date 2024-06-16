@@ -18,21 +18,9 @@ const DownloadedVideosScreen = () => {
     await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
   };
 
-  useEffect(() => {
-
-    loadDownloadedVideos();
-    lockOrientation();
-
-    return () => {
-      ScreenOrientation.unlockAsync();
-    };
-
-  }, []);
-
 
 
   const loadDownloadedVideos = async () => {
-
     try {
       const allVideos = await db.getAllAsync('SELECT * FROM videos WHERE uri IS NOT NULL;');
       const uniqueVideos = {};
@@ -69,6 +57,16 @@ const DownloadedVideosScreen = () => {
     }
   };
 
+
+  useEffect(() => {
+    loadDownloadedVideos();
+    lockOrientation();
+
+    return () => {
+      ScreenOrientation.unlockAsync();
+    };
+  }, []);
+
   const handleDelete = async (videoId) => {
     try {
       const fileUri = `${FileSystem.documentDirectory}${videoId}.mp4`;
@@ -81,7 +79,6 @@ const DownloadedVideosScreen = () => {
 
       await FileSystem.deleteAsync(fileUri);
       await db.runAsync('DELETE FROM videos WHERE id_video = ?', [videoId]);
-      // Alert.alert('Sucesso', 'Vídeo excluído com sucesso!');
       loadDownloadedVideos();
     } catch (error) {
       console.error('Erro ao excluir o vídeo:', error);
@@ -147,87 +144,73 @@ const DownloadedVideosScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-
-      <Stack.Screen
-        options={{
-          headerShown: true,
-          headerStyle: {
-            backgroundColor: '#1B1B1B',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          title: "Downloads",
-        }}
-      />
-
-      <SectionList
-        sections={getSections()}
-        keyExtractor={(item, index) => `${item.id}-${index}`}
-        renderItem={({ item }) => (
-          item.data ? (
-            <View>
-              <Text style={styles.subSectionHeader}>{item.title.toUpperCase()}</Text>
-              {item.data.map(video => (
-
-                <Pressable
-                  onPress={() => navigation.navigate('video', { video: `${FileSystem.documentDirectory}${video.id}.mp4`, titulo: video.titulo, id_video: video.id })}
-                  onLongPress={() =>
-                    Alert.alert(
-                      `Excluir vídeo: ${video.titulo}`,
-                      'Tem certeza que deseja excluir este vídeo?',
-                      [
-                        {
-                          text: 'Cancelar',
-                          style: 'cancel'
-                        },
-                        {
-                          text: 'Confirmar',
-                          onPress: () => handleDelete(video.id)
-                        }
-                      ],
-                      { cancelable: true }
-                    )
-                  }
-                  style={({ pressed }) => ({
-                    backgroundColor: pressed ? '#333333' : '#1B1B1B',
-                    marginTop: 5,
-                    marginBottom: 5,
-                    marginLeft: 5,
-                    marginRight: 5
-                  })}
-                >
-
-                  <View key={video.id} style={styles.videoBox}>
-                    <View style={styles.videoInfo}>
-                      <Text style={styles.videoTitle}>{video.titulo}</Text>
-                      <Text style={styles.videoText}>{video.assunto}</Text>
+      <View style={styles.container}>
+        <SectionList
+          sections={getSections()}
+          keyExtractor={(item, index) => `${item.id}-${index}`}
+          renderItem={({ item }) => (
+            item.data ? (
+              <View>
+                <Text style={styles.subSectionHeader}>{item.title.toUpperCase()}</Text>
+                {item.data.map(video => (
+                  <Pressable
+                    key={video.id} 
+                    onPress={() => navigation.navigate('video', { video: `${FileSystem.documentDirectory}${video.id}.mp4`, titulo: video.titulo, id_video: video.id })}
+                    onLongPress={() =>
+                      Alert.alert(
+                        `Excluir vídeo: ${video.titulo}`,
+                        'Tem certeza que deseja excluir este vídeo?',
+                        [
+                          {
+                            text: 'Cancelar',
+                            style: 'cancel'
+                          },
+                          {
+                            text: 'Confirmar',
+                            onPress: () => handleDelete(video.id)
+                          }
+                        ],
+                        { cancelable: true }
+                      )
+                    }
+                    style={({ pressed }) => ({
+                      backgroundColor: pressed ? '#333333' : '#1B1B1B',
+                      marginTop: 5,
+                      marginBottom: 5,
+                      marginLeft: 5,
+                      marginRight: 5
+                    })}
+                  >
+                    <View style={styles.videoBox}>
+                      <View style={styles.videoInfo}>
+                        <Text style={styles.videoTitle}>{video.titulo}</Text>
+                        <Text style={styles.videoText}>{video.assunto}</Text>
+                      </View>
                     </View>
-                  </View>
-                </Pressable>
-              ))}
-            </View>
-          ) : null
-        )}
-        renderSectionHeader={({ section: { title } }) => (
-          <Text style={styles.sectionHeader}>{title}</Text>
-        )}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={['#FF0000']}
-            tintColor="#FF0000"
-          />
-        }
-        ListEmptyComponent={<Text style={styles.noVideosText}>Nenhum vídeo baixado.</Text>}
-        ListFooterComponent={
-          <Pressable style={styles.deleteAllButton} onPress={handleDeleteAll}>
-            <Text style={styles.deleteAllButtonText}>Deletar Todos os Vídeos</Text>
-          </Pressable>
-        }
-      />
+                  </Pressable>
+                ))}
+              </View>
+            ) : null
+          )}
+          renderSectionHeader={({ section: { title } }) => (
+            <Text style={styles.sectionHeader}>{title}</Text>
+          )}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#FF0000']}
+              tintColor="#FF0000"
+            />
+          }
+          ListEmptyComponent={<Text style={styles.noVideosText}>Nenhum vídeo baixado.</Text>}
+          ListFooterComponent={
+            <Pressable style={styles.deleteAllButton} onPress={handleDeleteAll}>
+              <Text style={styles.deleteAllButtonText}>Deletar Todos os Vídeos</Text>
+            </Pressable>
+          }
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -238,12 +221,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#1B1B1B',
   },
   container: {
+    flex: 1,
     backgroundColor: '#1B1B1B',
     paddingVertical: 20,
-    paddingHorizontal: 16,
-  },
-  videoList: {
-    marginBottom: 20,
+    paddingHorizontal: 5,
   },
   videoBox: {
     flexDirection: 'row',
@@ -252,7 +233,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,
-
   },
   videoInfo: {
     flex: 1,
@@ -268,13 +248,23 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 14,
   },
-  actionButton: {
-    backgroundColor: '#FF0000',
-    paddingHorizontal: 15,
+  subSectionHeader: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    backgroundColor: '#2C2C2C',
+    color: '#ffffff',
     paddingVertical: 8,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 16,
+    marginLeft: 0,
+    paddingLeft: 15,
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    backgroundColor: '#1B1B1B',
+    color: '#ffffff',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
   },
   noVideosText: {
     color: '#ffffff',
@@ -293,35 +283,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  thumbnail: {
-    width: 70,
-    height: 70,
-    borderRadius: 8,
-  },
-  videoLink: {
-    color: '#FF0000',
-  },
-  whiteText: {
-    color: '#ffffff',
-  },
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    backgroundColor: '#1B1B1B',
-    color: '#ffffff',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-  },
-  subSectionHeader: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    backgroundColor: '#2C2C2C',
-    color: '#ffffff',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    marginLeft: 0,
-    paddingLeft: 15,
   },
 });
 

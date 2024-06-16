@@ -180,6 +180,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
 
   return (
     <View>
+      
       {videos.map((video, index) => (
         <View key={index}>
           {downloadedVideos[video.id] ? (
@@ -413,6 +414,7 @@ export default function Aula() {
           },
           title: aulaJson.nome,
         }} />
+        
         <View key={aulaJson.id} style={styles.aulaContainer}>
           <View style={styles.cursoContainer}>
             <Text style={[styles.materia, styles.whiteText]}>{materia.toUpperCase()}</Text>

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, SectionList, Pressable, RefreshControl } from 'react-native';
-import { Stack, useNavigation, Link } from 'expo-router';
+import { useNavigation } from 'expo-router';
+import { useSQLiteContext } from 'expo-sqlite';
 
 const EditalVerticalizado = () => {
   const navigation = useNavigation();
@@ -9,6 +10,7 @@ const EditalVerticalizado = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [pesoFilters, setPesoFilters] = useState([]);
   const [blocoFilters, setBlocoFilters] = useState([]);
+  const db = useSQLiteContext();
 
   useEffect(() => {
     loadEditais();
@@ -17,10 +19,8 @@ const EditalVerticalizado = () => {
   const loadEditais = async () => {
     setRefreshing(true);
     try {
-      // Substitua pela URL correta da sua API
       const response = await fetch('https://teal-crostata-aea03c.netlify.app/api/edital_prf');
       const data = await response.json();
-      console.log('Editais carregados:', data);
       if (data && data.EDITAL) {
         setEditais(data.EDITAL);
       } else {
@@ -28,26 +28,35 @@ const EditalVerticalizado = () => {
       }
     } catch (error) {
       console.error('Erro ao carregar os editais:', error);
-      // Aqui você pode exibir um alerta ou mensagem de erro para o usuário
     } finally {
       setRefreshing(false);
       setLoading(false);
     }
   };
 
-  const onRefresh = () => {
+  const onRefresh = useCallback(() => {
     loadEditais();
+  }, []);
+
+  const countLogs = async (assunto_id) => {
+    try {
+      const sql = `SELECT COUNT(*) AS count FROM edital WHERE assunto_id = ?;`;
+      const result = await db.getAllAsync(sql, [assunto_id]);
+      const count = result && result[0]?.count || 0;
+      return count;
+    } catch (error) {
+      console.error('Erro ao contar os logs:', error);
+      return 0; // Em caso de erro, retornar 0
+    }
   };
 
   const filterEditais = () => {
     let filtered = [...editais];
 
-    // Aplicar filtro por peso
     if (pesoFilters.length > 0) {
       filtered = filtered.filter(edital => pesoFilters.includes(edital.peso));
     }
 
-    // Aplicar filtro por bloco
     if (blocoFilters.length > 0) {
       filtered = filtered.filter(edital => blocoFilters.includes(edital.bloco));
     }
@@ -69,6 +78,40 @@ const EditalVerticalizado = () => {
         setBlocoFilters([...blocoFilters, value]);
       }
     }
+  };
+
+  const renderItem = ({ item }) => {
+    const [logsCount, setLogsCount] = useState(null);
+
+    useEffect(() => {
+      async function fetchLogsCount() {
+        const count = await countLogs(item.id);
+        setLogsCount(count);
+      }
+      fetchLogsCount();
+    }, [item.id]);
+
+    return (
+      <Pressable
+        onPress={() => {
+          navigation.navigate('logs', { assunto: JSON.stringify(item) });
+        }}
+        style={({ pressed }) => ({
+          backgroundColor: pressed ? '#333333' : '#1B1B1B',
+          marginTop: 5,
+          marginBottom: 5,
+          marginLeft: 5,
+          marginRight: 5
+        })}
+      >
+        <View style={styles.editalBox}>
+          <View style={styles.editalInfo}>
+            <Text style={styles.editalTitle}>{item.nome}</Text>
+            <Text style={styles.estudadovezes}>{logsCount !== null ? `Esse assunto foi estudado ${logsCount} veze(s)` : 'Carregando...'}</Text>
+          </View>
+        </View>
+      </Pressable>
+    );
   };
 
   return (
@@ -108,25 +151,7 @@ const EditalVerticalizado = () => {
           <SectionList
             sections={groupByMateria(filterEditais())}
             keyExtractor={(item, index) => item.id.toString()}
-            renderItem={({ item }) => (
-
-              <Pressable
-                onPress={() => navigation.navigate('logs', { id: 1 })}
-                style={({ pressed }) => ({
-                  backgroundColor: pressed ? '#333333' : '#1B1B1B',
-                  marginTop: 5,
-                  marginBottom: 5,
-                  marginLeft: 5,
-                  marginRight: 5
-                })}
-              >
-                <View style={styles.editalBox}>
-                  <View style={styles.editalInfo}>
-                    <Text style={styles.editalTitle}>{item.nome}</Text>
-                  </View>
-                </View>
-              </Pressable>
-            )}
+            renderItem={renderItem}
             renderSectionHeader={({ section: { title } }) => (
               <Text style={styles.materiaTitle}>{title}</Text>
             )}
@@ -163,6 +188,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#1B1B1B',
+  },
+  estudadovezes: {
+    color: '#A5B99C',
+    fontSize: 14,
+    marginTop: 5,
   },
   container: {
     flex: 1,

@@ -1,15 +1,95 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Pressable, Alert, ActivityIndicator, Linking } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Pressable, TextInput, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { useLocalSearchParams, Stack, Link, useNavigation } from 'expo-router';
+import { useLocalSearchParams, Stack, useNavigation } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-
 
 export default function Logs() {
   const navigation = useNavigation();
-  const { aula, materia } = useLocalSearchParams();
-  const [loading, setLoading] = useState(true);
+  const { assunto } = useLocalSearchParams();
+  const [observacao, setObservacao] = useState('');
+  const [logs, setLogs] = useState([]);
+  const [numLogs, setNumLogs] = useState(0); // Estado para armazenar o número de logs
+  const assuntoJson = JSON.parse(assunto);
+  const db = useSQLiteContext();
 
+
+  const countLogs = async (db, assunto_id) => {
+    try {
+      const sql = `SELECT COUNT(*) AS count FROM edital WHERE assunto_id = ?;`;
+      const result = await db.getAllAsync(sql, [assunto_id]);
+      const count = result[0]?.count || 0;
+      setNumLogs(count);
+    } catch (error) {
+      console.error('Erro ao contar os logs:', error);
+    }
+  };
+
+
+  useEffect(() => {
+    loadLogs(db, assuntoJson.id);
+    countLogs(db, assuntoJson.id); // Contar logs ao carregar a tela
+  }, []);
+
+  const loadLogs = async (db, assunto_id) => {
+    try {
+      const results = await db.getAllAsync(
+        `SELECT * FROM edital WHERE assunto_id = ?;`,
+        [assunto_id]
+      );
+      setLogs(results);
+    } catch (error) {
+      console.error('Erro ao carregar os logs:', error);
+    }
+  };
+
+  const insertLog = async (db, assunto_id, observacao) => {
+    try {
+      const dateTime = new Date().toISOString();
+      await db.runAsync(
+        `INSERT INTO edital (assunto_id, observacao, data_hora) VALUES (?, ?, ?);`,
+        [assunto_id, observacao, dateTime]
+      );
+      Alert.alert('Sucesso', 'Registro salvo com sucesso!');
+      loadLogs(db, assunto_id); // Recarregar logs após inserção
+      countLogs(db, assunto_id); // Atualizar o número de logs após inserção
+    } catch (error) {
+      console.error('Erro ao inserir o log de estudo:', error);
+    }
+  };
+
+  const deleteLog = async (logId) => {
+    try {
+      await db.runAsync(
+        `DELETE FROM edital WHERE id = ?;`,
+        [logId]
+      );
+      Alert.alert('Sucesso', 'Log excluído com sucesso!');
+      loadLogs(db, assuntoJson.id); // Recarregar logs após exclusão
+      countLogs(db, assuntoJson.id); // Atualizar o número de logs após exclusão
+    } catch (error) {
+      console.error('Erro ao excluir o log de estudo:', error);
+    }
+  };
+
+  const handleSave = async () => {
+    await insertLog(db, assuntoJson.id, observacao);
+    setObservacao(''); // Limpar campo de observação após salvar
+  };
+
+  const confirmDelete = (logId) => {
+    Alert.alert(
+      'Confirmar Exclusão',
+      'Tem certeza que deseja excluir este log?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Excluir', onPress: () => deleteLog(logId) },
+      ]
+    );
+  };
+
+
+  
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -22,11 +102,78 @@ export default function Logs() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          title: "LOGS",
+          title: assuntoJson.nome,
         }} />
-        <View style={styles.aulaContainer}>
+
+        
+        <View style={styles.assuntoContainer}>
+          <Text style={styles.label}>Matéria:</Text>
+          <Text style={styles.value}>{assuntoJson.materia}</Text>
           
+          <Text style={styles.label}>Assunto:</Text>
+          <Text style={styles.value}>{assuntoJson.nome}</Text>
+          
+          <Text style={styles.label}>Bloco:</Text>
+          <Text style={styles.value}>{assuntoJson.bloco}</Text>
+          
+          <Text style={styles.label}>Peso:</Text>
+          <Text style={styles.value}>{assuntoJson.peso}</Text>
+
+          <View style={styles.logsCountContainer}>
+          <Text style={styles.logsCountText}>
+            TOTAL DE VEZES ESTUDADO: {numLogs}
+          </Text>
         </View>
+        </View>
+        <Text style={styles.logsTitle}>CONTROLE DE ESTUDO</Text>
+        <Text style={styles.value}>Registre abaixo as informações relevantes sobre o estudo do tópico acima.</Text>
+
+        <View style={styles.observacaoContainer}>
+          <Text style={styles.label}>Observação:</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Escreva sua observação aqui"
+            placeholderTextColor="#888"
+            multiline
+            numberOfLines={4}
+            value={observacao}
+            onChangeText={setObservacao}
+          />
+        </View>
+
+        <View style={styles.buttonsContainer}>
+          <Pressable style={styles.actionButton} onPress={handleSave}>
+            <FontAwesome name="save" size={20} color="#fff" />
+            <Text style={styles.buttonText}>Salvar Estudo</Text>
+          </Pressable>
+
+          <Pressable style={[styles.actionButton, styles.deleteButton]} onPress={() => navigation.goBack()}>
+            <FontAwesome name="times" size={20} color="#fff" />
+            <Text style={styles.buttonText}>Cancelar</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.logsContainer}>
+          <Text style={styles.logsTitle}>Logs de Estudo:</Text>
+          {logs.length === 0 ? (
+            <Text style={styles.noLogsText}>Nenhum log disponível.</Text>
+          ) : (
+            logs.map((log) => (
+              <Pressable
+                key={log.id}
+                style={styles.logItem}
+                onLongPress={() => confirmDelete(log.id)}
+              >
+                <View>
+                  <Text style={styles.logText}>{log.observacao}</Text>
+                  <Text style={styles.logDateTime}>{new Date(log.data_hora).toLocaleString()}</Text>
+                </View>
+              </Pressable>
+            ))
+          )}
+        </View>
+
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -37,102 +184,93 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1B1B1B',
   },
-  videoLink: {
-    flex: 1,
-    padding: 10,
-  },
   container: {
-    backgroundColor: '#1B1B1B',
     paddingVertical: 20,
     paddingHorizontal: 16,
+    backgroundColor: '#1B1B1B',
   },
-  whiteText: {
-    color: '#ffffff',
-  },
-  A5B99CText: {
-
-    color: '#fff',
-    fontWeight: 'bold',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
+  assuntoContainer: {
+    backgroundColor: '#1B1B1B',
+    padding: 15,
+    marginBottom: 20,
     borderWidth: 0.5,
-    borderColor: '#ffffff',
-
+    borderColor: '#ccc',
   },
-  videoTitle: {
+  label: {
+    color: '#A5B99C',
+    fontSize: 14,
+    marginBottom: 5,
+    fontWeight: 'bold',
+  },
+  value: {
+    color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 10,
     marginBottom: 10,
   },
-  materia: {
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 1,
-    marginBottom: 5,
-    width: '99%',
-    flexDirection: 'row',
-    alignItems: 'center',
+  observacaoContainer: {
+    marginBottom: 20,
   },
-  aula: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 1,
-    marginBottom: 5,
-  },
-  cursoContainer: {
-    flexDirection: 'column',
-    // alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    marginBottom: 10,
-
+  textInput: {
+    backgroundColor: '#444',
+    color: '#fff',
+    padding: 10,
+    textAlignVertical: 'top',
   },
   buttonsContainer: {
-    flexDirection: 'col',
-    justifyContent: 'flex-start',
-    gap: 10,
-    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#A5B99C',
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10,
+    padding: 10,
   },
-  actionButtonRed: {
-    backgroundColor: 'rgb(255, 0, 0)',
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10,
+  deleteButton: {
+    backgroundColor: '#ff5555',
   },
-  watchedButton: {
-    backgroundColor: '#4CAF50',
-  },
-  progressText: {
+  buttonText: {
     color: '#fff',
+    fontSize: 16,
     marginLeft: 10,
   },
-  videoBox: {
-
-    borderWidth: 1,
-    borderColor: '#ffffff',
-    // marginBottom: 10,
-    padding: 10,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
+  logsContainer: {
+    marginTop: 30,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
+  logsTitle: {
+    color: '#A5B99C',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  noLogsText: {
+    color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  logItem: {
+    backgroundColor: '#333',
+    padding: 15,
+    marginBottom: 10,
+    borderWidth: 0.5,
+    borderColor: '#ccc',
+  },
+  logText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  logDateTime: {
+    color: '#A5B99C',
+    fontSize: 14,
+    marginTop: 5,
+  },
+  logsCountContainer: {
     alignItems: 'center',
-    backgroundColor: '#1B1B1B',
+    marginTop: 20,
+  },
+  logsCountText: {
+    color: '#A5B99C',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
