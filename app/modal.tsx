@@ -40,10 +40,10 @@ export default function Modal() {
             Hey! PRF Darlan!
           </Text>
           <Text style={styles.text}>
-            Hey! PEF Dayane!
+            Hey! PRF Dayane!
           </Text>
           <Text style={styles.text}>
-            hey! PRF Neto!
+            Hey! PRF Neto!
           </Text>
           <Text style={styles.text}>
             Bora embarcar nessa missão? A estrada tá chamando!
