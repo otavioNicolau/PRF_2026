@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView, TouchableWithoutFeedback, StatusBar } from 'react-native';
 import { Video } from 'expo-av';
 import { MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
@@ -183,10 +183,14 @@ export default function Video1() {
       <Stack.Screen
         options={{
           headerShown: false,
-          title: titulo,
         }}
       />
+      <StatusBar
+        hidden={true}
+      />
+
       <TouchableWithoutFeedback onPress={handleTouchScreen}>
+
         <View style={[styles.videoContainer, isFullscreen && styles.fullscreenVideoContainer]}>
           <Video
             ref={videoRef}
