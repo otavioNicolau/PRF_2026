@@ -8,7 +8,6 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useKeepAwake } from 'expo-keep-awake';
 
-const { width, height } = Dimensions.get('window');
 
 export default function Video1() {
   useKeepAwake();
@@ -21,8 +20,6 @@ export default function Video1() {
   const [videoPosition, setVideoPosition] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
   const [controlsVisible, setControlsVisible] = useState(true);
-  const [lastTap, setLastTap] = useState(null);
-  const [tapPosition, setTapPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const lockOrientation = async () => {
@@ -56,17 +53,20 @@ export default function Video1() {
   }, [id_video]);
 
   useEffect(() => {
+
     const saveVideoPosition = async () => {
       try {
         const result = await db.getAllAsync('SELECT COUNT(*) AS count FROM videos WHERE id_video = ?;', [id_video]);
         const count = result[0]?.count || 0;
 
         if (count > 0) {
+          // Update if record exists
           await db.runAsync(
             'UPDATE videos SET titulo = ?, position = ? WHERE id_video = ?;',
             [titulo, videoPosition, id_video]
           );
         } else {
+          // Insert if record does not exist
           await db.runAsync(
             'INSERT INTO videos (id_video, titulo, position) VALUES (?,?,?);',
             [id_video, titulo, videoPosition]
@@ -76,6 +76,7 @@ export default function Video1() {
         console.error(e);
       }
     };
+
 
     saveVideoPosition();
   }, [id_video, titulo, videoPosition]);
@@ -105,8 +106,8 @@ export default function Video1() {
       videoRef.current.playAsync();
     }
     setIsPlaying(!isPlaying);
-    setControlsVisible(true);
-    startControlsTimer();
+    setControlsVisible(true); // Mostra os controles ao clicar no vídeo
+    startControlsTimer(); // Reinicia o temporizador ao clicar no vídeo
   };
 
   const handlePlaybackStatusUpdate = (status) => {
@@ -127,45 +128,16 @@ export default function Video1() {
   };
 
   const startControlsTimer = () => {
-    setControlsVisible(true);
-    clearTimeout(timerId);
+    setControlsVisible(true); // Mostra os controles ao iniciar o temporizador
+    clearTimeout(timerId); // Limpa o temporizador existente
     const timerId = setTimeout(() => {
-      setControlsVisible(false);
+      setControlsVisible(false); // Oculta os controles após 3 segundos de inatividade
     }, 3000);
   };
 
-  const handleTouchScreen = (event) => {
-    const now = Date.now();
-    const touchLocation = event.nativeEvent;
-    setTapPosition({ x: touchLocation.locationX, y: touchLocation.locationY });
-
-    if (lastTap && (now - lastTap) < 300) {
-      if (tapPosition.x < width / 2) {
-        skipBackward();
-      } else {
-        skipForward();
-      }
-    } else {
-      setLastTap(now);
-      setControlsVisible(true);
-      startControlsTimer();
-    }
-  };
-
-  const skipForward = async () => {
-    const newPosition = Math.min(videoPosition + 10000, videoDuration);
-    setVideoPosition(newPosition);
-    if (videoRef.current) {
-      await videoRef.current.setPositionAsync(newPosition);
-    }
-  };
-
-  const skipBackward = async () => {
-    const newPosition = Math.max(videoPosition - 10000, 0);
-    setVideoPosition(newPosition);
-    if (videoRef.current) {
-      await videoRef.current.setPositionAsync(newPosition);
-    }
+  const handleTouchScreen = () => {
+    setControlsVisible(true); // Mostra os controles ao tocar na tela
+    startControlsTimer(); // Reinicia o temporizador ao tocar na tela
   };
 
   const formatTime = (timeInMillis) => {
