@@ -5,6 +5,7 @@ import { View, Button, Pressable, Text, StyleSheet, ActivityIndicator, FlatList,
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import { FontAwesome } from '@expo/vector-icons';
 
 // URL da API
 const url = 'https://api.estrategiaconcursos.com.br/api/aluno/curso';
@@ -176,14 +177,29 @@ export default function Home() {
         {data && data.concursos ? (
           data.concursos.map(concurso => (
             <View key={concurso.id} style={styles.stepContainer}>
-              <Text style={styles.subtitle}>{concurso.titulo.toUpperCase()}</Text>
+
+
+
+              <Pressable onPress={() => navigation.navigate('cursos', { concurso: JSON.stringify(concurso) })}>
+                <View style={styles.subtitleContainer}>
+                  <Text style={styles.subtitle}>
+                    {concurso.titulo.toUpperCase()} - 
+
+                    <Text style={styles.icon}>
+                      ( ver mais )
+                    </Text>
+                  </Text>
+                </View>
+              </Pressable>
+
+
               <FlatList
                 horizontal
                 data={concurso.cursos}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
                   <Pressable
-                    onPress={() => navigation.navigate('aulas', { id: item.id })}
+                    onPress={() => navigation.navigate('curso', { id: item.id })}
                     style={({ pressed }) => ({
                       backgroundColor: pressed ? '#333333' : '#1B1B1B',
                       marginTop: 5,
@@ -259,12 +275,24 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
   },
+
+  subtitleContainer: {
+    // flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   subtitle: {
     fontSize: 16,
     fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 10,
     textTransform: 'uppercase',
     color: '#ffffff',
+
+  },
+  icon: {
+    marginLeft: 5, // Espaço de 2 pixels ao lado do texto
+    textAlign: 'center',
+    color: '#A5B99C',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 });

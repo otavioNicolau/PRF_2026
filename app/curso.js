@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, FlatList, ScrollView, Linking, Pressable, SafeAreaView, RefreshControl } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, FlatList, ScrollView, Linking, Pressable, SafeAreaView, RefreshControl, Image } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Slide } from '~/components/Slide';
-import { Stack, Link,useNavigation, useLocalSearchParams } from 'expo-router';  // Importando os componentes necessários
+import { Stack, Link, useNavigation, useLocalSearchParams } from 'expo-router';  // Importando os componentes necessários
 import * as ScreenOrientation from 'expo-screen-orientation';
 
 
-const Aulas = () => {
+
+export default function Curso() {
+
   const navigation = useNavigation();
 
   const { id } = useLocalSearchParams();
@@ -85,9 +87,6 @@ const Aulas = () => {
     fetchData();
   };
 
-
-
-
   if (error) {
     return (
       <View style={[styles.container, styles.center, { backgroundColor: '#1B1B1B' }]}>
@@ -126,6 +125,18 @@ const Aulas = () => {
     );
   }
 
+  const renderProfessor = ({ item }) => (
+    <View style={styles.professorContainer}>
+      <Image source={{ uri: item.imagem }} style={styles.professorImage} />
+      <Text style={styles.professorName}>{item.nome}</Text>
+    </View>
+  );
+  const uniqueProfessores = data.professores
+    .filter((professor, index, self) =>
+      professor.imagem && index === self.findIndex((p) => p.id === professor.id)
+    );
+
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
@@ -145,6 +156,18 @@ const Aulas = () => {
           title: data.nome,
         }} />
         <Slide />
+
+        <Text style={[styles.title, styles.whiteText]}>PROFESSORES:</Text>
+
+        <FlatList
+          data={uniqueProfessores} // Use a lista de professores sem duplicados e com imagem
+          renderItem={renderProfessor}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={styles.flatList}
+        />
+
         <Text style={[styles.title, styles.whiteText]}>{data.nome.toUpperCase()}</Text>
         <Text style={styles.label}>Data de Início: {data.data_inicio}</Text>
         <Text style={styles.label}>Data de Retirada: {data.data_retirada}</Text>
@@ -164,7 +187,7 @@ const Aulas = () => {
               marginRight: 5
             })}
           >
-            <View  style={styles.aulaContainer}>
+            <View style={styles.aulaContainer}>
               <View style={styles.cursoContainer}>
                 <Text style={[styles.cursoNome, styles.label]}>{aula.nome.toUpperCase()}</Text>
                 <Text style={styles.whiteText}>{aula.conteudo}</Text>
@@ -232,6 +255,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
+    backgroundColor: '#1B1B1B',
+
   },
   sectionTitle: {
     fontSize: 20,
@@ -277,6 +302,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#1B1B1B',
     height: 45,
   },
+  professorContainer: {
+    alignItems: 'center',
+    marginRight: 10,
+    
+  },
+  professorImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+  professorName: {
+    color: '#fff',
+    marginTop: 5,
+    textAlign: 'center',
+  },
+  flatList: {
+    marginVertical: 20,
+  },
 });
 
-export default Aulas;
