@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, SectionList, Pressable, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, SectionList, ActivityIndicator, Pressable, RefreshControl, } from 'react-native';
 import { useNavigation, Stack } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Network from 'expo-network';
 
 const EditalVerticalizado = () => {
   const navigation = useNavigation();
@@ -19,12 +21,25 @@ const EditalVerticalizado = () => {
   const loadEditais = async () => {
     setRefreshing(true);
     try {
-      const response = await fetch('https://teal-crostata-aea03c.netlify.app/api/edital_prf');
-      const data = await response.json();
-      if (data && data.EDITAL) {
-        setEditais(data.EDITAL);
+      // Verificar a conexão com a internet
+      const networkState = await Network.getNetworkStateAsync();
+      if (networkState.isConnected) {
+        const response = await fetch('https://teal-crostata-aea03c.netlify.app/api/edital_prf');
+        const data = await response.json();
+        if (data && data.EDITAL) {
+          setEditais(data.EDITAL);
+          await AsyncStorage.setItem('editais', JSON.stringify(data.EDITAL));
+        } else {
+          setEditais([]);
+        }
       } else {
-        setEditais([]);
+        // Usar dados em cache se não houver conexão
+        const cachedData = await AsyncStorage.getItem('editais');
+        if (cachedData) {
+          setEditais(JSON.parse(cachedData));
+        } else {
+          throw new Error('Sem conexão e sem dados em cache disponíveis');
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar os editais:', error);
@@ -107,8 +122,18 @@ const EditalVerticalizado = () => {
         <View style={styles.editalBox}>
           <View style={styles.editalInfo}>
             <Text style={styles.editalTitle}>{item.nome}</Text>
-            <Text style={styles.estudadovezes}>{logsCount !== null ? `Esse assunto foi estudado ${logsCount} veze(s)` : 'Carregando...'}</Text>
+            {logsCount !== null ? (
+              <Text style={styles.estudadovezes}>
+                Esse assunto foi estudado {logsCount} veze(s)
+              </Text>
+            ) : (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#ffffff" />
+                <Text style={styles.loadingText}>Carregando...</Text>
+              </View>
+            )}
           </View>
+
         </View>
       </Pressable>
     );
@@ -126,7 +151,7 @@ const EditalVerticalizado = () => {
         },
         title: 'EDITAL VERTICALIZADO',
         headerTitleAlign: 'center',
-        
+
       }} />
       <View style={styles.container}>
         <View style={styles.filtersContainer}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, SectionList, Pressable, Alert, RefreshControl, Image } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, SectionList, Pressable, Alert, RefreshControl, Image, ActivityIndicator } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { FontAwesome } from '@expo/vector-icons';
 import { Stack, useNavigation, Link } from 'expo-router';
@@ -9,16 +9,14 @@ import * as VideoThumbnails from 'expo-video-thumbnails';
 
 const DownloadedVideosScreen = () => {
   const navigation = useNavigation();
-
   const db = useSQLiteContext();
   const [downloadedVideos, setDownloadedVideos] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true); // Adiciona o estado de carregamento
 
   const lockOrientation = async () => {
     await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
   };
-
-
 
   const loadDownloadedVideos = async () => {
     try {
@@ -54,9 +52,9 @@ const DownloadedVideosScreen = () => {
       console.error('Erro ao carregar vídeos baixados:', error);
     } finally {
       setRefreshing(false);
+      setLoading(false); // Define o estado de carregamento como falso quando terminar
     }
   };
-
 
   useEffect(() => {
     loadDownloadedVideos();
@@ -154,74 +152,82 @@ const DownloadedVideosScreen = () => {
         },
         title: 'DOWNLOADS',
         headerTitleAlign: 'center',
-
       }} />
       <View style={styles.container}>
-        <SectionList
-          sections={getSections()}
-          keyExtractor={(item, index) => `${item.id}-${index}`}
-          renderItem={({ item }) => (
-            item.data ? (
-              <View>
-                <Text style={styles.subSectionHeader}>{item.title.toUpperCase()}</Text>
-                {item.data.map(video => (
-                  <Pressable
-                    key={video.id}
-                    onPress={() => navigation.navigate('video', { video: `${FileSystem.documentDirectory}${video.id}.mp4`, titulo: video.titulo, id_video: video.id })}
-                    onLongPress={() =>
-                      Alert.alert(
-                        `Excluir vídeo: ${video.titulo}`,
-                        'Tem certeza que deseja excluir este vídeo?',
-                        [
-                          {
-                            text: 'Cancelar',
-                            style: 'cancel'
-                          },
-                          {
-                            text: 'Confirmar',
-                            onPress: () => handleDelete(video.id)
-                          }
-                        ],
-                        { cancelable: true }
-                      )
-                    }
-                    style={({ pressed }) => ({
-                      backgroundColor: pressed ? '#333333' : '#1B1B1B',
-                      marginTop: 5,
-                      marginBottom: 5,
-                      marginLeft: 5,
-                      marginRight: 5
-                    })}
-                  >
-                    <View style={styles.videoBox}>
-                      <View style={styles.videoInfo}>
-                        <Text style={styles.videoTitle}>{video.titulo}</Text>
-                        <Text style={styles.videoText}>{video.assunto}</Text>
+        {loading ? (
+
+          <>
+            <ActivityIndicator size="large" color="#ffffff" />
+            <Text style={[styles.whiteText]}>Carregando</Text>
+          </>
+
+        ) : (
+          <SectionList
+            sections={getSections()}
+            keyExtractor={(item, index) => `${item.id}-${index}`}
+            renderItem={({ item }) => (
+              item.data ? (
+                <View>
+                  <Text style={styles.subSectionHeader}>{item.title.toUpperCase()}</Text>
+                  {item.data.map(video => (
+                    <Pressable
+                      key={video.id}
+                      onPress={() => navigation.navigate('video', { video: `${FileSystem.documentDirectory}${video.id}.mp4`, titulo: video.titulo, id_video: video.id })}
+                      onLongPress={() =>
+                        Alert.alert(
+                          `Excluir vídeo: ${video.titulo}`,
+                          'Tem certeza que deseja excluir este vídeo?',
+                          [
+                            {
+                              text: 'Cancelar',
+                              style: 'cancel'
+                            },
+                            {
+                              text: 'Confirmar',
+                              onPress: () => handleDelete(video.id)
+                            }
+                          ],
+                          { cancelable: true }
+                        )
+                      }
+                      style={({ pressed }) => ({
+                        backgroundColor: pressed ? '#333333' : '#1B1B1B',
+                        marginTop: 5,
+                        marginBottom: 5,
+                        marginLeft: 5,
+                        marginRight: 5
+                      })}
+                    >
+                      <View style={styles.videoBox}>
+                        <View style={styles.videoInfo}>
+                          <Text style={styles.videoTitle}>{video.titulo}</Text>
+                          <Text style={styles.videoText}>{video.assunto}</Text>
+                        </View>
                       </View>
-                    </View>
-                  </Pressable>
-                ))}
-              </View>
-            ) : null
-          )}
-          renderSectionHeader={({ section: { title } }) => (
-            <Text style={styles.sectionHeader}>{title}</Text>
-          )}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={['#FF0000']}
-              tintColor="#FF0000"
-            />
-          }
-          ListEmptyComponent={<Text style={styles.noVideosText}>Nenhum vídeo baixado.</Text>}
-          ListFooterComponent={
-            <Pressable style={styles.deleteAllButton} onPress={handleDeleteAll}>
-              <Text style={styles.deleteAllButtonText}>Deletar Todos os Vídeos</Text>
-            </Pressable>
-          }
-        />
+                    </Pressable>
+                  ))}
+                </View>
+              ) : null
+            )}
+            renderSectionHeader={({ section: { title } }) => (
+              <Text style={styles.sectionHeader}>{title}</Text>
+            )}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={['#1B1B1B']}
+                tintColor="#fff"
+              />
+            }
+            ListEmptyComponent={<Text style={styles.noVideosText}>Nenhum vídeo baixado.</Text>}
+            ListFooterComponent={
+              <Pressable style={styles.deleteAllButton} onPress={handleDeleteAll}>
+                <Text style={styles.deleteAllButtonText}>Deletar Todos os Vídeos</Text>
+              </Pressable>
+            }
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -232,11 +238,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1B1B1B',
   },
+  whiteText: {
+    color: '#ffffff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#1B1B1B',
     paddingVertical: 20,
     paddingHorizontal: 5,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   videoBox: {
     flexDirection: 'row',

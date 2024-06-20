@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, FlatList, ScrollView, Linking, Pressable, SafeAreaView, RefreshControl, Image } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, FlatList, ScrollView, Pressable, SafeAreaView, RefreshControl, Image } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Slide } from '~/components/Slide';
-import { Stack, Link, useNavigation, useLocalSearchParams } from 'expo-router';  // Importando os componentes necessários
+import { Stack, useNavigation, useLocalSearchParams } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
-
-
+import * as Network from 'expo-network';  // Importação do módulo de rede
 
 export default function Curso() {
 
@@ -20,7 +19,6 @@ export default function Curso() {
 
   const url = `https://api.estrategiaconcursos.com.br/api/aluno/curso/${id}`;
 
-
   useEffect(() => {
     // Trava a orientação da tela em horizontal
     const lockOrientation = async () => {
@@ -32,8 +30,6 @@ export default function Curso() {
       ScreenOrientation.unlockAsync();
     };
   }, []);
-
-
 
   // Função para obter o token da API
   const getToken = async () => {
@@ -78,13 +74,37 @@ export default function Curso() {
     }
   };
 
+  const initializeData = async () => {
+    try {
+      // Verificar a conexão com a internet
+      const networkState = await Network.getNetworkStateAsync();
+      if (networkState.isConnected) {
+        await getToken();  // Garantir que o token esteja obtido antes de buscar os dados
+        await fetchData();
+      } else {
+        // Usar dados em cache se não houver conexão
+        const cachedData = await AsyncStorage.getItem(url);
+        if (cachedData) {
+          setData(JSON.parse(cachedData));
+        } else {
+          throw new Error('Sem conexão e sem dados em cache disponíveis');
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao inicializar os dados:', error);
+      setError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetchData();
+    initializeData();
   }, []);
 
   const handleRefresh = () => {
     setRefreshing(true);
-    fetchData();
+    initializeData();
   };
 
   if (error) {
@@ -120,7 +140,6 @@ export default function Curso() {
         }} />
         <ActivityIndicator size="large" color="#ffffff" />
         <Text style={[styles.whiteText]}>Carregando</Text>
-
       </View>
     );
   }
@@ -131,20 +150,26 @@ export default function Curso() {
       <Text style={styles.professorName}>{item.nome}</Text>
     </View>
   );
+
   const uniqueProfessores = data.professores
     .filter((professor, index, self) =>
       professor.imagem && index === self.findIndex((p) => p.id === professor.id)
     );
-
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scrollView}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} colors={['#1E90FF']} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={['#1B1B1B']}
+            tintColor="#fff"
+          />
         }
       >
+
         <Stack.Screen options={{
           headerStyle: {
             backgroundColor: '#1B1B1B',
@@ -198,7 +223,7 @@ export default function Curso() {
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   label: {
@@ -212,7 +237,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
   },
-
   safeArea: {
     flex: 1,
     backgroundColor: '#1B1B1B',
@@ -256,7 +280,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlign: 'center',
     backgroundColor: '#1B1B1B',
-
   },
   sectionTitle: {
     fontSize: 20,
@@ -270,12 +293,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-
   cursoContainer: {
     padding: 10,
     borderWidth: 0.5,
     borderColor: '#ccc',
-    // backgroundColor: '#1B1B1B',
   },
   cursoNome: {
     fontSize: 16,
@@ -305,7 +326,6 @@ const styles = StyleSheet.create({
   professorContainer: {
     alignItems: 'center',
     marginRight: 10,
-    
   },
   professorImage: {
     width: 50,
@@ -321,4 +341,3 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
 });
-

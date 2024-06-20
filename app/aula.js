@@ -371,7 +371,7 @@ export default function Aula() {
     const fetchData = async () => {
       try {
         // Simulação de carregamento de dados (você pode substituir por sua lógica de carregamento)
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 500));
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
       } finally {

@@ -5,20 +5,18 @@ import { View, Button, Pressable, Text, StyleSheet, ActivityIndicator, FlatList,
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { FontAwesome } from '@expo/vector-icons';
 
-
-
 export default function Cursos() {
-
   const { concurso } = useLocalSearchParams();
-
   const navigation = useNavigation();
-
   const concursoJson = JSON.parse(concurso);
-  console.log(concursoJson);
 
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-
+    // Simular carregamento dos dados
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500); // Simula um carregamento de 2 segundos
 
     // Trava a orientação da tela em horizontal
     const lockOrientation = async () => {
@@ -30,26 +28,44 @@ export default function Cursos() {
     return () => {
       ScreenOrientation.unlockAsync();
     };
-
   }, []);
 
-
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Stack.Screen
+          options={{
+            headerStyle: {
+              backgroundColor: '#1B1B1B',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+            title: concursoJson.titulo
+          }}
+        />
+        <ActivityIndicator size="large" color="#ffffff" />
+        <Text style={styles.loadingText}>Carregando...</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.containerArea}>
-      <ScrollView
-        style={styles.scrollView}
-      >
-        <Stack.Screen options={{
-          headerStyle: {
-            backgroundColor: '#1B1B1B',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          title: 'PROJETO RPF'
-        }} />
+      <ScrollView style={styles.scrollView}>
+        <Stack.Screen
+          options={{
+            headerStyle: {
+              backgroundColor: '#1B1B1B',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+            title: concursoJson.titulo
+          }}
+        />
 
         <Slide />
 
@@ -62,7 +78,6 @@ export default function Cursos() {
         {concursoJson.cursos ? (
           concursoJson.cursos.map(curso => (
             <View key={curso.id} style={styles.stepContainer}>
-
               <Pressable
                 onPress={() => navigation.navigate('curso', { id: curso.id })}
                 style={({ pressed }) => ({
@@ -73,17 +88,14 @@ export default function Cursos() {
                   marginRight: 5
                 })}
               >
-
                 <View style={styles.cursoContainer}>
                   <Text style={styles.cursoNome}>{curso.nome}</Text>
                   <Text style={styles.cursoInfo}>DATA DE INÍCIO: {curso.data_inicio}</Text>
                   <Text style={styles.cursoInfo}>DATA DE RETIRADA: {curso.data_retirada}</Text>
                   <Text style={styles.cursoInfo}>TOTAL DE AULAS: {curso.total_aulas}</Text>
                   <Text style={styles.cursoInfo}>TOTAL DE AULAS VISUALIZADAS: {curso.total_aulas_visualizadas}</Text>
-                  
                 </View>
               </Pressable>
-
             </View>
           ))
         ) : (
@@ -91,7 +103,6 @@ export default function Cursos() {
             <Text style={styles.errorText}>Não há dados disponíveis.</Text>
           </View>
         )}
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -120,9 +131,7 @@ const styles = StyleSheet.create({
   },
   cursoContainer: {
     width: "99%",
-    height: 180,
     padding: 10,
-    // marginBottom: 10,
     borderWidth: 0.5,
     borderColor: '#ccc',
   },
@@ -142,7 +151,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
   },
-
   subtitleContainer: {
     alignItems: 'center',
     marginBottom: 10,
@@ -152,13 +160,23 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textTransform: 'uppercase',
     color: '#ffffff',
-
   },
   icon: {
-    marginLeft: 5, // Espaço de 2 pixels ao lado do texto
+    marginLeft: 5,
     textAlign: 'center',
     color: '#A5B99C',
     fontWeight: 'bold',
     fontSize: 14,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1B1B1B',
+  },
+  loadingText: {
+    marginTop: 10,
+    color: '#ffffff',
+    fontSize: 16,
   },
 });
