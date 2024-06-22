@@ -1,0 +1,65 @@
+[
+  {
+    "materia": "NOÇÕES DE FÍSICA",
+    "bloco": "I",
+    "id": 401,
+    "peso": "0",
+    "nome": "1 Cinemática escalar, cinemática vetorial."
+  },
+  {
+    "materia": "NOÇÕES DE FÍSICA",
+    "bloco": "I",
+    "id": 402,
+    "peso": "0",
+    "nome": "2 Movimento circular."
+  },
+  {
+    "materia": "NOÇÕES DE FÍSICA",
+    "bloco": "I",
+    "id": 403,
+    "peso": "0",
+    "nome": "3 Leis de Newton e suas aplicações."
+  },
+  {
+    "materia": "NOÇÕES DE FÍSICA",
+    "bloco": "I",
+    "id": 404,
+    "peso": "0",
+    "nome": "4 Trabalho."
+  },
+  {
+    "materia": "NOÇÕES DE FÍSICA",
+    "bloco": "I",
+    "id": 405,
+    "peso": "0",
+    "nome": "5 Potência."
+  },
+  {
+    "materia": "NOÇÕES DE FÍSICA",
+    "bloco": "I",
+    "id": 406,
+    "peso": "0",
+    "nome": "6 Energia cinética, energia potencial, atrito."
+  },
+  {
+    "materia": "NOÇÕES DE FÍSICA",
+    "bloco": "I",
+    "id": 407,
+    "peso": "0",
+    "nome": "7 Conservação de energia e suas transformações."
+  },
+  {
+    "materia": "NOÇÕES DE FÍSICA",
+    "bloco": "I",
+    "id": 408,
+    "peso": "0",
+    "nome": "8 Quantidade de movimento e conservação da quantidade de movimento, impulso."
+  },
+  {
+    "materia": "NOÇÕES DE FÍSICA",
+    "bloco": "I",
+    "id": 409,
+    "peso": "0",
+    "nome": "9 Colisões."
+  }
+]

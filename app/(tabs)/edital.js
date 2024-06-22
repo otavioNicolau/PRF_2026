@@ -183,7 +183,11 @@ const EditalVerticalizado = () => {
         </View>
 
         {loading ? (
-          <Text style={styles.noEditaisText}>Carregando editais...</Text>
+          <>
+            <Text style={styles.noEditaisText}>Carregando editais...</Text>
+            <ActivityIndicator size="large" color="#ffffff" />
+          </>
+
         ) : (
           <SectionList
             sections={groupByMateria(filterEditais())}

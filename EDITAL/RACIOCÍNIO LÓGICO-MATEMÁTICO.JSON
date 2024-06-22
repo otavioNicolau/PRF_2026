@@ -1,0 +1,177 @@
+[
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 201,
+    "peso": "0",
+    "nome": "1 Modelagem de situações-problema por meio de equações do 1º e 2º graus e sistemas lineares."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 202,
+    "peso": "0",
+    "nome": "2 Noção de função."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 203,
+    "peso": "0",
+    "nome": "2.1 Análise gráfica."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 204,
+    "peso": "0",
+    "nome": "2.2 Funções afim, quadrática, exponencial e logarítmica."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 205,
+    "peso": "0",
+    "nome": "2.3 Aplicações."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 206,
+    "peso": "0",
+    "nome": "3 Taxas de variação de grandezas."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 207,
+    "peso": "0",
+    "nome": "3.1 Razão e proporção com aplicações."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 208,
+    "peso": "0",
+    "nome": "3.2 Regra de três simples e composta."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 209,
+    "peso": "0",
+    "nome": "4 Porcentagem."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 210,
+    "peso": "0",
+    "nome": "5 Regularidades e padrões em sequências."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 211,
+    "peso": "0",
+    "nome": "5.1 Sequências numéricas."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 212,
+    "peso": "0",
+    "nome": "5.2 Progressão aritmética e progressão geométrica."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 213,
+    "peso": "0",
+    "nome": "6 Noções básicas de contagem, probabilidade e estatística."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 214,
+    "peso": "0",
+    "nome": "7 Descrição e análise de dados."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 215,
+    "peso": "0",
+    "nome": "7.1 Leitura e interpretação de tabelas e gráficos apresentados em diferentes linguagens e representações."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 216,
+    "peso": "0",
+    "nome": "7.2 Cálculo de médias e análise de desvios de conjuntos de dados."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 217,
+    "peso": "0",
+    "nome": "8 Noções básicas de teoria dos conjuntos."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 218,
+    "peso": "0",
+    "nome": "9 Análise e interpretação de diferentes representações de figuras planas, como desenhos, mapas e plantas."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 219,
+    "peso": "0",
+    "nome": "9.1 Utilização de escalas."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 220,
+    "peso": "0",
+    "nome": "9.2 Visualização de figuras espaciais em diferentes posições."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 221,
+    "peso": "0",
+    "nome": "9.3 Representações bidimensionais de projeções, planificações e cortes."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 222,
+    "peso": "0",
+    "nome": "10 Métrica."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 223,
+    "peso": "0",
+    "nome": "10.1 Áreas e volumes."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 224,
+    "peso": "0",
+    "nome": "10.2 Estimativas."
+  },
+  {
+    "materia": "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+    "bloco": "I",
+    "id": 225,
+    "peso": "0",
+    "nome": "10.3 Aplicações."
+  }
+]

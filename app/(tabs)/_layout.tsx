@@ -31,7 +31,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="edital"
         options={{
-          title: 'Edital',
+          title: 'EDITAL',
           tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
         }}
       />

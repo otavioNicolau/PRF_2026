@@ -1,0 +1,205 @@
+[
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1101,
+    "peso": "0",
+    "nome": "1 Princípios básicos."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1102,
+    "peso": "0",
+    "nome": "2 Aplicação da lei penal."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1103,
+    "peso": "0",
+    "nome": "2.2 Lei penal no tempo."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1104,
+    "peso": "0",
+    "nome": "2.2.1 Tempo do crime."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1105,
+    "peso": "0",
+    "nome": "2.2.2 Conflito de leis penais no tempo."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1106,
+    "peso": "0",
+    "nome": "2.3 Lei penal no espaço."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1107,
+    "peso": "0",
+    "nome": "2.3.1 Lugar do crime."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1108,
+    "peso": "0",
+    "nome": "2.3.2 Territorialidade."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1109,
+    "peso": "0",
+    "nome": "2.3.3 Extraterritorialidade."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1110,
+    "peso": "0",
+    "nome": "3 Tipicidade."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1111,
+    "peso": "0",
+    "nome": "3.1 Crime doloso e crime culposo."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1112,
+    "peso": "0",
+    "nome": "3.2 Erro de tipo."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1113,
+    "peso": "0",
+    "nome": "3.3 Crime consumado e tentado."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1114,
+    "peso": "0",
+    "nome": "3.4 Crime impossível."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1115,
+    "peso": "0",
+    "nome": "3.5 Punibilidade e causas de extinção."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1116,
+    "peso": "0",
+    "nome": "4 Ilicitude."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1117,
+    "peso": "0",
+    "nome": "4.1 Causas de exclusão da ilicitude."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1118,
+    "peso": "0",
+    "nome": "4.2 Excesso punível."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1119,
+    "peso": "0",
+    "nome": "5 Culpabilidade."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1120,
+    "peso": "0",
+    "nome": "5.1 Causas de exclusão da culpabilidade."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1121,
+    "peso": "0",
+    "nome": "5.2 Imputabilidade."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1122,
+    "peso": "0",
+    "nome": "5.3 Erro de proibição."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1123,
+    "peso": "0",
+    "nome": "6 Crimes."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1124,
+    "peso": "0",
+    "nome": "6.1 Crimes contra a pessoa."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1125,
+    "peso": "0",
+    "nome": "6.2 Crimes contra o patrimônio."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1126,
+    "peso": "0",
+    "nome": "6.3 Crimes contra a dignidade sexual."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1127,
+    "peso": "0",
+    "nome": "6.4 Crimes contra a incolumidade pública."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1128,
+    "peso": "0",
+    "nome": "6.5 Crimes contra a fé pública."
+  },
+  {
+    "materia": "DIREITO PENAL",
+    "bloco": "III",
+    "id": 1129,
+    "peso": "0",
+    "nome": "6.6 Crimes contra a Administração Pública."
+  }
+]

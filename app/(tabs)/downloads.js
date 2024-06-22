@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, SectionList, Pressable, Alert, RefreshControl, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, SectionList, Pressable, Alert, RefreshControl, ActivityIndicator } from 'react-native';
 import * as FileSystem from 'expo-file-system';
-import { FontAwesome } from '@expo/vector-icons';
-import { Stack, useNavigation, Link } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useSQLiteContext } from 'expo-sqlite';
 import * as VideoThumbnails from 'expo-video-thumbnails';
+import { Stack, useNavigation, Link } from 'expo-router';
 
 const DownloadedVideosScreen = () => {
   const navigation = useNavigation();
+
   const db = useSQLiteContext();
   const [downloadedVideos, setDownloadedVideos] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -155,12 +155,10 @@ const DownloadedVideosScreen = () => {
       }} />
       <View style={styles.container}>
         {loading ? (
-
-          <>
+          <View style={styles.loaderContainer}>
             <ActivityIndicator size="large" color="#ffffff" />
             <Text style={[styles.whiteText]}>Carregando</Text>
-          </>
-
+          </View>
         ) : (
           <SectionList
             sections={getSections()}
@@ -240,6 +238,8 @@ const styles = StyleSheet.create({
   },
   whiteText: {
     color: '#ffffff',
+    textAlign: 'center', // Centraliza horizontalmente
+    marginTop: 10, // Adiciona margem para separar do ActivityIndicator
   },
   container: {
     flex: 1,
@@ -247,10 +247,10 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 5,
   },
-  loader: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  loaderContainer: {
+    flex: 1, // Ocupa todo o espaço disponível
+    justifyContent: 'center', // Centraliza verticalmente
+    alignItems: 'center', // Centraliza horizontalmente
   },
   videoBox: {
     flexDirection: 'row',
@@ -294,20 +294,18 @@ const styles = StyleSheet.create({
   },
   noVideosText: {
     color: '#ffffff',
-    fontSize: 16,
     textAlign: 'center',
+    paddingVertical: 20,
+    fontSize: 16,
   },
   deleteAllButton: {
-    backgroundColor: '#FF0000',
-    paddingVertical: 12,
-    borderRadius: 5,
+    backgroundColor: '#8B0000',
+    paddingVertical: 15,
     alignItems: 'center',
-    justifyContent: 'center',
     marginTop: 20,
   },
   deleteAllButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: '#ffffff',
     fontWeight: 'bold',
   },
 });

@@ -1,0 +1,93 @@
+[
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 301,
+    "peso": "0",
+    "nome": "1 Conceito de internet e intranet."
+  },
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 302,
+    "peso": "0",
+    "nome": "2 Conceitos e modos de utilização de tecnologias, ferramentas, aplicativos e procedimentos associados a internet/intranet."
+  },
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 303,
+    "peso": "0",
+    "nome": "2.1 Ferramentas e aplicativos comerciais de navegação, de correio eletrônico, de grupos de discussão, de busca, de pesquisa, de redes sociais e ferramentas colaborativas."
+  },
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 304,
+    "peso": "0",
+    "nome": "2.2 Noções de sistema operacional (ambiente Windows)."
+  },
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 305,
+    "peso": "0",
+    "nome": "2.3 Acesso a distância a computadores, transferência de informação e arquivos, aplicativos de áudio, vídeo e multimídia."
+  },
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 306,
+    "peso": "0",
+    "nome": "3 Transformação digital."
+  },
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 307,
+    "peso": "0",
+    "nome": "3.1 Internet das coisas (IoT)."
+  },
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 308,
+    "peso": "0",
+    "nome": "3.2 Big data."
+  },
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 309,
+    "peso": "0",
+    "nome": "3.3 Inteligência artificial."
+  },
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 310,
+    "peso": "0",
+    "nome": "4 Conceitos de proteção e segurança."
+  },
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 311,
+    "peso": "0",
+    "nome": "4.1 Noções de vírus, worms, phishing e pragas virtuais."
+  },
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 312,
+    "peso": "0",
+    "nome": "4.2 Aplicativos para segurança (antivírus, firewall, anti-spyware, VPN, etc.)."
+  },
+  {
+    "materia": "INFORMÁTICA",
+    "bloco": "I",
+    "id": 313,
+    "peso": "0",
+    "nome": "5 Computação na nuvem (cloud computing)."
+  }
+]
