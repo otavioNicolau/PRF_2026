@@ -4,6 +4,8 @@ import * as FileSystem from 'expo-file-system';
 import { FontAwesome } from '@expo/vector-icons';
 import { useLocalSearchParams, Stack, Link, useNavigation } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
+import * as MediaLibrary from 'expo-media-library'; // Importe o MediaLibrary para manipulação de arquivos
+
 
 const VideoList = ({ videos, aula, assunto, materia }) => {
   const navigation = useNavigation();

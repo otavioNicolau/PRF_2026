@@ -1,0 +1,15 @@
+INSERT INTO assuntos (id, materia, bloco, peso, nome, hierarquia, subTree, edital) VALUES
+(501, 'ÉTICA E CIDADANIA', 'I', 0, '1 Ética e moral.', '1', 0, 'PRF'),
+(502, 'ÉTICA E CIDADANIA', 'I', 0, '2 Ética, princípios e valores.', '2', 0, 'PRF'),
+(503, 'ÉTICA E CIDADANIA', 'I', 0, '3 Ética e função pública: integridade.', '3', 0, 'PRF'),
+(504, 'ÉTICA E CIDADANIA', 'I', 0, '4 Ética no setor público.', '4', 0, 'PRF'),
+(505, 'ÉTICA E CIDADANIA', 'I', 0, '4.1 Princípios da Administração Pública: moralidade (art. 37 da CF).', '4.1', 504, 'PRF'),
+(506, 'ÉTICA E CIDADANIA', 'I', 0, '4.2 Deveres dos servidores públicos: moralidade administrativa (Lei nº 8.112/1990, art. 116, IX).', '4.2', 504, 'PRF'),
+(507, 'ÉTICA E CIDADANIA', 'I', 0, '4.3 Política de governança da administração pública federal (Decreto nº 9.203/2017).', '4.3', 504, 'PRF'),
+(508, 'ÉTICA E CIDADANIA', 'I', 0, '4.4 Promoção da ética e de regras de conduta para servidores.', '4.4', 504, 'PRF'),
+(509, 'ÉTICA E CIDADANIA', 'I', 0, '4.4.1 Código de Ética Profissional do Servidor Público Civil do Poder Executivo Federal (Decreto nº 1.171/1994).', '4.4.1', 508, 'PRF'),
+(510, 'ÉTICA E CIDADANIA', 'I', 0, '4.4.2 Sistema de Gestão da Ética do Poder Executivo Federal e Comissões de Ética (Decreto nº 6.029/2007).', '4.4.2', 508, 'PRF'),
+(511, 'ÉTICA E CIDADANIA', 'I', 0, '4.4.3 Código de Conduta da Alta Administração Federal (Exposição de Motivos nº 37/2000).', '4.4.3', 508, 'PRF'),
+(512, 'ÉTICA E CIDADANIA', 'I', 0, '5 Ética e democracia: exercício da cidadania.', '5', 0, 'PRF'),
+(513, 'ÉTICA E CIDADANIA', 'I', 0, '5.1 Promoção da transparência ativa e do acesso à informação (Lei nº 12.527/2011 e Decreto nº 7.724/2012).', '5.1', 512, 'PRF'),
+(514, 'ÉTICA E CIDADANIA', 'I', 0, '5.2 Tratamento de conflitos de interesses e nepotismo (Lei nº 12.813/2013 e Decreto nº 7.203/2010).', '5.2', 512, '');
