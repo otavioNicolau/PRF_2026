@@ -48,15 +48,15 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
     );
   `);
 
-  await db.execAsync(`
-    PRAGMA journal_mode = 'wal';
-      CREATE TABLE IF NOT EXISTS edital (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        assunto_id INTEGER NOT NULL,
-        observacao TEXT,
-        data_hora TEXT NOT NULL
-    );
-  `);
+  // await db.execAsync(`
+  //   PRAGMA journal_mode = 'wal';
+  //     CREATE TABLE IF NOT EXISTS edital (
+  //       id INTEGER PRIMARY KEY AUTOINCREMENT,
+  //       assunto_id INTEGER NOT NULL,
+  //       observacao TEXT,
+  //       data_hora TEXT NOT NULL
+  //   );
+  // `);
 
   // await db.execAsync(`
   //   PRAGMA journal_mode = 'wal';

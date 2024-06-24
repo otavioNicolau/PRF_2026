@@ -51,7 +51,7 @@ export default function Curso() {
       if (!token) {
         token = await getToken(); // Obtém um novo token se não estiver armazenado
       }
-
+      console.log(token);
       const headers = {
         Authorization: `${token}`,
       };

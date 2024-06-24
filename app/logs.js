@@ -1,58 +1,78 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Pressable, TextInput, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useLocalSearchParams, Stack, useNavigation } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://qyqcgxgxcbvlatlwzbuy.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5cWNneGd4Y2J2bGF0bHd6YnV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTg5NzE4MTEsImV4cCI6MjAzNDU0NzgxMX0.SsFiwHvmTQgu4DvwpdR7WwHwBoH25Gdb0EzzWTe9g4Y';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function Logs() {
   const navigation = useNavigation();
   const { assunto } = useLocalSearchParams();
-  const [observacao, setObservacao] = useState('');
+  const [observacao, setObservacao] = useState('ESTUDADO! CAVEIRA!');
   const [logs, setLogs] = useState([]);
   const [numLogs, setNumLogs] = useState(0); // Estado para armazenar o número de logs
   const assuntoJson = JSON.parse(assunto);
-  const db = useSQLiteContext();
 
-
-  const countLogs = async (db, assunto_id) => {
+  const countLogs = async (assunto_id) => {
     try {
-      const sql = `SELECT COUNT(*) AS count FROM edital WHERE assunto_id = ?;`;
-      const result = await db.getAllAsync(sql, [assunto_id]);
-      const count = result[0]?.count || 0;
+      const { count, error } = await supabase
+        .from('estudado')
+        .select('id', { count: 'exact' })
+        .eq('assunto_id', assunto_id);
+  
+      if (error) {
+        throw error;
+      }
+  
       setNumLogs(count);
     } catch (error) {
-      console.error('Erro ao contar os logs:', error);
+      console.error('Erro ao contar os logs:', error.message);
     }
   };
+  
 
-
-  useEffect(() => {
-    loadLogs(db, assuntoJson.id);
-    countLogs(db, assuntoJson.id); // Contar logs ao carregar a tela
-  }, []);
-
-  const loadLogs = async (db, assunto_id) => {
+  const loadLogs = async (assunto_id) => {
     try {
-      const results = await db.getAllAsync(
-        `SELECT * FROM edital WHERE assunto_id = ?;`,
-        [assunto_id]
-      );
-      setLogs(results);
+      const { data, error } = await supabase
+        .from('estudado')
+        .select('*')
+        .eq('assunto_id', assunto_id)
+        .order('created_at', { ascending: false });
+  
+      if (error) {
+        throw error;
+      }
+  
+      setLogs(data || []);
     } catch (error) {
-      console.error('Erro ao carregar os logs:', error);
+      console.error('Erro ao carregar os logs:', error.message);
     }
   };
-
-  const insertLog = async (db, assunto_id, observacao) => {
+  
+  
+  const insertLog = async (assunto_id, observacao) => {
     try {
-      const dateTime = new Date().toISOString();
-      await db.runAsync(
-        `INSERT INTO edital (assunto_id, observacao, data_hora) VALUES (?, ?, ?);`,
-        [assunto_id, observacao, dateTime]
-      );
+      const { data, error } = await supabase
+        .from('estudado')
+        .insert([
+          {
+            assunto_id,
+            observacao,
+            created_at: new Date().toISOString(), // Inserir a data atual no formato adequado
+          },
+        ]);
+
+      if (error) {
+        throw error;
+      }
+
       Alert.alert('Sucesso', 'Registro salvo com sucesso!');
-      loadLogs(db, assunto_id); // Recarregar logs após inserção
-      countLogs(db, assunto_id); // Atualizar o número de logs após inserção
+      loadLogs(assunto_id);
+      countLogs(assunto_id);
+      setObservacao('ESTUDADO! CAVEIRA!');
     } catch (error) {
       console.error('Erro ao inserir o log de estudo:', error);
     }
@@ -60,21 +80,24 @@ export default function Logs() {
 
   const deleteLog = async (logId) => {
     try {
-      await db.runAsync(
-        `DELETE FROM edital WHERE id = ?;`,
-        [logId]
-      );
-      // Alert.alert('Sucesso', 'Log excluído com sucesso!');
-      loadLogs(db, assuntoJson.id); // Recarregar logs após exclusão
-      countLogs(db, assuntoJson.id); // Atualizar o número de logs após exclusão
+      const { error } = await supabase
+        .from('estudado')
+        .delete()
+        .eq('id', logId);
+
+      if (error) {
+        throw error;
+      }
+
+      loadLogs(assuntoJson.id);
+      countLogs(assuntoJson.id);
     } catch (error) {
       console.error('Erro ao excluir o log de estudo:', error);
     }
   };
 
   const handleSave = async () => {
-    await insertLog(db, assuntoJson.id, observacao);
-    setObservacao(''); // Limpar campo de observação após salvar
+    await insertLog(assuntoJson.id, observacao);
   };
 
   const confirmDelete = (logId) => {
@@ -87,9 +110,6 @@ export default function Logs() {
       ]
     );
   };
-
-
-  
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -105,7 +125,6 @@ export default function Logs() {
           title: assuntoJson.nome,
         }} />
 
-        
         <View style={styles.assuntoContainer}>
           <Text style={styles.label}>Matéria:</Text>
           <Text style={styles.value}>{assuntoJson.materia}</Text>
@@ -120,11 +139,12 @@ export default function Logs() {
           <Text style={styles.value}>{assuntoJson.peso}</Text>
 
           <View style={styles.logsCountContainer}>
-          <Text style={styles.logsCountText}>
-            TOTAL DE VEZES ESTUDADO: {numLogs}
-          </Text>
+            <Text style={styles.logsCountText}>
+              TOTAL DE VEZES ESTUDADO: {numLogs}
+            </Text>
+          </View>
         </View>
-        </View>
+
         <Text style={styles.logsTitle}>CONTROLE DE ESTUDO</Text>
         <Text style={styles.value}>Registre abaixo as informações relevantes sobre o estudo do tópico acima.</Text>
 
@@ -166,14 +186,12 @@ export default function Logs() {
               >
                 <View>
                   <Text style={styles.logText}>{log.observacao}</Text>
-                  <Text style={styles.logDateTime}>{new Date(log.data_hora).toLocaleString()}</Text>
+                  <Text style={styles.logDateTime}>{new Date(log.created_at).toLocaleString()}</Text>
                 </View>
               </Pressable>
             ))
           )}
         </View>
-
-
       </ScrollView>
     </SafeAreaView>
   );

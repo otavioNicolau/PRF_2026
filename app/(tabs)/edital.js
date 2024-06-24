@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, SectionList, ActivityIndicator, Pressable, RefreshControl, } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, SectionList, ActivityIndicator, Pressable, RefreshControl } from 'react-native';
 import { useNavigation, Stack } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Network from 'expo-network';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://qyqcgxgxcbvlatlwzbuy.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5cWNneGd4Y2J2bGF0bHd6YnV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTg5NzE4MTEsImV4cCI6MjAzNDU0NzgxMX0.SsFiwHvmTQgu4DvwpdR7WwHwBoH25Gdb0EzzWTe9g4Y';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const EditalVerticalizado = () => {
   const navigation = useNavigation();
@@ -12,7 +15,7 @@ const EditalVerticalizado = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [pesoFilters, setPesoFilters] = useState([]);
   const [blocoFilters, setBlocoFilters] = useState([]);
-  const db = useSQLiteContext();
+  const [currentMateria, setCurrentMateria] = useState('');
 
   useEffect(() => {
     loadEditais();
@@ -21,28 +24,25 @@ const EditalVerticalizado = () => {
   const loadEditais = async () => {
     setRefreshing(true);
     try {
-      // Verificar a conexão com a internet
-      const networkState = await Network.getNetworkStateAsync();
-      if (networkState.isConnected) {
-        const response = await fetch('https://teal-crostata-aea03c.netlify.app/api/edital_prf');
-        const data = await response.json();
-        if (data && data.EDITAL) {
-          setEditais(data.EDITAL);
-          await AsyncStorage.setItem('editais', JSON.stringify(data.EDITAL));
-        } else {
-          setEditais([]);
-        }
+      const { data: assuntos, error } = await supabase.from('assuntos').select('*');
+      if (error) {
+        throw error;
+      }
+      if (assuntos && assuntos.length > 0) {
+        setEditais(assuntos);
+        // await AsyncStorage.setItem('editais', JSON.stringify(assuntos));
       } else {
-        // Usar dados em cache se não houver conexão
-        const cachedData = await AsyncStorage.getItem('editais');
-        if (cachedData) {
-          setEditais(JSON.parse(cachedData));
-        } else {
-          throw new Error('Sem conexão e sem dados em cache disponíveis');
-        }
+        setEditais([]);
       }
     } catch (error) {
-      console.error('Erro ao carregar os editais:', error);
+      console.error('Erro ao carregar os assuntos:', error.message);
+      // Usar dados em cache se disponíveis
+      // const cachedData = await AsyncStorage.getItem('editais');
+      // if (cachedData) {
+      //   setEditais(JSON.parse(cachedData));
+      // } else {
+      //   console.error('Sem dados em cache disponíveis');
+      // }
     } finally {
       setRefreshing(false);
       setLoading(false);
@@ -55,12 +55,19 @@ const EditalVerticalizado = () => {
 
   const countLogs = async (assunto_id) => {
     try {
-      const sql = `SELECT COUNT(*) AS count FROM edital WHERE assunto_id = ?;`;
-      const result = await db.getAllAsync(sql, [assunto_id]);
-      const count = result && result[0]?.count || 0;
-      return count;
+      const { data: logs, error } = await supabase
+        .from('estudado')
+        .select('count', { count: 'exact' })
+        .eq('assunto_id', assunto_id)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      return logs ? logs.count : 0;
     } catch (error) {
-      console.error('Erro ao contar os logs:', error);
+      console.error('Erro ao contar os logs:', error.message);
       return 0; // Em caso de erro, retornar 0
     }
   };
@@ -69,7 +76,7 @@ const EditalVerticalizado = () => {
     let filtered = [...editais];
 
     if (pesoFilters.length > 0) {
-      filtered = filtered.filter(edital => pesoFilters.includes(edital.peso));
+      filtered = filtered.filter(edital => pesoFilters.includes(edital.peso.toString()));
     }
 
     if (blocoFilters.length > 0) {
@@ -95,7 +102,22 @@ const EditalVerticalizado = () => {
     }
   };
 
-  const renderItem = ({ item }) => {
+  const onViewableItemsChanged = useCallback(({ viewableItems }) => {
+    if (viewableItems && viewableItems.length > 0) {
+      setCurrentMateria(viewableItems[0].section.title);
+    }
+  }, []);
+
+  const buildSubTree = (items, parentId = 0) => {
+    return items
+      .filter(item => item.subtree === parentId)
+      .map(item => ({
+        ...item,
+        children: buildSubTree(items, item.id)
+      }));
+  };
+
+  const renderItem = ({ item, index, section }) => {
     const [logsCount, setLogsCount] = useState(null);
 
     useEffect(() => {
@@ -106,37 +128,54 @@ const EditalVerticalizado = () => {
       fetchLogsCount();
     }, [item.id]);
 
-    return (
-      <Pressable
-        onPress={() => {
-          navigation.navigate('logs', { assunto: JSON.stringify(item) });
-        }}
-        style={({ pressed }) => ({
-          backgroundColor: pressed ? '#333333' : '#1B1B1B',
-          marginTop: 5,
-          marginBottom: 5,
-          marginLeft: 5,
-          marginRight: 5
-        })}
-      >
-        <View style={styles.editalBox}>
-          <View style={styles.editalInfo}>
-            <Text style={styles.editalTitle}>{item.nome}</Text>
+    if (item.subtree === 0) { // Assunto principal
+      return (
+        <Pressable
+          onPress={() => {
+            navigation.navigate('logs', { assunto: JSON.stringify(item) });
+          }}
+          style={({ pressed }) => ({
+            backgroundColor: pressed ? '#333333' : '#1B1B1B',
+            marginTop: 5,
+            marginBottom: 5,
+            marginLeft: 5,
+            marginRight: 5
+          })}
+        >
+          <View style={styles.editalBox}>
+            <View style={styles.editalInfo}>
+              <Text style={styles.editalTitle}>{item.nome}</Text>
+            </View>
+            {item.children && item.children.length > 0 && (
+              <View style={styles.childrenContainer}>
+                {item.children.map((child, childIndex) => (
+                  <View key={child.id} style={styles.childContainer}>
+                    {renderItem({ item: child, index: childIndex, section })}
+                  </View>
+                ))}
+              </View>
+            )}
             {logsCount !== null ? (
               <Text style={styles.estudadovezes}>
-                Esse assunto foi estudado {logsCount} veze(s)
+                Esse assunto foi estudado {logsCount} vez{logsCount >= 1 ? 'es' : ''}
               </Text>
             ) : (
               <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#ffffff" />
-                <Text style={styles.loadingText}>Carregando...</Text>
+                <Text style={styles.estudadovezes}>
+                  Esse assunto foi estudado 0 vez
+                </Text>
               </View>
             )}
           </View>
-
+        </Pressable>
+      );
+    } else { // Filho
+      return (
+        <View style={styles.childTopicContainer}>
+          <Text style={styles.childTopicText}>{`${item.nome}`}</Text>
         </View>
-      </Pressable>
-    );
+      );
+    }
   };
 
   return (
@@ -157,11 +196,11 @@ const EditalVerticalizado = () => {
         <View style={styles.filtersContainer}>
           <Text style={styles.filterTitle}>FILTRAR POR PESO:</Text>
           <View style={styles.filterButtonsContainer}>
-            {['0', '1', '2', '3', '4'].map(peso => (
+            {[0, 1, 2, 3, 4].map(peso => (
               <Pressable
                 key={peso}
-                style={[styles.filterButton, pesoFilters.includes(peso) ? styles.filterButtonActive : null]}
-                onPress={() => toggleFilter(peso, 'peso')}
+                style={[styles.filterButton, pesoFilters.includes(peso.toString()) ? styles.filterButtonActive : null]}
+                onPress={() => toggleFilter(peso.toString(), 'peso')}
               >
                 <Text style={styles.filterButtonText}>{peso}</Text>
               </Pressable>
@@ -180,6 +219,8 @@ const EditalVerticalizado = () => {
               </Pressable>
             ))}
           </View>
+
+          <Text style={styles.materiaTitleTOP}>{currentMateria}</Text>
         </View>
 
         {loading ? (
@@ -187,11 +228,10 @@ const EditalVerticalizado = () => {
             <Text style={styles.noEditaisText}>Carregando editais...</Text>
             <ActivityIndicator size="large" color="#ffffff" />
           </>
-
         ) : (
           <SectionList
-            sections={groupByMateria(filterEditais())}
-            keyExtractor={(item, index) => item.id.toString()}
+            sections={groupByMateria(buildSubTree(filterEditais()))}
+            keyExtractor={(item, index) => item.id}
             renderItem={renderItem}
             renderSectionHeader={({ section: { title } }) => (
               <Text style={styles.materiaTitle}>{title}</Text>
@@ -205,6 +245,11 @@ const EditalVerticalizado = () => {
                 progressBackgroundColor="#1B1B1B"
               />
             }
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={{
+              itemVisiblePercentThreshold: 50,
+              minimumViewTime: 1000,
+            }}
           />
         )}
       </View>
@@ -231,7 +276,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1B1B1B',
   },
   estudadovezes: {
-    color: '#A5B99C',
+    color: '#ffffff',
     fontSize: 14,
     marginTop: 5,
   },
@@ -242,13 +287,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   filtersContainer: {
-    marginBottom: 20,
+    marginBottom: 5,
   },
   filterTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#A5B99C',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   filterButtonsContainer: {
     flexDirection: 'row',
@@ -258,8 +303,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 5,
-    margin: 5,
+    margin: 4,
   },
   filterButtonActive: {
     backgroundColor: '#A5B99C',
@@ -268,6 +312,15 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
   },
+  materiaTitleTOP: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#A5B99C',
+    marginTop: 10,
+    marginBottom: 5,
+    alignItems: 'center',
+    textAlign:'center',
+  },
   materiaTitle: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -275,9 +328,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   editalBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     borderWidth: 1,
     borderColor: '#ffffff',
     padding: 10,
@@ -288,6 +339,7 @@ const styles = StyleSheet.create({
   editalTitle: {
     color: '#ffffff',
     fontSize: 16,
+    fontWeight: 'bold'
   },
   editalDetails: {
     color: '#ffffff',
@@ -297,6 +349,24 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     textAlign: 'center',
+  },
+  childrenContainer: {
+    marginLeft: 20,
+  },
+  childContainer: {
+    marginTop: 5,
+  },
+  childTopicContainer: {
+    flexDirection: 'row',
+    marginLeft: 10,
+    marginBottom: 5,
+  },
+  childTopicText: {
+    color: '#A5B99C',
+    fontSize: 16,
+  },
+  loadingContainer: {
+    marginTop: 5,
   },
 });
 
