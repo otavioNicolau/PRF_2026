@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView, SectionList, ActivityIndicator, P
 import { useNavigation, Stack } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
+import * as Network from 'expo-network';
 
 const supabaseUrl = 'https://qyqcgxgxcbvlatlwzbuy.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5cWNneGd4Y2J2bGF0bHd6YnV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTg5NzE4MTEsImV4cCI6MjAzNDU0NzgxMX0.SsFiwHvmTQgu4DvwpdR7WwHwBoH25Gdb0EzzWTe9g4Y';
@@ -24,25 +25,35 @@ const EditalVerticalizado = () => {
   const loadEditais = async () => {
     setRefreshing(true);
     try {
-      const { data: assuntos, error } = await supabase.from('assuntos').select('*');
-      if (error) {
-        throw error;
-      }
-      if (assuntos && assuntos.length > 0) {
-        setEditais(assuntos);
-        // await AsyncStorage.setItem('editais', JSON.stringify(assuntos));
+      const { isConnected } = await Network.getNetworkStateAsync();
+      if (isConnected) {
+        const { data: assuntos, error } = await supabase.from('assuntos').select('*');
+        if (error) {
+          throw error;
+        }
+        if (assuntos && assuntos.length > 0) {
+          setEditais(assuntos);
+          await AsyncStorage.setItem('editais', JSON.stringify(assuntos));
+        } else {
+          setEditais([]);
+        }
       } else {
-        setEditais([]);
+        console.warn('Sem conexão com a internet. Carregando dados em cache.');
+        const cachedData = await AsyncStorage.getItem('editais');
+        if (cachedData) {
+          setEditais(JSON.parse(cachedData));
+        } else {
+          console.error('Sem dados em cache disponíveis');
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar os assuntos:', error.message);
-      // Usar dados em cache se disponíveis
-      // const cachedData = await AsyncStorage.getItem('editais');
-      // if (cachedData) {
-      //   setEditais(JSON.parse(cachedData));
-      // } else {
-      //   console.error('Sem dados em cache disponíveis');
-      // }
+      const cachedData = await AsyncStorage.getItem('editais');
+      if (cachedData) {
+        setEditais(JSON.parse(cachedData));
+      } else {
+        console.error('Sem dados em cache disponíveis');
+      }
     } finally {
       setRefreshing(false);
       setLoading(false);
@@ -55,6 +66,12 @@ const EditalVerticalizado = () => {
 
   const countLogs = async (assunto_id) => {
     try {
+      const isConnected = await checkInternetConnection();
+      if (!isConnected) {
+        const cachedCount = await loadCountFromStorage(assunto_id);
+        return cachedCount;
+      }
+
       const { data: logs, error } = await supabase
         .from('estudado')
         .select('count', { count: 'exact' })
@@ -65,11 +82,36 @@ const EditalVerticalizado = () => {
         throw error;
       }
 
-      return logs ? logs.count : 0;
+      const logsCount = logs ? logs.count : 0;
+      await saveCountToStorage(assunto_id, logsCount);
+      return logsCount;
     } catch (error) {
       console.error('Erro ao contar os logs:', error.message);
-      return 0; // Em caso de erro, retornar 0
+      return 0;
     }
+  };
+
+  const saveCountToStorage = async (assunto_id, count) => {
+    try {
+      await AsyncStorage.setItem(`count_${assunto_id}`, count.toString());
+    } catch (error) {
+      console.error('Erro ao salvar contagem no AsyncStorage:', error);
+    }
+  };
+
+  const loadCountFromStorage = async (assunto_id) => {
+    try {
+      const storedCount = await AsyncStorage.getItem(`count_${assunto_id}`);
+      return storedCount ? parseInt(storedCount, 10) : 0;
+    } catch (error) {
+      console.error('Erro ao carregar contagem do AsyncStorage:', error);
+      return 0;
+    }
+  };
+
+  const checkInternetConnection = async () => {
+    const { isConnected } = await Network.getNetworkStateAsync();
+    return isConnected;
   };
 
   const filterEditais = () => {
@@ -128,7 +170,7 @@ const EditalVerticalizado = () => {
       fetchLogsCount();
     }, [item.id]);
 
-    if (item.subtree === 0) { // Assunto principal
+    if (item.subtree === 0) {
       return (
         <Pressable
           onPress={() => {
@@ -169,10 +211,19 @@ const EditalVerticalizado = () => {
           </View>
         </Pressable>
       );
-    } else { // Filho
+    } else {
       return (
         <View style={styles.childTopicContainer}>
           <Text style={styles.childTopicText}>{`${item.nome}`}</Text>
+          {item.children && item.children.length > 0 && (
+            <View style={styles.childrenContainer}>
+              {item.children.map((child, childIndex) => (
+                <View key={child.id} style={styles.childContainer}>
+                  {renderItem({ item: child, index: childIndex, section })}
+                </View>
+              ))}
+            </View>
+          )}
         </View>
       );
     }
@@ -190,7 +241,6 @@ const EditalVerticalizado = () => {
         },
         title: 'EDITAL VERTICALIZADO',
         headerTitleAlign: 'center',
-
       }} />
       <View style={styles.container}>
         <View style={styles.filtersContainer}>
@@ -319,7 +369,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 5,
     alignItems: 'center',
-    textAlign:'center',
+    textAlign: 'center',
   },
   materiaTitle: {
     fontSize: 18,
@@ -357,7 +407,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   childTopicContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     marginLeft: 10,
     marginBottom: 5,
   },

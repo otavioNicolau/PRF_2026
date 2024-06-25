@@ -1,5 +1,12 @@
 import { Stack } from 'expo-router';
 import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
+import { useState, useEffect } from 'react';
+
+import { supabase } from '~/lib/supabase';
+import Auth from '~/components/Auth';
+import Account from '~/components/Account';
+import { Session } from '@supabase/supabase-js';
+
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -7,9 +14,26 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
+  const [session, setSession] = useState<Session | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+  }, [])
+
   return (
     <SQLiteProvider databaseName="DB_PRF2026.db" onInit={migrateDbIfNeeded}>
+
+
+
       <Stack>
+        {session && session.user ? <Account key={session.user.id} session={session} /> : <Auth />}
+
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>
