@@ -4,6 +4,7 @@
     "slug": "prf2026",
     "version": "1.0.0",
     "scheme": ["PRF2026"],
+    "platforms": ["android"],
     "web": {
       "bundler": "metro",
       "output": "static",

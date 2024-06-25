@@ -4,31 +4,42 @@ import * as FileSystem from 'expo-file-system';
 import { FontAwesome } from '@expo/vector-icons';
 import { useLocalSearchParams, Stack, Link, useNavigation } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
+import { supabase } from '~/lib/supabase';
 
 
 const VideoList = ({ videos, aula, assunto, materia }) => {
   const navigation = useNavigation();
-
-  const db = useSQLiteContext();
   const [downloadProgress, setDownloadProgress] = useState({});
   const [downloading, setDownloading] = useState({});
   const [downloadedVideos, setDownloadedVideos] = useState({});
   const [watchedVideos, setWatchedVideos] = useState({});
 
-  const insertVideo = async (db, id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri) => {
+  const insertVideo = async (id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri) => {
     try {
-      await db.runAsync(
-        `INSERT INTO videos (id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?);`,
-        [id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri]
-      );
+      const { data, error } = await supabase
+        .from('videos')
+        .insert([
+          { id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri },
+        ]);
+
+      if (error) {
+        throw error;
+      }
     } catch (error) {
       console.error('Erro ao inserir vídeo:', error);
     }
   };
 
-  const deleteVideo = async (db, id_video) => {
+  const deleteVideo = async (id_video) => {
     try {
-      await db.runAsync(`DELETE FROM videos WHERE id_video = ?;`, [id_video]);
+      const { data, error } = await supabase
+        .from('videos')
+        .delete()
+        .eq('id_video', id_video);
+
+      if (error) {
+        throw error;
+      }
     } catch (error) {
       console.error('Erro ao deletar vídeo:', error);
     }
@@ -47,10 +58,6 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
       console.error('Erro ao listar vídeos baixados:', error);
     }
   };
-
-  // useEffect(() => {
-  //   checkDownloadedVideos();
-  // }, []);
 
   const getVideoUrl = (resolucoes) => {
     if (!resolucoes) {
@@ -95,7 +102,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
       );
 
       const { uri } = await downloadResumable.downloadAsync();
-      await insertVideo(db, video.id, video.titulo, aula, materia, assunto, video.resolucoes['720p'], video.resolucoes['480p'], video.resolucoes['360p'], uri);
+      await insertVideo(video.id, video.titulo, aula, materia, assunto, video.resolucoes['720p'], video.resolucoes['480p'], video.resolucoes['360p'], uri);
 
     } catch (error) {
       console.error('Erro ao baixar o vídeo:', error);
@@ -114,7 +121,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
       }
 
       await FileSystem.deleteAsync(fileUri);
-      await deleteVideo(db, video.id);
+      await deleteVideo(video.id);
       checkDownloadedVideos(); // Atualiza a lista de vídeos baixados após a exclusão
     } catch (error) {
       console.error('Erro ao excluir o vídeo:', error);
@@ -124,8 +131,16 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
 
   const checkIfWatched = async (videoId) => {
     try {
-      const result = await db.getAllAsync('SELECT watched FROM videos WHERE id_video = ?;', [videoId]);
-      return result.length > 0 && result[0].watched === 1;
+      const { data, error } = await supabase
+        .from('videos')
+        .select('watched')
+        .eq('id_video', videoId);
+
+      if (error) {
+        throw error;
+      }
+
+      return data.length > 0 && data[0].watched === true;
     } catch (error) {
       console.error('Erro ao consultar vídeo assistido:', error);
       return false;
@@ -134,26 +149,34 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
 
   const markAsWatched = async (video) => {
     try {
-      const isWatched = watchedVideos[video.id]; // Verifica se o vídeo já está marcado como assistido
+      const isWatched = watchedVideos[video.id];
 
       if (isWatched) {
-        // Se já estiver marcado, desmarca
-        await db.runAsync('UPDATE videos SET watched = 0 WHERE id_video = ?;', [video.id]);
-        setWatchedVideos((prev) => ({ ...prev, [video.id]: false })); // Atualiza o estado local para desmarcado
-        // Alert.alert('Aviso', 'Vídeo desmarcado como assistido.');
+        await supabase
+          .from('videos')
+          .update({ watched: false })
+          .eq('id_video', video.id);
+        setWatchedVideos((prev) => ({ ...prev, [video.id]: false }));
       } else {
-        // Se não estiver marcado, marca como assistido
-        const result = await db.getAllAsync('SELECT COUNT(*) AS count FROM videos WHERE id_video = ?;', [video.id]);
-        const count = result[0]?.count || 0;
+        const { data } = await supabase
+          .from('videos')
+          .select('id_video')
+          .eq('id_video', video.id);
 
-        if (count > 0) {
-          await db.runAsync('UPDATE videos SET watched = 1 WHERE id_video = ?;', [video.id]);
+        if (data.length > 0) {
+          await supabase
+            .from('videos')
+            .update({ watched: true })
+            .eq('id_video', video.id);
         } else {
-          await db.runAsync('INSERT INTO videos (id_video, titulo, watched) VALUES (?,?,?);', [video.id, video.titulo, 1]);
+          await supabase
+            .from('videos')
+            .insert([
+              { id_video: video.id, titulo: video.titulo, watched: true },
+            ]);
         }
 
-        setWatchedVideos((prev) => ({ ...prev, [video.id]: true })); // Atualiza o estado local para marcado
-        // Alert.alert('Aviso', 'Vídeo marcado como assistido.');
+        setWatchedVideos((prev) => ({ ...prev, [video.id]: true }));
       }
     } catch (error) {
       console.error('Erro ao marcar como assistido:', error);
@@ -181,7 +204,6 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
 
   return (
     <View>
-      
       {videos.map((video, index) => (
         <View key={index}>
           {downloadedVideos[video.id] ? (
@@ -358,8 +380,8 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
       ))}
     </View>
   );
-
 };
+
 
 export default function Aula() {
   const navigation = useNavigation();

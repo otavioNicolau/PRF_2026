@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, SectionList, ActivityIndicator, Pressable, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, SectionList, ActivityIndicator, Pressable, RefreshControl, Alert } from 'react-native';
 import { useNavigation, Stack } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 import * as Network from 'expo-network';
-
-const supabaseUrl = 'https://qyqcgxgxcbvlatlwzbuy.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5cWNneGd4Y2J2bGF0bHd6YnV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTg5NzE4MTEsImV4cCI6MjAzNDU0NzgxMX0.SsFiwHvmTQgu4DvwpdR7WwHwBoH25Gdb0EzzWTe9g4Y';
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from '~/lib/supabase';
 
 const EditalVerticalizado = () => {
   const navigation = useNavigation();
@@ -17,6 +14,29 @@ const EditalVerticalizado = () => {
   const [pesoFilters, setPesoFilters] = useState([]);
   const [blocoFilters, setBlocoFilters] = useState([]);
   const [currentMateria, setCurrentMateria] = useState('');
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    const getSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        setSession(session);
+      } catch (error) {
+        Alert.alert('Error fetching session:', error.message);
+      }
+    };
+
+    getSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => {
+      authListener.subscription;
+    };
+  }, []);
 
   useEffect(() => {
     loadEditais();
@@ -76,6 +96,7 @@ const EditalVerticalizado = () => {
         .from('estudado')
         .select('count', { count: 'exact' })
         .eq('assunto_id', assunto_id)
+        .eq('id_user', session.user.id)
         .single();
 
       if (error) {

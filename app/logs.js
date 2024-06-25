@@ -5,10 +5,7 @@ import { useLocalSearchParams, useNavigation, Stack } from 'expo-router';
 import { createClient } from '@supabase/supabase-js';
 import * as Network from 'expo-network';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const supabaseUrl = 'https://qyqcgxgxcbvlatlwzbuy.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5cWNneGd4Y2J2bGF0bHd6YnV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTg5NzE4MTEsImV4cCI6MjAzNDU0NzgxMX0.SsFiwHvmTQgu4DvwpdR7WwHwBoH25Gdb0EzzWTe9g4Y';
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from '~/lib/supabase';
 
 export default function Logs() {
   const navigation = useNavigation();
@@ -17,11 +14,36 @@ export default function Logs() {
   const [logs, setLogs] = useState([]);
   const [numLogs, setNumLogs] = useState(0);
   const assuntoJson = JSON.parse(assunto);
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
-    loadLogs(assuntoJson.id);
-    countLogs(assuntoJson.id);
+    const getSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        setSession(session);
+      } catch (error) {
+        Alert.alert('Error fetching session:', error.message);
+      }
+    };
+
+    getSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => {
+      authListener?.unsubscribe;
+    };
   }, []);
+
+  useEffect(() => {
+    if (session) {
+      loadLogs(assuntoJson.id, session.user.id);
+      countLogs(assuntoJson.id, session.user.id);
+    }
+  }, [session]);
 
   const checkInternetConnection = async () => {
     const { isConnected } = await Network.getNetworkStateAsync();
@@ -66,7 +88,7 @@ export default function Logs() {
     }
   };
 
-  const countLogs = async (assunto_id) => {
+  const countLogs = async (assunto_id, user_id) => {
     const isConnected = await checkInternetConnection();
     if (!isConnected) {
       loadCountFromStorage();
@@ -76,7 +98,8 @@ export default function Logs() {
       const { count, error } = await supabase
         .from('estudado')
         .select('id', { count: 'exact' })
-        .eq('assunto_id', assunto_id);
+        .eq('assunto_id', assunto_id)
+        .eq('id_user', user_id); // Filtra pelo id do usuário
 
       if (error) {
         throw error;
@@ -89,7 +112,7 @@ export default function Logs() {
     }
   };
 
-  const loadLogs = async (assunto_id) => {
+  const loadLogs = async (assunto_id, user_id) => {
     const isConnected = await checkInternetConnection();
     if (!isConnected) {
       loadLogsFromStorage();
@@ -100,6 +123,7 @@ export default function Logs() {
         .from('estudado')
         .select('*')
         .eq('assunto_id', assunto_id)
+        .eq('id_user', user_id) // Filtra pelo id do usuário
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -113,7 +137,7 @@ export default function Logs() {
     }
   };
 
-  const insertLog = async (assunto_id, observacao) => {
+  const insertLog = async (assunto_id, observacao, user_id) => {
     try {
       const isConnected = await checkInternetConnection();
       if (!isConnected) {
@@ -128,6 +152,7 @@ export default function Logs() {
             assunto_id,
             observacao,
             created_at: new Date().toISOString(),
+            id_user: user_id, // Inclui o id do usuário
           },
         ]);
 
@@ -136,15 +161,15 @@ export default function Logs() {
       }
 
       Alert.alert('Sucesso', 'Registro salvo com sucesso!');
-      loadLogs(assunto_id);
-      countLogs(assunto_id);
+      loadLogs(assunto_id, user_id);
+      countLogs(assunto_id, user_id);
       setObservacao('ESTUDADO! CAVEIRA!');
     } catch (error) {
       console.error('Erro ao inserir o log de estudo:', error);
     }
   };
 
-  const deleteLog = async (logId) => {
+  const deleteLog = async (logId, user_id) => {
     try {
       const isConnected = await checkInternetConnection();
       if (!isConnected) {
@@ -155,21 +180,22 @@ export default function Logs() {
       const { error } = await supabase
         .from('estudado')
         .delete()
-        .eq('id', logId);
+        .eq('id', logId)
+        .eq('id_user', user_id); // Filtra pelo id do usuário
 
       if (error) {
         throw error;
       }
 
-      loadLogs(assuntoJson.id);
-      countLogs(assuntoJson.id);
+      loadLogs(assuntoJson.id, user_id);
+      countLogs(assuntoJson.id, user_id);
     } catch (error) {
       console.error('Erro ao excluir o log de estudo:', error);
     }
   };
 
   const handleSave = async () => {
-    await insertLog(assuntoJson.id, observacao);
+    await insertLog(assuntoJson.id, observacao, session.user.id);
   };
 
   const confirmDelete = (logId) => {
@@ -178,7 +204,7 @@ export default function Logs() {
       'Tem certeza que deseja excluir este log?',
       [
         { text: 'Cancelar', style: 'cancel' },
-        { text: 'Excluir', onPress: () => deleteLog(logId) },
+        { text: 'Excluir', onPress: () => deleteLog(logId, session.user.id) },
       ]
     );
   };
@@ -205,9 +231,7 @@ export default function Logs() {
 
           {assuntoJson.children && assuntoJson.children.length > 0 && (
             <View style={styles.childrenContainer}>
-
               {assuntoJson.children.map((child, index) => (
-
                 <View key={child.id} style={styles.childContainer}>
                   <Pressable
                     onPress={() => {
@@ -223,7 +247,6 @@ export default function Logs() {
                   >
                     <Text style={styles.value1}>{child.nome}</Text>
                   </Pressable>
-
                   {child.children && child.children.length > 0 && (
                     <View style={styles.childrenContainer}>
                       {child.children.map((child2, childIndex) => (
