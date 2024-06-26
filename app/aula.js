@@ -7,19 +7,21 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { supabase } from '~/lib/supabase';
 
 
-const VideoList = ({ videos, aula, assunto, materia }) => {
+
+const VideoList = ({ session, videos, aula, assunto, materia }) => {
   const navigation = useNavigation();
   const [downloadProgress, setDownloadProgress] = useState({});
   const [downloading, setDownloading] = useState({});
   const [downloadedVideos, setDownloadedVideos] = useState({});
   const [watchedVideos, setWatchedVideos] = useState({});
 
-  const insertVideo = async (id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri) => {
+  // Função para inserir um vídeo no banco de dados
+  const insertVideo = async (id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri, id_user) => {
     try {
       const { data, error } = await supabase
         .from('videos')
         .insert([
-          { id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri },
+          { id_video, titulo, aula, materia, assunto, resolucao_720p, resolucao_480p, resolucao_360p, uri, id_user },
         ]);
 
       if (error) {
@@ -30,12 +32,14 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     }
   };
 
-  const deleteVideo = async (id_video) => {
+  // Função para deletar um vídeo do banco de dados
+  const deleteVideo = async (id_video, id_user) => {
     try {
       const { data, error } = await supabase
         .from('videos')
         .delete()
-        .eq('id_video', id_video);
+        .eq('id_video', id_video)
+        .eq('id_user', id_user);
 
       if (error) {
         throw error;
@@ -45,6 +49,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     }
   };
 
+  // Função para verificar vídeos baixados localmente
   const checkDownloadedVideos = async () => {
     try {
       const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
@@ -59,6 +64,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     }
   };
 
+  // Função para obter a URL de um vídeo com base nas resoluções disponíveis
   const getVideoUrl = (resolucoes) => {
     if (!resolucoes) {
       return null;
@@ -66,6 +72,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     return resolucoes['720p'] || resolucoes['480p'] || resolucoes['360p'] || null;
   };
 
+  // Função para iniciar o download de um vídeo
   const handleDownload = async (video) => {
     const videoUrl = getVideoUrl(video.resolucoes);
 
@@ -96,13 +103,13 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
               setDownloadProgress((prev) => ({ ...prev, [video.id]: 0 }));
               setDownloading((prev) => ({ ...prev, [video.id]: false }));
               checkDownloadedVideos(); // Atualiza a lista de vídeos baixados após o download
-            }, 1000);
+            }, 500);
           }
         }
       );
 
       const { uri } = await downloadResumable.downloadAsync();
-      await insertVideo(video.id, video.titulo, aula, materia, assunto, video.resolucoes['720p'], video.resolucoes['480p'], video.resolucoes['360p'], uri);
+      await insertVideo(video.id, video.titulo, aula, materia, assunto, video.resolucoes['720p'], video.resolucoes['480p'], video.resolucoes['360p'], uri, session.user.id);
 
     } catch (error) {
       console.error('Erro ao baixar o vídeo:', error);
@@ -110,6 +117,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     }
   };
 
+  // Função para deletar um vídeo baixado
   const handleDelete = async (video) => {
     try {
       const fileUri = `${FileSystem.documentDirectory}${video.id}.mp4`;
@@ -121,7 +129,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
       }
 
       await FileSystem.deleteAsync(fileUri);
-      await deleteVideo(video.id);
+      await deleteVideo(video.id, session.user.id);
       checkDownloadedVideos(); // Atualiza a lista de vídeos baixados após a exclusão
     } catch (error) {
       console.error('Erro ao excluir o vídeo:', error);
@@ -129,12 +137,14 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     }
   };
 
-  const checkIfWatched = async (videoId) => {
+  // Função para verificar se um vídeo foi marcado como assistido
+  const checkIfWatched = async (videoId, id_user) => {
     try {
       const { data, error } = await supabase
         .from('videos')
         .select('watched')
-        .eq('id_video', videoId);
+        .eq('id_video', videoId)
+        .eq('id_user', id_user);
 
       if (error) {
         throw error;
@@ -147,7 +157,8 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     }
   };
 
-  const markAsWatched = async (video) => {
+  // Função para marcar ou desmarcar um vídeo como assistido
+  const markAsWatched = async (video, id_user) => {
     try {
       const isWatched = watchedVideos[video.id];
 
@@ -155,24 +166,27 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
         await supabase
           .from('videos')
           .update({ watched: false })
-          .eq('id_video', video.id);
+          .eq('id_video', video.id)
+          .eq('id_user', id_user);
         setWatchedVideos((prev) => ({ ...prev, [video.id]: false }));
       } else {
         const { data } = await supabase
           .from('videos')
           .select('id_video')
-          .eq('id_video', video.id);
+          .eq('id_video', video.id)
+          .eq('id_user', id_user);
 
         if (data.length > 0) {
           await supabase
             .from('videos')
             .update({ watched: true })
-            .eq('id_video', video.id);
+            .eq('id_video', video.id)
+            .eq('id_user', id_user);
         } else {
           await supabase
             .from('videos')
             .insert([
-              { id_video: video.id, titulo: video.titulo, watched: true },
+              { id_video: video.id, titulo: video.titulo, watched: true, id_user: id_user },
             ]);
         }
 
@@ -184,19 +198,17 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     }
   };
 
+  // Função para atualizar o status de assistido de todos os vídeos
   const updateWatchedStatus = async () => {
     const updatedWatchedVideos = {};
     for (const video of videos) {
-      const isWatched = await checkIfWatched(video.id);
+      const isWatched = await checkIfWatched(video.id, session.user.id);
       updatedWatchedVideos[video.id] = isWatched;
     }
     setWatchedVideos(updatedWatchedVideos);
   };
 
-  const handleMarkAsWatched = (video) => {
-    markAsWatched(video);
-  };
-
+  // Efeito para carregar os vídeos baixados e atualizar o status de assistido
   useEffect(() => {
     checkDownloadedVideos();
     updateWatchedStatus();
@@ -239,7 +251,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
                           styles.actionButton,
                           watchedVideos[video.id] ? styles.watchedButton : null,
                         ]}
-                        onPress={() => handleMarkAsWatched(video)}
+                        onPress={() => markAsWatched(video, session.user.id)}
                       >
                         <FontAwesome
                           name={watchedVideos[video.id] ? 'eye' : 'eye-slash'}
@@ -267,7 +279,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
                           styles.actionButton,
                           watchedVideos[video.id] ? styles.watchedButton : null,
                         ]}
-                        onPress={() => handleMarkAsWatched(video)}
+                        onPress={() => markAsWatched(video, session.user.id)}
                       >
                         <FontAwesome
                           name={watchedVideos[video.id] ? 'eye' : 'eye-slash'}
@@ -298,7 +310,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
                 marginBottom: 5,
                 marginLeft: 5,
                 marginRight: 5,
-                width: '98%'
+                width: '98%',
               })}
             >
               <View style={styles.videoBox}>
@@ -316,7 +328,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
                           styles.actionButton,
                           watchedVideos[video.id] ? styles.watchedButton : null,
                         ]}
-                        onPress={() => handleMarkAsWatched(video)}
+                        onPress={() => markAsWatched(video, session.user.id)}
                       >
                         <FontAwesome
                           name={watchedVideos[video.id] ? 'eye' : 'eye-slash'}
@@ -337,7 +349,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
                           styles.actionButton,
                           watchedVideos[video.id] ? styles.watchedButton : null,
                         ]}
-                        onPress={() => handleMarkAsWatched(video)}
+                        onPress={() => markAsWatched(video, session.user.id)}
                       >
                         <FontAwesome
                           name={watchedVideos[video.id] ? 'eye' : 'eye-slash'}
@@ -359,7 +371,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
                           styles.actionButton,
                           watchedVideos[video.id] ? styles.watchedButton : null,
                         ]}
-                        onPress={() => handleMarkAsWatched(video)}
+                        onPress={() => markAsWatched(video, session.user.id)}
                       >
                         <FontAwesome
                           name={watchedVideos[video.id] ? 'eye' : 'eye-slash'}
@@ -389,6 +401,33 @@ export default function Aula() {
   const { aula, materia } = useLocalSearchParams();
   const [loading, setLoading] = useState(true);
   const aulaJson = JSON.parse(aula);
+  const [session, setSession] = useState(null);
+
+
+
+  useEffect(() => {
+    const getSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        setSession(session);
+      } catch (error) {
+        Alert.alert('Error fetching session:', error.message);
+      }
+    };
+
+    getSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => {
+      authListener?.unsubscribe;
+    };
+  }, []);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -437,7 +476,7 @@ export default function Aula() {
           },
           title: aulaJson.nome,
         }} />
-        
+
         <View key={aulaJson.id} style={styles.aulaContainer}>
           <View style={styles.cursoContainer}>
             <Text style={[styles.materia, styles.whiteText]}>{materia.toUpperCase()}</Text>
@@ -454,7 +493,7 @@ export default function Aula() {
                     onPress={() => Linking.openURL(aulaJson.pdf)}
                     style={({ pressed }) => ({
                       backgroundColor: pressed ? '#333333' : '#1B1B1B',
-                      marginBottom:10,
+                      marginBottom: 10,
                     })}
                   >
                     <Text style={[styles.linkText, styles.A5B99CText]}>PDF NORMAL</Text>
@@ -465,7 +504,7 @@ export default function Aula() {
                     onPress={() => Linking.openURL(aulaJson.pdf_grifado)}
                     style={({ pressed }) => ({
                       backgroundColor: pressed ? '#333333' : '#1B1B1B',
-                      marginBottom:10,
+                      marginBottom: 10,
 
                     })}
                   >
@@ -477,7 +516,7 @@ export default function Aula() {
                     onPress={() => Linking.openURL(aulaJson.pdf_simplificado)}
                     style={({ pressed }) => ({
                       backgroundColor: pressed ? '#333333' : '#1B1B1B',
-                      marginBottom:10,
+                      marginBottom: 10,
 
                     })}
                   >
@@ -487,7 +526,7 @@ export default function Aula() {
               </>
             )}
             <Text style={[styles.videoTitle, styles.whiteText]}>VIDEOS:</Text>
-            <VideoList materia={materia} aula={aulaJson.nome} assunto={aulaJson.conteudo} videos={aulaJson.videos} />
+            <VideoList session={session} materia={materia} aula={aulaJson.nome} assunto={aulaJson.conteudo} videos={aulaJson.videos} />
           </View>
         </View>
       </ScrollView>
@@ -561,6 +600,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     backgroundColor: '#A5B99C',
+    padding: 15,
     paddingHorizontal: 10,
     paddingVertical: 8,
     flexDirection: 'row',
