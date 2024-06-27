@@ -32,9 +32,9 @@ export default function RootLayout() {
       handleRedirect(session);
     });
 
-    // return () => {
-    //   subscription?.subscription;
-    // };
+    return () => {
+      subscription?.subscription;
+    };
   }, []);
 
   const handleRedirect = (session: Session | null) => {
