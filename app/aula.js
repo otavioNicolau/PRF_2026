@@ -48,9 +48,9 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
     }
   };
 
-  // useEffect(() => {
-  //   checkDownloadedVideos();
-  // }, []);
+  useEffect(() => {
+    checkDownloadedVideos();
+  }, []);
 
   const getVideoUrl = (resolucoes) => {
     if (!resolucoes) {
