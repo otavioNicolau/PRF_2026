@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Stack, useRouter } from 'expo-router';
 import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
 import { supabase } from '~/lib/supabase';
@@ -58,7 +58,16 @@ export default function RootLayout() {
   );
 }
 
+
+
 async function migrateDbIfNeeded(db: SQLiteDatabase) {
+
+  // await db.execAsync(`
+  //   DROP TABLE IF EXISTS pdfs;
+  // `);
+
+
+
   await db.execAsync(`
     PRAGMA journal_mode = 'wal';
     CREATE TABLE IF NOT EXISTS videos (
@@ -76,4 +85,16 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
       watched BOOLEAN DEFAULT 0
     );
   `);
+
+  await db.execAsync(`
+    PRAGMA journal_mode = 'wal';
+    CREATE TABLE IF NOT EXISTS pdfs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      id_aula TEXT,
+      uri TEXT,
+      tipo TEXT,
+      page INTEGER DEFAULT 0
+    );
+  `);
+
 }

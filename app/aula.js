@@ -181,7 +181,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
 
   return (
     <View>
-      
+
       {videos.map((video, index) => (
         <View key={index}>
           {downloadedVideos[video.id] ? (
@@ -203,6 +203,9 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
               })}
             >
               <View style={styles.videoBox}>
+                <Text style={[styles.videoLink, styles.whiteText]}>
+                  {video.titulo}
+                </Text>
                 <View style={styles.buttonsContainer}>
                   {!downloading[video.id] && !downloadedVideos[video.id] ? (
                     <>
@@ -256,9 +259,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
                     </>
                   )}
                 </View>
-                <Text style={[styles.videoLink, styles.whiteText]}>
-                  {video.titulo}
-                </Text>
+
               </View>
             </Pressable>
           ) : (
@@ -280,6 +281,9 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
               })}
             >
               <View style={styles.videoBox}>
+              <Text style={[styles.videoLink, styles.whiteText]}>
+                  {video.titulo}
+                </Text>
                 <View style={styles.buttonsContainer}>
                   {!downloading[video.id] && !downloadedVideos[video.id] ? (
                     <>
@@ -348,9 +352,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
                     </>
                   )}
                 </View>
-                <Text style={[styles.videoLink, styles.whiteText]}>
-                  {video.titulo}
-                </Text>
+
               </View>
             </Pressable>
           )}
@@ -361,9 +363,188 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
 
 };
 
-export default function Aula() {
-  const navigation = useNavigation();
 
+
+const PdfList = ({ pdfs, aula }) => {
+  const navigation = useNavigation();
+  const db = useSQLiteContext();
+  const [downloadProgress, setDownloadProgress] = useState({});
+  const [downloading, setDownloading] = useState({});
+  const [downloadedPdfs, setDownloadedPdfs] = useState({});
+
+  const insertPdf = async (db, id_aula, tipo, uri) => {
+    try {
+      await db.runAsync(
+        `INSERT INTO pdfs (id_aula, tipo, uri) VALUES (?, ?, ?);`,
+        [id_aula, tipo, uri]
+      );
+    } catch (error) {
+      console.error('Erro ao inserir PDF:', error);
+    }
+  };
+
+  const deletePdf = async (db, id_aula, tipo) => {
+    try {
+      await db.runAsync(`DELETE FROM pdfs WHERE id_aula = ? AND tipo = ?;`, [id_aula, tipo]);
+    } catch (error) {
+      console.error('Erro ao deletar PDF:', error);
+    }
+  };
+
+  const checkDownloadedPdfs = async () => {
+    try {
+      const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
+      const downloadedPdfIds = files.map(file => file.split('.').slice(0, -1).join('.'));
+      const downloadedPdfsObj = {};
+      downloadedPdfIds.forEach(id => {
+        downloadedPdfsObj[id] = true;
+      });
+      setDownloadedPdfs(downloadedPdfsObj);
+    } catch (error) {
+      console.error('Erro ao listar PDFs baixados:', error);
+    }
+  };
+
+  const handleDownload = async (pdf, tipo) => {
+    const pdfUrl = pdf[tipo];
+
+    if (!pdfUrl) {
+      Alert.alert('Erro', 'URL do PDF não disponível.');
+      return;
+    }
+
+    try {
+      setDownloading((prev) => ({ ...prev, [`${pdf.id}_${tipo}`]: true }));
+      const downloadResumable = FileSystem.createDownloadResumable(
+        pdfUrl,
+        `${FileSystem.documentDirectory}${pdf.id}_${tipo}.pdf`,
+        {},
+        (progress) => {
+          const progressValue = Math.max(0, Math.min(100, (progress.totalBytesWritten / progress.totalBytesExpectedToWrite) * 100));
+          setDownloadProgress((prev) => ({
+            ...prev,
+            [`${pdf.id}_${tipo}`]: progressValue,
+          }));
+        }
+      );
+
+      const { uri } = await downloadResumable.downloadAsync();
+      await insertPdf(db, pdf.id, tipo, uri);
+
+      setDownloadProgress((prev) => ({
+        ...prev,
+        [`${pdf.id}_${tipo}`]: 0,
+      }));
+      setDownloading((prev) => ({
+        ...prev,
+        [`${pdf.id}_${tipo}`]: false,
+      }));
+      checkDownloadedPdfs();
+
+      navigation.navigate('pdf', { uri, id_aula: pdf.id, tipo });
+    } catch (error) {
+      console.error('Erro ao baixar o PDF:', error);
+      Alert.alert('Erro', 'Erro ao baixar o PDF. Por favor, tente novamente.');
+      setDownloading((prev) => ({
+        ...prev,
+        [`${pdf.id}_${tipo}`]: false,
+      }));
+    }
+  };
+
+  const handleDelete = async (pdf, tipo) => {
+    try {
+      const fileUri = `${FileSystem.documentDirectory}${pdf.id}_${tipo}.pdf`;
+      const fileInfo = await FileSystem.getInfoAsync(fileUri);
+
+      if (!fileInfo.exists) {
+        Alert.alert('Erro', 'PDF não encontrado para exclusão.');
+        return;
+      }
+
+      await FileSystem.deleteAsync(fileUri);
+      await deletePdf(db, pdf.id, tipo);
+      checkDownloadedPdfs();
+    } catch (error) {
+      console.error('Erro ao excluir o PDF:', error);
+      Alert.alert('Erro', 'Erro ao excluir o PDF. Por favor, tente novamente.');
+    }
+  };
+
+  useEffect(() => {
+    checkDownloadedPdfs();
+  }, [pdfs]);
+
+  const openPdf = (uri, id_aula, tipo) => {
+    navigation.navigate('pdf', { uri, id_aula, tipo });
+  };
+
+  return (
+    <View>
+      {pdfs.map((pdf, index) => (
+        <View key={index}>
+          {['pdf', 'pdf_grifado', 'pdf_simplificado'].map((tipo) => (
+            pdf[tipo] ? (
+              <Pressable
+                key={tipo}
+                onPress={() => downloadedPdfs[`${pdf.id}_${tipo}`] ? openPdf(`${FileSystem.documentDirectory}${pdf.id}_${tipo}.pdf`, pdf.id, tipo) : handleDownload(pdf, tipo)}
+                style={({ pressed }) => ({
+                  backgroundColor: pressed ? '#333333' : '#1B1B1B',
+                  width: '98%',
+                  marginTop: 5,
+                  marginBottom: 5,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  width: '98%',
+                })}
+              >
+                <View style={styles.pdfContainer}>
+                  <Text style={[styles.pdfLink, styles.whiteText]}>
+                    {tipo === 'pdf' ? 'PDF NORMAL' : tipo === 'pdf_grifado' ? 'PDF GRIFADO' : 'PDF SIMPLIFICADO'}
+                  </Text>
+                  <View style={styles.buttonsContainer}>
+                    {!downloading[`${pdf.id}_${tipo}`] && !downloadedPdfs[`${pdf.id}_${tipo}`] ? (
+                      <Pressable
+                        style={[styles.actionButton]}
+                        onPress={() => handleDownload(pdf, tipo)}
+                      >
+                        <FontAwesome name="download" size={16} color="#fff" />
+                      </Pressable>
+                    ) : downloading[`${pdf.id}_${tipo}`] ? (
+                      <Pressable style={[styles.actionButton]}>
+                        <Text style={styles.progressText}>{`${downloadProgress[`${pdf.id}_${tipo}`]?.toFixed(0) || 0}%`}</Text>
+                      </Pressable>
+                    ) : (
+                      <>
+                        <Pressable
+                          style={[styles.actionButtonRed]}
+                          onPress={() => handleDelete(pdf, tipo)}
+                        >
+                          <FontAwesome name="trash" size={14} color="#fff" />
+                        </Pressable>
+                        <Pressable
+                          style={[styles.actionButton]}
+                          onPress={() => openPdf(`${FileSystem.documentDirectory}${pdf.id}_${tipo}.pdf`)}
+                        >
+                          <FontAwesome name="file-pdf-o" size={16} color="#fff" />
+                        </Pressable>
+                      </>
+                    )}
+                  </View>
+                </View>
+              </Pressable>
+            ) : null
+          ))}
+        </View>
+      ))}
+    </View>
+  );
+};
+
+
+export default function Aula() {
+
+  const navigation = useNavigation();
   const { aula, materia } = useLocalSearchParams();
   const [loading, setLoading] = useState(true);
   const aulaJson = JSON.parse(aula);
@@ -371,7 +552,6 @@ export default function Aula() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Simulação de carregamento de dados (você pode substituir por sua lógica de carregamento)
         await new Promise(resolve => setTimeout(resolve, 500));
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
@@ -415,7 +595,7 @@ export default function Aula() {
           },
           title: aulaJson.nome,
         }} />
-        
+
         <View key={aulaJson.id} style={styles.aulaContainer}>
           <View style={styles.cursoContainer}>
             <Text style={[styles.materia, styles.whiteText]}>{materia.toUpperCase()}</Text>
@@ -426,43 +606,7 @@ export default function Aula() {
             {!aulaJson.pdf && !aulaJson.pdf_grifado && !aulaJson.pdf_simplificado ? (
               <Text style={styles.whiteText}>NENHUM PDF DISPONÍVEL</Text>
             ) : (
-              <>
-                {aulaJson.pdf && (
-                  <Pressable
-                    onPress={() => Linking.openURL(aulaJson.pdf)}
-                    style={({ pressed }) => ({
-                      backgroundColor: pressed ? '#333333' : '#1B1B1B',
-                      marginBottom:10,
-                    })}
-                  >
-                    <Text style={[styles.linkText, styles.A5B99CText]}>PDF NORMAL</Text>
-                  </Pressable>
-                )}
-                {aulaJson.pdf_grifado && (
-                  <Pressable
-                    onPress={() => Linking.openURL(aulaJson.pdf_grifado)}
-                    style={({ pressed }) => ({
-                      backgroundColor: pressed ? '#333333' : '#1B1B1B',
-                      marginBottom:10,
-
-                    })}
-                  >
-                    <Text style={[styles.linkText, styles.A5B99CText]}>PDF GRIFADO</Text>
-                  </Pressable>
-                )}
-                {aulaJson.pdf_simplificado && (
-                  <Pressable
-                    onPress={() => Linking.openURL(aulaJson.pdf_simplificado)}
-                    style={({ pressed }) => ({
-                      backgroundColor: pressed ? '#333333' : '#1B1B1B',
-                      marginBottom:10,
-
-                    })}
-                  >
-                    <Text style={[styles.A5B99CText]}>PDF SIMPLIFICADO</Text>
-                  </Pressable>
-                )}
-              </>
+              <PdfList pdfs={[aulaJson]} aula={aulaJson.nome} />
             )}
             <Text style={[styles.videoTitle, styles.whiteText]}>VIDEOS:</Text>
             <VideoList materia={materia} aula={aulaJson.nome} assunto={aulaJson.conteudo} videos={aulaJson.videos} />
@@ -472,6 +616,7 @@ export default function Aula() {
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -576,4 +721,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#1B1B1B',
   },
+  actionButton: {
+    backgroundColor: '#007bff',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  actionButtonRed: {
+    backgroundColor: '#dc3545',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  pdfContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    // marginVertical: 8,
+    borderWidth: 1,
+    borderColor: '#ffffff',
+    padding: 10,
+  },
+  pdfLink: {
+    fontSize: 16,
+    color: '#000',
+  },
+  whiteText: {
+    color: '#fff',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+  },
+  actionButton: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    marginHorizontal: 5,
+    borderRadius: 5,
+  },
+  actionButtonRed: {
+    backgroundColor: '#dc3545',
+    padding: 10,
+    marginHorizontal: 5,
+    borderRadius: 5,
+  },
+  progressText: {
+    color: '#fff',
+  },
 });
+
+
+

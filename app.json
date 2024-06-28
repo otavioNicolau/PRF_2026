@@ -3,8 +3,12 @@
     "name": "PRF2026",
     "slug": "prf2026",
     "version": "1.0.0",
-    "scheme": ["PRF2026"],
-    "platforms": ["android"],
+    "scheme": [
+      "PRF2026"
+    ],
+    "platforms": [
+      "android"
+    ],
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -23,7 +27,12 @@
         {
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }
-      ]
+      ],
+      [
+        "@config-plugins/react-native-blob-util",
+        "@config-plugins/react-native-pdf"
+      ],
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,

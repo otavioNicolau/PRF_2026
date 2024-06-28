@@ -204,31 +204,39 @@ export default function Video1() {
             useNativeControls={isFullscreen}
           />
           {!isFullscreen && controlsVisible && (
-            <View style={styles.controlsContainer}>
-              <TouchableOpacity onPress={togglePlayPause} style={styles.controlButton}>
-                <MaterialIcons name={isPlaying ? "pause" : "play-arrow"} size={32} color="white" />
-              </TouchableOpacity>
-              <Slider
-                style={styles.slider}
-                minimumValue={0}
-                maximumValue={1}
-                value={videoDuration > 0 ? videoPosition / videoDuration : 0}
-                onValueChange={handleSliderValueChange}
-                minimumTrackTintColor="#FFFFFF"
-                maximumTrackTintColor="#000000"
-                thumbTintColor="#FFFFFF"
-              />
-              <Text style={styles.timeDisplay}>
-                {formatTime(videoPosition)} / {formatTime(videoDuration)}
-              </Text>
-              <TouchableOpacity onPress={decreaseSpeed} style={styles.controlButton}>
-                <MaterialIcons name="remove" size={24} color="white" />
-              </TouchableOpacity>
-              <Text style={styles.controlText}>{videoSpeed.toFixed(2)}x</Text>
-              <TouchableOpacity onPress={increaseSpeed} style={styles.controlButton}>
-                <MaterialIcons name="add" size={24} color="white" />
-              </TouchableOpacity>
-            </View>
+            <>
+              <View style={styles.controlsContainer2}>
+                <Text style={styles.timeDisplay}>{titulo}</Text>
+
+              </View>
+              <View style={styles.controlsContainer}>
+
+                <TouchableOpacity onPress={togglePlayPause} style={styles.controlButton}>
+                  <MaterialIcons name={isPlaying ? "pause" : "play-arrow"} size={32} color="white" />
+                </TouchableOpacity>
+                <Slider
+                  style={styles.slider}
+                  minimumValue={0}
+                  maximumValue={1}
+                  value={videoDuration > 0 ? videoPosition / videoDuration : 0}
+                  onValueChange={handleSliderValueChange}
+                  minimumTrackTintColor="#FFFFFF"
+                  maximumTrackTintColor="#000000"
+                  thumbTintColor="#FFFFFF"
+                />
+                <Text style={styles.timeDisplay}>
+                  {formatTime(videoPosition)} / {formatTime(videoDuration)}
+                </Text>
+                <TouchableOpacity onPress={decreaseSpeed} style={styles.controlButton}>
+                  <MaterialIcons name="remove" size={24} color="white" />
+                </TouchableOpacity>
+                <Text style={styles.controlText}>{videoSpeed.toFixed(2)}x</Text>
+                <TouchableOpacity onPress={increaseSpeed} style={styles.controlButton}>
+                  <MaterialIcons name="add" size={24} color="white" />
+                </TouchableOpacity>
+              </View>
+            </>
+
           )}
         </View>
       </TouchableWithoutFeedback>
@@ -265,6 +273,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+
+  controlsContainer2: {
+    width: '100%',
+    position: 'absolute',
+    top: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   controlButton: {
     padding: 10
   },
@@ -281,5 +301,11 @@ const styles = StyleSheet.create({
   slider: {
     flex: 1,
     marginHorizontal: 10,
+  },
+  titulo: {
+    flex: 1,
+    marginHorizontal: 10,
+    color: '#FFF',
+    fontSize: 16,
   },
 });

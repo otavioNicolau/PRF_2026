@@ -25,7 +25,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="downloads"
         options={{
-          title: 'Downloads',
+          title: 'DOWNLOADS',
           tabBarIcon: ({ color }) => <TabBarIcon name="download" color={color} />,
         }}
       />
