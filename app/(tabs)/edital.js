@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, SectionList, ActivityIndicator, Pressable, RefreshControl, Alert } from 'react-native';
+import React, { useState, useEffect, useCallback, memo } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, SectionList, ActivityIndicator, Pressable, RefreshControl, Alert, FlatList } from 'react-native';
 import { useNavigation, Stack } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createClient } from '@supabase/supabase-js';
-import * as Network from 'expo-network';
 import { supabase } from '~/lib/supabase';
+import * as Network from 'expo-network';
+import { FontAwesome } from '@expo/vector-icons';
+
 
 const EditalVerticalizado = () => {
   const navigation = useNavigation();
@@ -13,8 +14,12 @@ const EditalVerticalizado = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [pesoFilters, setPesoFilters] = useState([]);
   const [blocoFilters, setBlocoFilters] = useState([]);
-  const [currentMateria, setCurrentMateria] = useState('');
+  const [materiaFilters, setMateriaFilters] = useState([]);
+  const [availableMaterias, setAvailableMaterias] = useState([]);
+  // const [currentMateria, setCurrentMateria] = useState('');
   const [session, setSession] = useState(null);
+  const [maisEdtudado, setmaisEdtudado] = useState(null);
+  const [menosEdtudado, setmenosEdtudado] = useState(null);
 
   useEffect(() => {
     const getSession = async () => {
@@ -42,12 +47,22 @@ const EditalVerticalizado = () => {
     loadEditais();
   }, []);
 
+  useEffect(() => {
+    filterAvailableMaterias();
+  }, [blocoFilters]);
+
   const loadEditais = async () => {
     setRefreshing(true);
     try {
       const { isConnected } = await Network.getNetworkStateAsync();
       if (isConnected) {
-        const { data: assuntos, error } = await supabase.from('assuntos').select('*');
+        const { data: assuntos, error } = await supabase
+          .from('assuntos')
+          .select(`
+            *,
+            estudado:estudado(count)
+          `);
+
         if (error) {
           throw error;
         }
@@ -84,57 +99,6 @@ const EditalVerticalizado = () => {
     loadEditais();
   }, []);
 
-  const countLogs = async (assunto_id) => {
-    try {
-      const isConnected = await checkInternetConnection();
-      if (!isConnected) {
-        const cachedCount = await loadCountFromStorage(assunto_id);
-        return cachedCount;
-      }
-
-      const { data: logs, error } = await supabase
-        .from('estudado')
-        .select('count', { count: 'exact' })
-        .eq('assunto_id', assunto_id)
-        .eq('id_user', session.user.id)
-        .single();
-
-      if (error) {
-        throw error;
-      }
-
-      const logsCount = logs ? logs.count : 0;
-      await saveCountToStorage(assunto_id, logsCount);
-      return logsCount;
-    } catch (error) {
-      console.error('Erro ao contar os logs:', error.message);
-      return 0;
-    }
-  };
-
-  const saveCountToStorage = async (assunto_id, count) => {
-    try {
-      await AsyncStorage.setItem(`count_${assunto_id}`, count.toString());
-    } catch (error) {
-      console.error('Erro ao salvar contagem no AsyncStorage:', error);
-    }
-  };
-
-  const loadCountFromStorage = async (assunto_id) => {
-    try {
-      const storedCount = await AsyncStorage.getItem(`count_${assunto_id}`);
-      return storedCount ? parseInt(storedCount, 10) : 0;
-    } catch (error) {
-      console.error('Erro ao carregar contagem do AsyncStorage:', error);
-      return 0;
-    }
-  };
-
-  const checkInternetConnection = async () => {
-    const { isConnected } = await Network.getNetworkStateAsync();
-    return isConnected;
-  };
-
   const filterEditais = () => {
     let filtered = [...editais];
 
@@ -144,6 +108,10 @@ const EditalVerticalizado = () => {
 
     if (blocoFilters.length > 0) {
       filtered = filtered.filter(edital => blocoFilters.includes(edital.bloco));
+    }
+
+    if (materiaFilters.length > 0) {
+      filtered = filtered.filter(edital => materiaFilters.includes(edital.materia));
     }
 
     return filtered;
@@ -162,112 +130,107 @@ const EditalVerticalizado = () => {
       } else {
         setBlocoFilters([...blocoFilters, value]);
       }
-    }
-  };
-
-  const onViewableItemsChanged = useCallback(({ viewableItems }) => {
-    if (viewableItems && viewableItems.length > 0) {
-      setCurrentMateria(viewableItems[0].section.title);
-    }
-  }, []);
-
-  const buildSubTree = (items, parentId = 0) => {
-    return items
-      .filter(item => item.subtree === parentId)
-      .map(item => ({
-        ...item,
-        children: buildSubTree(items, item.id)
-      }));
-  };
-
-  const renderItem = ({ item, index, section }) => {
-    const [logsCount, setLogsCount] = useState(null);
-
-    useEffect(() => {
-      async function fetchLogsCount() {
-        const count = await countLogs(item.id);
-        setLogsCount(count);
+    } else if (filterType === 'materia') {
+      if (materiaFilters.includes(value)) {
+        setMateriaFilters(materiaFilters.filter(item => item !== value));
+      } else {
+        setMateriaFilters([...materiaFilters, value]);
       }
-      fetchLogsCount();
-    }, [item.id]);
-
-    if (item.subtree === 0) {
-      return (
-        <Pressable
-          onPress={() => {
-            navigation.navigate('logs', { assunto: JSON.stringify(item) });
-          }}
-          style={({ pressed }) => ({
-            backgroundColor: pressed ? '#333333' : '#1B1B1B',
-            marginTop: 5,
-            marginBottom: 5,
-            marginLeft: 5,
-            marginRight: 5
-          })}
-        >
-          <View style={styles.editalBox}>
-            <View style={styles.editalInfo}>
-              <Text style={styles.editalTitle}>{item.nome}</Text>
-            </View>
-            {item.children && item.children.length > 0 && (
-              <View style={styles.childrenContainer}>
-                {item.children.map((child, childIndex) => (
-                  <View key={child.id} style={styles.childContainer}>
-                    {renderItem({ item: child, index: childIndex, section })}
-                  </View>
-                ))}
-              </View>
-            )}
-            {logsCount !== null ? (
-              <Text style={styles.estudadovezes}>
-                Esse assunto foi estudado {logsCount} vez{logsCount >= 1 ? 'es' : ''}
-              </Text>
-            ) : (
-              <View style={styles.loadingContainer}>
-                <Text style={styles.estudadovezes}>
-                  Esse assunto foi estudado 0 vez
-                </Text>
-              </View>
-            )}
-          </View>
-        </Pressable>
-      );
-    } else {
-      return (
-        <View style={styles.childTopicContainer}>
-          <Text style={styles.childTopicText}>{`${item.nome}`}</Text>
-          {item.children && item.children.length > 0 && (
-            <View style={styles.childrenContainer}>
-              {item.children.map((child, childIndex) => (
-                <View key={child.id} style={styles.childContainer}>
-                  {renderItem({ item: child, index: childIndex, section })}
-                </View>
-              ))}
-            </View>
-          )}
-        </View>
-      );
     }
+  };
+
+  const filterAvailableMaterias = () => {
+    let filtered = [...editais];
+
+    if (blocoFilters.length > 0) {
+      filtered = filtered.filter(edital => blocoFilters.includes(edital.bloco));
+    }
+
+    const materias = [...new Set(filtered.map(edital => edital.materia))];
+    setAvailableMaterias(materias);
+  };
+
+  // const onViewableItemsChanged = useCallback(({ viewableItems }) => {
+  //   if (viewableItems && viewableItems.length > 0) {
+  //     setCurrentMateria(viewableItems[0].section.title);
+  //   }
+  // }, []);
+
+  const RenderItem = memo(({ item, index, section }) => {
+    return (
+      <Pressable
+        onPress={() => {
+          navigation.navigate('logs', { assunto: JSON.stringify(item) });
+        }}
+        style={({ pressed }) => ({
+          backgroundColor: pressed ? '#333333' : '#1B1B1B',
+          marginTop: 5,
+          marginBottom: 5,
+          marginLeft: 5,
+          marginRight: 5,
+        })}
+      >
+        <View style={styles.editalBox}>
+          <View style={styles.editalInfo}>
+            <Text style={styles.editalTitle}>{item.nome}</Text>
+          </View>
+          <Text style={styles.estudadovezes}>
+            Esse assunto foi estudado {item.estudado[0].count} vez{item.estudado[0].count !== 1 ? 'es' : ''}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  });
+
+  const handleMostStudied = () => {
+    const sortedEditais = [...editais].sort((a, b) => b.estudado[0].count - a.estudado[0].count);
+    setEditais(sortedEditais);
+    setmenosEdtudado(0)
+    setmaisEdtudado(1)
+  };
+
+  const handleLeastStudied = () => {
+    const sortedEditais = [...editais].sort((a, b) => a.estudado[0].count - b.estudado[0].count);
+    setEditais(sortedEditais);
+    setmenosEdtudado(1)
+    setmaisEdtudado(0)
+  };
+
+  const clearFilters = () => {
+    setLoading(true)
+    setPesoFilters([]);
+    setBlocoFilters([]);
+    setMateriaFilters([]);
+    setLoading(false);
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Stack.Screen options={{
-        headerStyle: {
-          backgroundColor: '#1B1B1B',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-        title: 'EDITAL VERTICALIZADO',
-        headerTitleAlign: 'center',
-      }} />
+      <Stack.Screen
+        options={{
+          headerStyle: {
+            backgroundColor: '#1B1B1B',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          title: 'EDITAL VERTICALIZADO',
+
+          headerRight: () => (
+            <Pressable style={{ marginRight:30, padding:2}} onPress={clearFilters}>
+              <FontAwesome name="refresh" size={16} color="#fff" />
+            </Pressable>
+
+
+          ),
+        }}
+      />
       <View style={styles.container}>
         <View style={styles.filtersContainer}>
           <Text style={styles.filterTitle}>FILTRAR POR PESO:</Text>
           <View style={styles.filterButtonsContainer}>
-            {[0, 1, 2, 3, 4].map(peso => (
+            {[0, 1, 2, 3, 4].map((peso) => (
               <Pressable
                 key={peso}
                 style={[styles.filterButton, pesoFilters.includes(peso.toString()) ? styles.filterButtonActive : null]}
@@ -280,7 +243,7 @@ const EditalVerticalizado = () => {
 
           <Text style={styles.filterTitle}>FILTRAR POR BLOCO:</Text>
           <View style={styles.filterButtonsContainer}>
-            {['I', 'II', 'III'].map(bloco => (
+            {['I', 'II', 'III'].map((bloco) => (
               <Pressable
                 key={bloco}
                 style={[styles.filterButton, blocoFilters.includes(bloco) ? styles.filterButtonActive : null]}
@@ -291,7 +254,39 @@ const EditalVerticalizado = () => {
             ))}
           </View>
 
-          <Text style={styles.materiaTitleTOP}>{currentMateria}</Text>
+          <Text style={styles.filterTitle}>FILTRAR POR MATÉRIA:</Text>
+          <FlatList
+            horizontal
+            data={availableMaterias}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <Pressable
+                style={[styles.filterButton, materiaFilters.includes(item) ? styles.filterButtonActive : null]}
+                onPress={() => toggleFilter(item, 'materia')}
+              >
+                <Text style={styles.filterButtonText}>{item}</Text>
+              </Pressable>
+            )}
+          />
+
+          {/* <Text style={styles.materiaTitleTOP}>{currentMateria}</Text> */}
+
+          <View style={styles.buttonContainer}>
+
+            <Pressable
+              style={[styles.filterButton, maisEdtudado > 0 ? styles.filterButtonActive : null]}
+              onPress={handleMostStudied}
+            >
+              <Text style={styles.filterButtonText}>Mais Estudado</Text>
+            </Pressable>
+
+            <Pressable
+              style={[styles.filterButton, menosEdtudado > 0 ? styles.filterButtonActive : null]}
+              onPress={handleLeastStudied}
+            >
+              <Text style={styles.filterButtonText}>Menos Estudado</Text>
+            </Pressable>
+          </View>
         </View>
 
         {loading ? (
@@ -301,22 +296,15 @@ const EditalVerticalizado = () => {
           </>
         ) : (
           <SectionList
-            sections={groupByMateria(buildSubTree(filterEditais()))}
-            keyExtractor={(item, index) => item.id}
-            renderItem={renderItem}
+            sections={groupByMateria(filterEditais())}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index, section }) => <RenderItem item={item} index={index} section={section} />}
             renderSectionHeader={({ section: { title } }) => (
               <Text style={styles.materiaTitle}>{title}</Text>
             )}
-            ListEmptyComponent={<Text style={styles.noEditaisText}>Nenhum edital disponível.</Text>}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={['#A5B99C']}
-                progressBackgroundColor="#1B1B1B"
-              />
-            }
-            onViewableItemsChanged={onViewableItemsChanged}
+            ListEmptyComponent={<Text style={styles.noEditaisText}>Nenhum edital encontrado.</Text>}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            // onViewableItemsChanged={onViewableItemsChanged}
             viewabilityConfig={{
               itemVisiblePercentThreshold: 50,
               minimumViewTime: 1000,
@@ -330,7 +318,7 @@ const EditalVerticalizado = () => {
 
 const groupByMateria = (editais) => {
   const grouped = editais.reduce((acc, edital) => {
-    const existingIndex = acc.findIndex(item => item.title === edital.materia);
+    const existingIndex = acc.findIndex((item) => item.title === edital.materia);
     if (existingIndex !== -1) {
       acc[existingIndex].data.push(edital);
     } else {
@@ -354,17 +342,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1B1B1B',
-    paddingVertical: 20,
+    paddingVertical: 5,
     paddingHorizontal: 16,
   },
   filtersContainer: {
     marginBottom: 5,
   },
   filterTitle: {
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#A5B99C',
-    marginBottom: 5,
+    marginBottom: 2,
   },
   filterButtonsContainer: {
     flexDirection: 'row',
@@ -373,7 +361,7 @@ const styles = StyleSheet.create({
   filterButton: {
     backgroundColor: '#ccc',
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 6,
     margin: 4,
   },
   filterButtonActive: {
@@ -410,7 +398,7 @@ const styles = StyleSheet.create({
   editalTitle: {
     color: '#ffffff',
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   editalDetails: {
     color: '#ffffff',
@@ -421,23 +409,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
-  childrenContainer: {
-    marginLeft: 20,
-  },
-  childContainer: {
-    marginTop: 5,
-  },
-  childTopicContainer: {
-    flexDirection: 'column',
-    marginLeft: 10,
-    marginBottom: 5,
-  },
-  childTopicText: {
-    color: '#A5B99C',
-    fontSize: 16,
-  },
   loadingContainer: {
     marginTop: 5,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  actionButton: {
+    backgroundColor: '#A5B99C',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  actionButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
   },
 });
 

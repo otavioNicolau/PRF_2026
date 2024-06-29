@@ -16,6 +16,8 @@ export default function Logs() {
   const assuntoJson = JSON.parse(assunto);
   const [session, setSession] = useState(null);
 
+
+  
   useEffect(() => {
     const getSession = async () => {
       try {
@@ -229,7 +231,7 @@ export default function Logs() {
           <Text style={styles.label}>Assunto:</Text>
           <Text style={styles.valueTitle}>{assuntoJson.nome}</Text>
 
-          {assuntoJson.children && assuntoJson.children.length > 0 && (
+          {/* {assuntoJson.children && assuntoJson.children.length > 0 && (
             <View style={styles.childrenContainer}>
               {assuntoJson.children.map((child, index) => (
                 <View key={child.id} style={styles.childContainer}>
@@ -272,7 +274,7 @@ export default function Logs() {
                 </View>
               ))}
             </View>
-          )}
+          )} */}
 
           <Text style={styles.label}>Bloco:</Text>
           <Text style={styles.value}>{assuntoJson.bloco}</Text>
