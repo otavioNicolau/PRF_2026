@@ -8,6 +8,7 @@ import { FontAwesome } from '@expo/vector-icons';
 
 
 const EditalVerticalizado = () => {
+
   const navigation = useNavigation();
   const [editais, setEditais] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,6 +37,7 @@ const EditalVerticalizado = () => {
 
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      handleRedirect(session);
     });
 
     return () => {
@@ -43,13 +45,14 @@ const EditalVerticalizado = () => {
     };
   }, []);
 
-  useEffect(() => {
-    loadEditais();
-  }, []);
+  const handleRedirect = (session) => {
+    if (session && session.user) {
+      // console.log(session.user);
+    } else {
+      router.replace('auth'); // Redireciona para a tela de autenticação
+    }
+  };
 
-  useEffect(() => {
-    filterAvailableMaterias();
-  }, [blocoFilters]);
 
   const loadEditais = async () => {
     setRefreshing(true);
@@ -95,9 +98,21 @@ const EditalVerticalizado = () => {
     }
   };
 
+
+  useEffect(() => {
+    loadEditais();
+  }, []);
+
+  useEffect(() => {
+    filterAvailableMaterias();
+  }, [blocoFilters]);
+
+
+
   const onRefresh = useCallback(() => {
     loadEditais();
   }, []);
+
 
   const filterEditais = () => {
     let filtered = [...editais];
@@ -150,11 +165,6 @@ const EditalVerticalizado = () => {
     setAvailableMaterias(materias);
   };
 
-  // const onViewableItemsChanged = useCallback(({ viewableItems }) => {
-  //   if (viewableItems && viewableItems.length > 0) {
-  //     setCurrentMateria(viewableItems[0].section.title);
-  //   }
-  // }, []);
 
   const RenderItem = memo(({ item, index, section }) => {
     return (
@@ -173,6 +183,8 @@ const EditalVerticalizado = () => {
         <View style={styles.editalBox}>
           <View style={styles.editalInfo}>
             <Text style={styles.editalTitle}>{item.nome}</Text>
+            <Text style={styles.estudadovezes}>Esse assunto tem peso: {item.peso}</Text>
+
           </View>
           <Text style={styles.estudadovezes}>
             Esse assunto foi estudado {item.estudado[0].count} vez{item.estudado[0].count !== 1 ? 'es' : ''}
@@ -218,7 +230,7 @@ const EditalVerticalizado = () => {
           title: 'EDITAL VERTICALIZADO',
 
           headerRight: () => (
-            <Pressable style={{ marginRight:30, padding:2}} onPress={clearFilters}>
+            <Pressable style={{ marginRight: 30, padding: 2 }} onPress={clearFilters}>
               <FontAwesome name="refresh" size={16} color="#fff" />
             </Pressable>
 

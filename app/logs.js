@@ -18,7 +18,7 @@ export default function Logs() {
 
 
   
-  useEffect(() => {
+ useEffect(() => {
     const getSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
@@ -33,12 +33,25 @@ export default function Logs() {
 
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      handleRedirect(session);
     });
 
     return () => {
-      authListener?.unsubscribe;
+      authListener.subscription;
     };
   }, []);
+
+  const handleRedirect = (session) => {
+    if (session && session.user) {
+      console.log(session.user);
+    } else {
+      router.replace('auth'); // Redireciona para a tela de autenticação
+    }
+  }
+
+
+
+
 
   useEffect(() => {
     if (session) {
