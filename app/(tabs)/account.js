@@ -1,19 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, TextInput, StyleSheet, ScrollView, SafeAreaView, Alert, Pressable, Text, RefreshControl } from 'react-native';
-import { Stack } from 'expo-router';
-
 import { supabase } from '~/lib/supabase';
 import Avatar from '~/components/Avatar';
-import { Slide } from '~/components/Slide';
 import * as Network from 'expo-network';
 
 export default function Account() {
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [username, setUsername] = useState('');
-  const [full_name, setFullName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const getSession = async () => {
@@ -28,12 +25,12 @@ export default function Account() {
 
     getSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const authListener = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
     });
 
     return () => {
-      authListener?.unsubscribe;
+      authListener.unsubscribe;
     };
   }, []);
 
@@ -70,7 +67,7 @@ export default function Account() {
     }
   };
 
-  const updateProfile = async ({ username, full_name, avatar_url }) => {
+  const updateProfile = async ({ username, fullName, avatarUrl }) => {
     try {
       setLoading(true);
 
@@ -79,15 +76,14 @@ export default function Account() {
         throw new Error('Sem conexão com a internet');
       }
 
-      
       const user = session?.user;
       if (!user) throw new Error('No user on the session!');
 
       const updates = {
         id: user.id,
         username,
-        full_name,
-        avatar_url,
+        full_name: fullName,
+        avatar_url: avatarUrl,
         updated_at: new Date(),
       };
 
@@ -104,7 +100,7 @@ export default function Account() {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     getProfile();
-  }, []);
+  }, [session]);
 
   return (
     <SafeAreaView style={styles.containerArea}>
@@ -113,24 +109,12 @@ export default function Account() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         <View style={styles.container}>
-
-          <Stack.Screen options={{
-            headerStyle: {
-              backgroundColor: '#1B1B1B',
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-            title: 'CONTA'
-          }} />
-
           <Avatar
             size={200}
             url={avatarUrl}
             onUpload={(url) => {
               setAvatarUrl(url);
-              updateProfile({ username, full_name, avatar_url: url });
+              updateProfile({ username, fullName, avatarUrl: url });
             }}
           />
 
@@ -158,7 +142,7 @@ export default function Account() {
             <Text style={styles.label}>Nome:</Text>
             <TextInput
               style={styles.input}
-              value={full_name}
+              value={fullName}
               onChangeText={setFullName}
               placeholder="Nome Completo"
             />
@@ -172,7 +156,7 @@ export default function Account() {
                 },
                 styles.button,
               ]}
-              onPress={() => updateProfile({ username, full_name, avatar_url: avatarUrl })}
+              onPress={() => updateProfile({ username, fullName, avatarUrl: avatarUrl })}
               disabled={loading}
             >
               <Text style={styles.buttonText}>

@@ -33,21 +33,12 @@ export default function Logs() {
 
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      handleRedirect(session);
     });
 
     return () => {
       authListener.subscription;
     };
   }, []);
-
-  const handleRedirect = (session) => {
-    if (session && session.user) {
-      console.log(session.user);
-    } else {
-      router.replace('auth'); // Redireciona para a tela de autenticação
-    }
-  }
 
 
 
@@ -243,51 +234,6 @@ export default function Logs() {
 
           <Text style={styles.label}>Assunto:</Text>
           <Text style={styles.valueTitle}>{assuntoJson.nome}</Text>
-
-          {/* {assuntoJson.children && assuntoJson.children.length > 0 && (
-            <View style={styles.childrenContainer}>
-              {assuntoJson.children.map((child, index) => (
-                <View key={child.id} style={styles.childContainer}>
-                  <Pressable
-                    onPress={() => {
-                      navigation.navigate('logs', { assunto: JSON.stringify(child) });
-                    }}
-                    style={({ pressed }) => ({
-                      backgroundColor: pressed ? '#333333' : '#1B1B1B',
-                      marginTop: 5,
-                      marginBottom: 5,
-                      marginLeft: 5,
-                      marginRight: 5
-                    })}
-                  >
-                    <Text style={styles.value1}>{child.nome}</Text>
-                  </Pressable>
-                  {child.children && child.children.length > 0 && (
-                    <View style={styles.childrenContainer}>
-                      {child.children.map((child2, childIndex) => (
-                        <View key={child2.id} style={styles.childContainer}>
-                          <Pressable
-                            onPress={() => {
-                              navigation.navigate('logs', { assunto: JSON.stringify(child2) });
-                            }}
-                            style={({ pressed }) => ({
-                              backgroundColor: pressed ? '#333333' : '#1B1B1B',
-                              marginTop: 5,
-                              marginBottom: 5,
-                              marginLeft: 5,
-                              marginRight: 5
-                            })}
-                          >
-                            <Text style={styles.value2}>{child2.nome}</Text>
-                          </Pressable>
-                        </View>
-                      ))}
-                    </View>
-                  )}
-                </View>
-              ))}
-            </View>
-          )} */}
 
           <Text style={styles.label}>Bloco:</Text>
           <Text style={styles.value}>{assuntoJson.bloco}</Text>

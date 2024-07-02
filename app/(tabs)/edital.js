@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, SectionList, ActivityIndicator, Pressable, RefreshControl, Alert, FlatList } from 'react-native';
-import { useNavigation, Stack } from 'expo-router';
+import { useNavigation, Stack, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from '~/lib/supabase';
 import * as Network from 'expo-network';
@@ -8,7 +8,6 @@ import { FontAwesome } from '@expo/vector-icons';
 
 
 const EditalVerticalizado = () => {
-
   const navigation = useNavigation();
   const [editais, setEditais] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +16,6 @@ const EditalVerticalizado = () => {
   const [blocoFilters, setBlocoFilters] = useState([]);
   const [materiaFilters, setMateriaFilters] = useState([]);
   const [availableMaterias, setAvailableMaterias] = useState([]);
-  // const [currentMateria, setCurrentMateria] = useState('');
   const [session, setSession] = useState(null);
   const [maisEdtudado, setmaisEdtudado] = useState(null);
   const [menosEdtudado, setmenosEdtudado] = useState(null);
@@ -37,7 +35,6 @@ const EditalVerticalizado = () => {
 
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      handleRedirect(session);
     });
 
     return () => {
@@ -45,26 +42,23 @@ const EditalVerticalizado = () => {
     };
   }, []);
 
-  const handleRedirect = (session) => {
-    if (session && session.user) {
-      // console.log(session.user);
-    } else {
-      router.replace('auth'); // Redireciona para a tela de autenticação
-    }
-  };
-
-
+ 
   const loadEditais = async () => {
     setRefreshing(true);
     try {
       const { isConnected } = await Network.getNetworkStateAsync();
       if (isConnected) {
+
+        const userId = session?.user?.id; // Obtém o ID do usuário logado
+        // if (!userId) throw new Error('User not logged in');
+
         const { data: assuntos, error } = await supabase
           .from('assuntos')
           .select(`
             *,
             estudado:estudado(count)
-          `);
+          `)
+          .eq('estudado.id_user', userId); // Adiciona a condição para o usuário logado
 
         if (error) {
           throw error;
@@ -111,7 +105,7 @@ const EditalVerticalizado = () => {
 
   const onRefresh = useCallback(() => {
     loadEditais();
-  }, []);
+  }, [session]);
 
 
   const filterEditais = () => {
@@ -240,6 +234,18 @@ const EditalVerticalizado = () => {
       />
       <View style={styles.container}>
         <View style={styles.filtersContainer}>
+          <Text style={styles.filterTitle}>FILTRAR POR BLOCO:</Text>
+          <View style={styles.filterButtonsContainer}>
+            {['I', 'II', 'III'].map((bloco) => (
+              <Pressable
+                key={bloco}
+                style={[styles.filterButton, blocoFilters.includes(bloco) ? styles.filterButtonActive : null]}
+                onPress={() => toggleFilter(bloco, 'bloco')}
+              >
+                <Text style={styles.filterButtonText}>{bloco}</Text>
+              </Pressable>
+            ))}
+          </View>
           <Text style={styles.filterTitle}>FILTRAR POR PESO:</Text>
           <View style={styles.filterButtonsContainer}>
             {[0, 1, 2, 3, 4].map((peso) => (
@@ -253,18 +259,6 @@ const EditalVerticalizado = () => {
             ))}
           </View>
 
-          <Text style={styles.filterTitle}>FILTRAR POR BLOCO:</Text>
-          <View style={styles.filterButtonsContainer}>
-            {['I', 'II', 'III'].map((bloco) => (
-              <Pressable
-                key={bloco}
-                style={[styles.filterButton, blocoFilters.includes(bloco) ? styles.filterButtonActive : null]}
-                onPress={() => toggleFilter(bloco, 'bloco')}
-              >
-                <Text style={styles.filterButtonText}>{bloco}</Text>
-              </Pressable>
-            ))}
-          </View>
 
           <Text style={styles.filterTitle}>FILTRAR POR MATÉRIA:</Text>
           <FlatList
