@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, SectionList, ActivityIndicator, Pressable, RefreshControl, Alert, FlatList } from 'react-native';
+import 'react-native-url-polyfill/auto'
 import { useNavigation, Stack, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from '~/lib/supabase';
 import * as Network from 'expo-network';
 import { FontAwesome } from '@expo/vector-icons';
-
+import { Auth } from '~/components/Auth';
 
 const EditalVerticalizado = () => {
   const navigation = useNavigation();
@@ -16,33 +17,23 @@ const EditalVerticalizado = () => {
   const [blocoFilters, setBlocoFilters] = useState([]);
   const [materiaFilters, setMateriaFilters] = useState([]);
   const [availableMaterias, setAvailableMaterias] = useState([]);
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState([null]);
   const [maisEdtudado, setmaisEdtudado] = useState(null);
   const [menosEdtudado, setmenosEdtudado] = useState(null);
 
   useEffect(() => {
-    const getSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) throw error;
-        setSession(session);
-      } catch (error) {
-        Alert.alert('Error fetching session:', error.message);
-      }
-    };
 
-    getSession();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
 
-    return () => {
-      authListener.subscription;
-    };
   }, []);
 
- 
+
   const loadEditais = async () => {
     setRefreshing(true);
     try {
@@ -94,8 +85,10 @@ const EditalVerticalizado = () => {
 
 
   useEffect(() => {
-    loadEditais();
-  }, []);
+    if (session) {
+      loadEditais();
+    }
+  }, [session]);
 
   useEffect(() => {
     filterAvailableMaterias();
@@ -104,7 +97,9 @@ const EditalVerticalizado = () => {
 
 
   const onRefresh = useCallback(() => {
-    loadEditais();
+    if (session) {
+      loadEditais();
+    }
   }, [session]);
 
 
@@ -234,6 +229,9 @@ const EditalVerticalizado = () => {
       />
       <View style={styles.container}>
         <View style={styles.filtersContainer}>
+          {/* <Auth /> */}
+          {/* {session && session.user && <Text>{session.user.id}</Text>} */}
+
           <Text style={styles.filterTitle}>FILTRAR POR BLOCO:</Text>
           <View style={styles.filterButtonsContainer}>
             {['I', 'II', 'III'].map((bloco) => (
