@@ -231,6 +231,42 @@ export default function Home() {
         ) : (
           <Text style={styles.errorText}>Não há dados disponíveis.</Text>
         )}
+
+
+        <View style={styles.stepContainer}>
+
+            <View style={styles.subtitleContainer}>
+              <Text style={styles.subtitle}>
+                @ APOSTILAS @
+              </Text>
+            </View>
+
+          <Pressable
+            onPress={() => navigation.navigate('apostilas')}
+            style={({ pressed }) => ({
+              backgroundColor: pressed ? '#333333' : '#1B1B1B',
+              // marginTop: 5,
+              // marginBottom: 5,
+              // marginLeft: 5,
+              // marginRight: 5
+            })}
+          >
+
+            <View style={styles.cursoContainer2}>
+              <Text style={styles.cursoNome}>Aqui você encontra uma variedade de arquivos essenciais para seus estudos e preparação, incluindo:</Text>
+              <Text style={styles.cursoInfo}>Apostilas Bizuradas</Text>
+              <Text style={styles.cursoInfo}>Leis</Text>
+              <Text style={styles.cursoInfo}>Resoluções</Text>
+              <Text style={styles.cursoInfo}>Etc..</Text>
+
+            </View>
+
+
+          </Pressable>
+
+        </View>
+
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -259,6 +295,14 @@ const styles = StyleSheet.create({
   },
   cursoContainer: {
     width: 300,
+    height: 180,
+    padding: 10,
+    // marginBottom: 10,
+    borderWidth: 0.5,
+    borderColor: '#ccc',
+  },
+  cursoContainer2: {
+    width: '100%',
     height: 180,
     padding: 10,
     // marginBottom: 10,

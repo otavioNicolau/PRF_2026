@@ -610,6 +610,7 @@ export default function Aula() {
             )}
             <Text style={[styles.videoTitle, styles.whiteText]}>VIDEOS:</Text>
             <VideoList materia={materia} aula={aulaJson.nome} assunto={aulaJson.conteudo} videos={aulaJson.videos} />
+
           </View>
         </View>
       </ScrollView>

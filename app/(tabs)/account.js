@@ -3,6 +3,7 @@ import { View, TextInput, StyleSheet, ScrollView, SafeAreaView, Alert, Pressable
 import { supabase } from '~/lib/supabase';
 import Avatar from '~/components/Avatar';
 import * as Network from 'expo-network';
+import { Stack } from 'expo-router';
 
 export default function Account() {
   const [username, setUsername] = useState('');
@@ -108,7 +109,21 @@ export default function Account() {
         contentContainerStyle={styles.scrollView}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
+
+        
         <View style={styles.container}>
+
+        <Stack.Screen options={{
+          headerStyle: {
+            backgroundColor: '#1B1B1B',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          title: 'CONTA'
+        }} />
+
           <Avatar
             size={200}
             url={avatarUrl}
