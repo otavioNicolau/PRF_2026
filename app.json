@@ -32,7 +32,18 @@
         "@config-plugins/react-native-blob-util",
         "@config-plugins/react-native-pdf"
       ],
-      "expo-video"
+      "expo-video",
+      [
+        "react-native-vlc-media-player",
+        {
+          "ios": {
+            "includeVLCKit": false 
+          },
+          "android": {
+            "legacyJetifier": false 
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

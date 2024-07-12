@@ -1,6 +1,7 @@
+import { Stack, useLocalSearchParams } from 'expo-router';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView, TouchableWithoutFeedback, StatusBar } from 'react-native';
-import { VLCPlayer } from 'react-native-vlc-media-player';
+import { VLCPlayer, VlCPlayerView } from 'react-native-vlc-media-player';
 import { MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -177,6 +178,11 @@ export default function Video1() {
 
   return (
     <SafeAreaView style={styles.containerArea}>
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+      />
       <StatusBar hidden={true} />
 
       <TouchableWithoutFeedback onPress={handleTouchScreen}>
@@ -188,17 +194,15 @@ export default function Video1() {
             resizeMode="cover"
             rate={videoSpeed}
             paused={!isPlaying}
+            
             onProgress={handlePlaybackStatusUpdate}
             onBuffering={(e) => console.log('Buffering:', e)}
             onPaused={(e) => console.log('Paused:', e)}
             onStopped={(e) => console.log('Stopped:', e)}
             onPlaying={(e) => console.log('Playing:', e)}
-            onEnd={(e) => {
-              setIsPlaying(false);
-              setControlsVisible(true);
-              startControlsTimer();
-            }}
+            onEnd={(e) => console.log('End:', e)}
           />
+
 
           {!isFullscreen && controlsVisible && (
             <>
@@ -258,26 +262,27 @@ const styles = StyleSheet.create({
   },
   controlsContainer: {
     position: 'absolute',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     bottom: 0,
     left: 0,
     right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   controlsContainer2: {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     paddingVertical: 10,
     paddingHorizontal: 20,
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 10,
   },
   controlButton: {
     padding: 10,

@@ -1,6 +1,7 @@
+import { Stack, useLocalSearchParams } from 'expo-router';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView, TouchableWithoutFeedback, StatusBar } from 'react-native';
-import { VLCPlayer } from 'react-native-vlc-media-player';
+import { Video } from 'expo-av';
 import { MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -43,7 +44,7 @@ export default function Video1() {
           const position = result.position;
           setVideoPosition(position);
           if (videoRef.current) {
-            videoRef.current.seek(position / 1000);
+            await videoRef.current.setPositionAsync(position);
           }
         }
       } catch (e) {
@@ -87,11 +88,11 @@ export default function Video1() {
     setVideoSpeed(prevSpeed => Math.max(prevSpeed - 0.25, 0.5));
   }, []);
 
-  const handleFullscreenUpdate = async (fullscreen) => {
-    if (fullscreen) {
+  const handleFullscreenUpdate = async ({ fullscreenUpdate }) => {
+    if (fullscreenUpdate === Video.FULLSCREEN_UPDATE_PLAYER_DID_PRESENT) {
       setIsFullscreen(true);
       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-    } else {
+    } else if (fullscreenUpdate === Video.FULLSCREEN_UPDATE_PLAYER_WILL_DISMISS) {
       setIsFullscreen(false);
       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
     }
@@ -99,18 +100,20 @@ export default function Video1() {
 
   const togglePlayPause = () => {
     if (isPlaying) {
-      videoRef.current.resume(false);  // Para pausar, chamamos resume(false)
+      videoRef.current.pauseAsync();
     } else {
-      videoRef.current.resume(true);  // Para tocar, chamamos resume(true)
+      videoRef.current.playAsync();
     }
     setIsPlaying(!isPlaying);
     setControlsVisible(true);
     startControlsTimer();
   };
 
-  const handlePlaybackStatusUpdate = (event) => {
-    setVideoPosition(event.currentTime * 1000);
-    setVideoDuration(event.duration * 1000 || 0);
+  const handlePlaybackStatusUpdate = (status) => {
+    if (status.isLoaded) {
+      setVideoPosition(status.positionMillis);
+      setVideoDuration(status.durationMillis || 0);
+    }
   };
 
   const handleSliderValueChange = async (value) => {
@@ -118,7 +121,7 @@ export default function Video1() {
       const newPosition = value * videoDuration;
       setVideoPosition(newPosition);
       if (videoRef.current) {
-        videoRef.current.seek(newPosition / 1000);
+        await videoRef.current.setPositionAsync(newPosition);
       }
     }
   };
@@ -153,7 +156,7 @@ export default function Video1() {
     const newPosition = Math.min(videoPosition + 10000, videoDuration);
     setVideoPosition(newPosition);
     if (videoRef.current) {
-      videoRef.current.seek(newPosition / 1000);
+      await videoRef.current.setPositionAsync(newPosition);
     }
   };
 
@@ -161,7 +164,7 @@ export default function Video1() {
     const newPosition = Math.max(videoPosition - 10000, 0);
     setVideoPosition(newPosition);
     if (videoRef.current) {
-      videoRef.current.seek(newPosition / 1000);
+      await videoRef.current.setPositionAsync(newPosition);
     }
   };
 
@@ -177,35 +180,37 @@ export default function Video1() {
 
   return (
     <SafeAreaView style={styles.containerArea}>
-      <StatusBar hidden={true} />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+      />
+      <StatusBar
+        hidden={true}
+      />
 
       <TouchableWithoutFeedback onPress={handleTouchScreen}>
+
         <View style={[styles.videoContainer, isFullscreen && styles.fullscreenVideoContainer]}>
-          <VLCPlayer
+          <Video
             ref={videoRef}
             source={{ uri: video }}
             style={styles.video}
-            resizeMode="cover"
+            resizeMode="contain"
             rate={videoSpeed}
-            paused={!isPlaying}
-            onProgress={handlePlaybackStatusUpdate}
-            onBuffering={(e) => console.log('Buffering:', e)}
-            onPaused={(e) => console.log('Paused:', e)}
-            onStopped={(e) => console.log('Stopped:', e)}
-            onPlaying={(e) => console.log('Playing:', e)}
-            onEnd={(e) => {
-              setIsPlaying(false);
-              setControlsVisible(true);
-              startControlsTimer();
-            }}
+            onFullscreenUpdate={handleFullscreenUpdate}
+            shouldPlay
+            onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+            useNativeControls={isFullscreen}
           />
-
           {!isFullscreen && controlsVisible && (
             <>
               <View style={styles.controlsContainer2}>
                 <Text style={styles.timeDisplay}>{titulo}</Text>
+
               </View>
               <View style={styles.controlsContainer}>
+
                 <TouchableOpacity onPress={togglePlayPause} style={styles.controlButton}>
                   <MaterialIcons name={isPlaying ? "pause" : "play-arrow"} size={32} color="white" />
                 </TouchableOpacity>
@@ -231,6 +236,7 @@ export default function Video1() {
                 </TouchableOpacity>
               </View>
             </>
+
           )}
         </View>
       </TouchableWithoutFeedback>
@@ -241,57 +247,65 @@ export default function Video1() {
 const styles = StyleSheet.create({
   containerArea: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: '#1B1B1B',
   },
   videoContainer: {
     flex: 1,
+    backgroundColor: '#1B1B1B',
     justifyContent: 'center',
     alignItems: 'center',
   },
   fullscreenVideoContainer: {
-    width: '100%',
-    height: '100%',
+    backgroundColor: 'black',
   },
   video: {
     width: '100%',
     height: '100%',
   },
   controlsContainer: {
+    width: '100%',
     position: 'absolute',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
     bottom: 0,
-    left: 0,
-    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    alignItems: 'center',
   },
+
   controlsContainer2: {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    width: '100%',
     position: 'absolute',
     top: 0,
-    left: 0,
-    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   controlButton: {
-    padding: 10,
+    padding: 10
+  },
+  controlText: {
+    color: '#fff',
+    fontSize: 16,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  timeDisplay: {
+    color: '#FFF',
+    fontSize: 16,
   },
   slider: {
     flex: 1,
     marginHorizontal: 10,
   },
-  timeDisplay: {
-    color: 'white',
-    fontSize: 12,
-  },
-  controlText: {
-    color: 'white',
-    fontSize: 14,
+  titulo: {
+    flex: 1,
+    marginHorizontal: 10,
+    color: '#FFF',
+    fontSize: 16,
   },
 });
