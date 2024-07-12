@@ -6,14 +6,17 @@ import Slider from '@react-native-community/slider';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useKeepAwake } from 'expo-keep-awake';
+import { useLocalSearchParams, Stack } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Video1() {
+
   useKeepAwake();
   const { video, titulo, id_video } = useLocalSearchParams();
   const videoRef = useRef(null);
   const db = useSQLiteContext();
+
   const [videoSpeed, setVideoSpeed] = useState(1.0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -22,7 +25,9 @@ export default function Video1() {
   const [controlsVisible, setControlsVisible] = useState(true);
   const [lastTap, setLastTap] = useState(null);
   const [tapPosition, setTapPosition] = useState({ x: 0, y: 0 });
-
+  
+  console.log(video);
+  
   useEffect(() => {
     const lockOrientation = async () => {
       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
@@ -39,11 +44,10 @@ export default function Video1() {
     const loadVideoPosition = async () => {
       try {
         const result = await db.getFirstAsync('SELECT position FROM videos WHERE id_video = ?;', [id_video]);
-        if (result) {
-          const position = result.position;
-          setVideoPosition(position);
+        if (result && result.position !== null) {
+          setVideoPosition(result.position);
           if (videoRef.current) {
-            videoRef.current.seek(position / 1000);
+            videoRef.current.seek(result.position / 1000);
           }
         }
       } catch (e) {
@@ -87,38 +91,29 @@ export default function Video1() {
     setVideoSpeed(prevSpeed => Math.max(prevSpeed - 0.25, 0.5));
   }, []);
 
-  const handleFullscreenUpdate = async (fullscreen) => {
-    if (fullscreen) {
-      setIsFullscreen(true);
-      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-    } else {
-      setIsFullscreen(false);
-      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-    }
-  };
-
   const togglePlayPause = () => {
-    if (isPlaying) {
-      videoRef.current.resume(false);  // Para pausar, chamamos resume(false)
-    } else {
-      videoRef.current.resume(true);  // Para tocar, chamamos resume(true)
-    }
-    setIsPlaying(!isPlaying);
+    setIsPlaying(prev => !prev);
     setControlsVisible(true);
     startControlsTimer();
   };
 
   const handlePlaybackStatusUpdate = (event) => {
-    setVideoPosition(event.currentTime * 1000);
-    setVideoDuration(event.duration * 1000 || 0);
+    setVideoPosition(event.currentTime);
+    setVideoDuration(event.duration);
   };
 
-  const handleSliderValueChange = async (value) => {
+  const handleSliderValueChange = (value) => {
     if (videoDuration > 0) {
       const newPosition = value * videoDuration;
       setVideoPosition(newPosition);
+    }
+  };
+
+  const handleSliderSlidingComplete = (value) => {
+    if (videoDuration > 0) {
+      const newPosition = value * videoDuration;
       if (videoRef.current) {
-        videoRef.current.seek(newPosition / 1000);
+        videoRef.current.seek(newPosition / 1000); // Convertendo para segundos
       }
     }
   };
@@ -165,22 +160,25 @@ export default function Video1() {
     }
   };
 
-  const formatTime = (timeInMillis) => {
-    if (!timeInMillis) return '00:00';
-    const totalSeconds = timeInMillis / 1000;
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = Math.floor(totalSeconds % 60);
-    const paddedMinutes = String(minutes).padStart(2, '0');
-    const paddedSeconds = String(seconds).padStart(2, '0');
-    return `${paddedMinutes}:${paddedSeconds}`;
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
 
   return (
     <SafeAreaView style={styles.containerArea}>
       <StatusBar hidden={true} />
-
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+      />
       <TouchableWithoutFeedback onPress={handleTouchScreen}>
         <View style={[styles.videoContainer, isFullscreen && styles.fullscreenVideoContainer]}>
+
+
+
           <VLCPlayer
             ref={videoRef}
             source={{ uri: video }}
@@ -189,11 +187,7 @@ export default function Video1() {
             rate={videoSpeed}
             paused={!isPlaying}
             onProgress={handlePlaybackStatusUpdate}
-            onBuffering={(e) => console.log('Buffering:', e)}
-            onPaused={(e) => console.log('Paused:', e)}
-            onStopped={(e) => console.log('Stopped:', e)}
-            onPlaying={(e) => console.log('Playing:', e)}
-            onEnd={(e) => {
+            onEnd={() => {
               setIsPlaying(false);
               setControlsVisible(true);
               startControlsTimer();
@@ -215,12 +209,15 @@ export default function Video1() {
                   maximumValue={1}
                   value={videoDuration > 0 ? videoPosition / videoDuration : 0}
                   onValueChange={handleSliderValueChange}
+                  onSlidingComplete={handleSliderSlidingComplete}
                   minimumTrackTintColor="#FFFFFF"
                   maximumTrackTintColor="#000000"
                   thumbTintColor="#FFFFFF"
                 />
+
+
                 <Text style={styles.timeDisplay}>
-                  {formatTime(videoPosition)} / {formatTime(videoDuration)}
+                  {formatTime(Math.floor(videoPosition / 1000))} / {formatTime(Math.floor(videoDuration / 1000))}
                 </Text>
                 <TouchableOpacity onPress={decreaseSpeed} style={styles.controlButton}>
                   <MaterialIcons name="remove" size={24} color="white" />
@@ -289,6 +286,7 @@ const styles = StyleSheet.create({
   timeDisplay: {
     color: 'white',
     fontSize: 12,
+    fontWeight: 'bold'
   },
   controlText: {
     color: 'white',
