@@ -8,7 +8,6 @@ import { useNavigation, Stack, useRouter } from 'expo-router';
 
 const EditalVerticalizado = () => {
   const navigation = useNavigation();
-
   const [loading, setLoading] = useState(true);
   const [materiasPorBloco, setMateriasPorBloco] = useState([]);
   const [session, setSession] = useState(null);
@@ -130,7 +129,7 @@ const EditalVerticalizado = () => {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          title: 'EDITAL',
+          title: 'EDITAL VERTICALIZADO',
         }}
       />
 
@@ -186,10 +185,12 @@ const styles = StyleSheet.create({
   blocoTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFF',
     marginBottom: 10,
+    marginTop: 10,
     padding: 15,
-    backgroundColor: '#C1C1C1'
+    color: '#A5B99C',
+    marginBottom: 10,
+
   },
   materiaContainer: {
     paddingVertical: 12,

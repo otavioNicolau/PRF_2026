@@ -26,10 +26,10 @@ export default function Video1() {
   const [controlsVisible, setControlsVisible] = useState(true);
   const [lastTap, setLastTap] = useState(null);
   const [tapPosition, setTapPosition] = useState({ x: 0, y: 0 });
-  
+
   const videoAtual = video.startsWith('file://') ? video.slice(7) : video;
 
-  
+
   useEffect(() => {
     const lockOrientation = async () => {
       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
@@ -47,6 +47,7 @@ export default function Video1() {
       try {
         const result = await db.getFirstAsync('SELECT position FROM videos WHERE id_video = ?;', [id_video]);
         if (result && result.position !== null) {
+          console.log(result)
           setVideoPosition(result.position);
           if (videoRef.current) {
             videoRef.current.seek(result.position / 1000);
@@ -66,11 +67,13 @@ export default function Video1() {
         const result = await db.getAllAsync('SELECT COUNT(*) AS count FROM videos WHERE id_video = ?;', [id_video]);
         const count = result[0]?.count || 0;
 
+
         if (count > 0) {
           await db.runAsync(
             'UPDATE videos SET titulo = ?, position = ? WHERE id_video = ?;',
             [titulo, videoPosition, id_video]
           );
+
         } else {
           await db.runAsync(
             'INSERT INTO videos (id_video, titulo, position) VALUES (?,?,?);',
@@ -179,15 +182,9 @@ export default function Video1() {
       <TouchableWithoutFeedback onPress={handleTouchScreen}>
         <View style={[styles.videoContainer, isFullscreen && styles.fullscreenVideoContainer]}>
 
-
           <VLCPlayer
             ref={videoRef}
-            source={{ 
-
-              uri: videoAtual,
-
-            
-            }}
+            source={{ uri: videoAtual }}
 
             style={styles.video}
             resizeMode="cover"
