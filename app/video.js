@@ -7,6 +7,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useKeepAwake } from 'expo-keep-awake';
 import { useLocalSearchParams, Stack } from 'expo-router';
+import { Video } from 'expo-av';
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,7 +27,8 @@ export default function Video1() {
   const [lastTap, setLastTap] = useState(null);
   const [tapPosition, setTapPosition] = useState({ x: 0, y: 0 });
   
-  console.log(video);
+  const videoAtual = video.startsWith('file://') ? video.slice(7) : video;
+
   
   useEffect(() => {
     const lockOrientation = async () => {
@@ -178,10 +180,15 @@ export default function Video1() {
         <View style={[styles.videoContainer, isFullscreen && styles.fullscreenVideoContainer]}>
 
 
-
           <VLCPlayer
             ref={videoRef}
-            source={{ uri: video }}
+            source={{ 
+
+              uri: videoAtual,
+
+            
+            }}
+
             style={styles.video}
             resizeMode="cover"
             rate={videoSpeed}
@@ -266,18 +273,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   controlsContainer2: {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   controlButton: {
-    padding: 10,
+    paddingHorizontal: 10,
+  },
+  controlText: {
+    color: 'white',
+    fontSize: 18,
   },
   slider: {
     flex: 1,
@@ -285,11 +295,7 @@ const styles = StyleSheet.create({
   },
   timeDisplay: {
     color: 'white',
-    fontSize: 12,
-    fontWeight: 'bold'
-  },
-  controlText: {
-    color: 'white',
     fontSize: 14,
+    marginHorizontal: 10,
   },
 });
