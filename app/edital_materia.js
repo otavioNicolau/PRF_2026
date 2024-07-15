@@ -156,11 +156,11 @@ const EditalVerticalizado = () => {
         ) : (
           <>
             <View style={styles.legendaContainer}>
-              <Text style={[styles.legendaItem, { color: '#006400' }]}>Peso 0</Text>
-              <Text style={[styles.legendaItem, { color: '#00FF00' }]}>Peso 1</Text>
-              <Text style={[styles.legendaItem, { color: '#FFFF00' }]}>Peso 2</Text>
-              <Text style={[styles.legendaItem, { color: '#FFA500' }]}>Peso 3</Text>
-              <Text style={[styles.legendaItem, { color: '#FF0000' }]}>Peso 4</Text>
+              <Text style={[styles.legendaItem, { color: '#006400' }]}>Altíssima</Text>
+              <Text style={[styles.legendaItem, { color: '#00FF00' }]}>Alta</Text>
+              <Text style={[styles.legendaItem, { color: '#FFFF00' }]}>Média</Text>
+              <Text style={[styles.legendaItem, { color: '#FFA500' }]}>Baixa</Text>
+              <Text style={[styles.legendaItem, { color: '#FF0000' }]}>Baixíssima</Text>
             </View>
 
             <FlatList
@@ -245,6 +245,10 @@ const styles = StyleSheet.create({
   legendaItem: {
     fontSize: 14,
     fontWeight: 'bold',
+    borderWidth: 1,
+    borderColor: '#ffffff',
+    padding: 6,
+    margin:5,
   }
 });
 

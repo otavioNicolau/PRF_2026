@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView, TouchableWithoutFeedback, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView, TouchableWithoutFeedback, StatusBar, ActivityIndicator } from 'react-native';
 import { VLCPlayer } from 'react-native-vlc-media-player';
 import { MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
@@ -7,12 +7,10 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useKeepAwake } from 'expo-keep-awake';
 import { useLocalSearchParams, Stack } from 'expo-router';
-import { Video } from 'expo-av';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Video1() {
-
   useKeepAwake();
   const { video, titulo, id_video } = useLocalSearchParams();
   const videoRef = useRef(null);
@@ -26,9 +24,9 @@ export default function Video1() {
   const [controlsVisible, setControlsVisible] = useState(true);
   const [lastTap, setLastTap] = useState(null);
   const [tapPosition, setTapPosition] = useState({ x: 0, y: 0 });
+  const [isLoading, setIsLoading] = useState(true); // Estado de carregamento
 
   const videoAtual = video.startsWith('file://') ? video.slice(7) : video;
-
 
   useEffect(() => {
     const lockOrientation = async () => {
@@ -67,7 +65,6 @@ export default function Video1() {
         const result = await db.getAllAsync('SELECT COUNT(*) AS count FROM videos WHERE id_video = ?;', [id_video]);
         const count = result[0]?.count || 0;
 
-
         if (count > 0) {
           await db.runAsync(
             'UPDATE videos SET titulo = ?, position = ? WHERE id_video = ?;',
@@ -105,6 +102,9 @@ export default function Video1() {
   const handlePlaybackStatusUpdate = (event) => {
     setVideoPosition(event.currentTime);
     setVideoDuration(event.duration);
+    if (isLoading && event.currentTime > 0) {
+      setIsLoading(false); // Marca o vídeo como carregado quando começa a reproduzir
+    }
   };
 
   const handleSliderValueChange = (value) => {
@@ -181,11 +181,12 @@ export default function Video1() {
       />
       <TouchableWithoutFeedback onPress={handleTouchScreen}>
         <View style={[styles.videoContainer, isFullscreen && styles.fullscreenVideoContainer]}>
-
+          {isLoading && ( // Mostra o loading enquanto estiver carregando
+            <ActivityIndicator size="large" color="#FFFFFF" style={styles.loadingIndicator} />
+          )}
           <VLCPlayer
             ref={videoRef}
             source={{ uri: videoAtual }}
-
             style={styles.video}
             resizeMode="cover"
             rate={videoSpeed}
@@ -198,7 +199,7 @@ export default function Video1() {
             }}
           />
 
-          {!isFullscreen && controlsVisible && (
+          {!isFullscreen && controlsVisible && !isLoading && ( // Mostra os controles apenas quando não estiver carregando
             <>
               <View style={styles.controlsContainer2}>
                 <Text style={styles.timeDisplay}>{titulo}</Text>
@@ -218,7 +219,6 @@ export default function Video1() {
                   maximumTrackTintColor="#000000"
                   thumbTintColor="#FFFFFF"
                 />
-
 
                 <Text style={styles.timeDisplay}>
                   {formatTime(Math.floor(videoPosition / 1000))} / {formatTime(Math.floor(videoDuration / 1000))}
@@ -294,5 +294,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
     marginHorizontal: 10,
+  },
+  loadingIndicator: {
+    position: 'absolute',
+    alignSelf: 'center',
   },
 });
