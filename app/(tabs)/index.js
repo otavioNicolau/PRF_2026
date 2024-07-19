@@ -189,11 +189,8 @@ export default function Home() {
               <Pressable onPress={() => navigation.navigate('cursos', { concurso: JSON.stringify(concurso) })}>
                 <View style={styles.subtitleContainer}>
                   <Text style={styles.subtitle}>
-                    {concurso.titulo.toUpperCase()} -
+                    {concurso.titulo.toUpperCase()}
 
-                    <Text style={styles.icon}>
-                      ( ver mais )
-                    </Text>
                   </Text>
                 </View>
               </Pressable>
@@ -215,7 +212,6 @@ export default function Home() {
                     })}
                   >
 
-                    {/*  <Link href={{ pathname: '/aulas', params: { id: item.id } }}> */}
                     <View style={styles.cursoContainer}>
                       <Text style={styles.cursoNome}>{item.nome.toUpperCase()}</Text>
                       <Text style={styles.cursoInfo}>DATA DE INÍCIO: {item.data_inicio}</Text>
@@ -235,11 +231,11 @@ export default function Home() {
 
         <View style={styles.stepContainer}>
 
-            <View style={styles.subtitleContainer}>
-              <Text style={styles.subtitle}>
-                @ APOSTILAS @
-              </Text>
-            </View>
+          <View style={styles.subtitleContainer}>
+            <Text style={styles.subtitle}>
+              @ APOSTILAS @
+            </Text>
+          </View>
 
           <Pressable
             onPress={() => navigation.navigate('apostilas')}
@@ -332,11 +328,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 20,
+    padding: 10,
+    fontWeight: 'bold',
     textTransform: 'uppercase',
     color: '#ffffff',
-
   },
   icon: {
     marginLeft: 5, // Espaço de 2 pixels ao lado do texto

@@ -4,11 +4,11 @@ import { VLCPlayer } from 'react-native-vlc-media-player';
 import { MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useSQLiteContext, } from 'expo-sqlite';
 import { useKeepAwake } from 'expo-keep-awake';
 import { useLocalSearchParams, Stack } from 'expo-router';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function Video1() {
   useKeepAwake();
@@ -24,7 +24,7 @@ export default function Video1() {
   const [controlsVisible, setControlsVisible] = useState(true);
   const [lastTap, setLastTap] = useState(null);
   const [tapPosition, setTapPosition] = useState({ x: 0, y: 0 });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Estado de carregamento
 
   const videoAtual = video.startsWith('file://') ? video.slice(7) : video;
 
@@ -32,6 +32,7 @@ export default function Video1() {
     const lockOrientation = async () => {
       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
     };
+
     lockOrientation();
 
     return () => {
@@ -44,13 +45,17 @@ export default function Video1() {
       try {
         const result = await db.getFirstAsync('SELECT position FROM videos WHERE id_video = ?;', [id_video]);
         if (result && result.position !== null) {
+          console.log(result)
           setVideoPosition(result.position);
-          videoRef.current?.seek(result.position / 1000);
+          if (videoRef.current) {
+            videoRef.current.seek(result.position / 1000);
+          }
         }
       } catch (e) {
         console.error(e);
       }
     };
+
     loadVideoPosition();
   }, [id_video]);
 
@@ -61,14 +66,22 @@ export default function Video1() {
         const count = result[0]?.count || 0;
 
         if (count > 0) {
-          await db.runAsync('UPDATE videos SET titulo = ?, position = ? WHERE id_video = ?;', [titulo, videoPosition, id_video]);
+          await db.runAsync(
+            'UPDATE videos SET titulo = ?, position = ? WHERE id_video = ?;',
+            [titulo, videoPosition, id_video]
+          );
+
         } else {
-          await db.runAsync('INSERT INTO videos (id_video, titulo, position) VALUES (?,?,?);', [id_video, titulo, videoPosition]);
+          await db.runAsync(
+            'INSERT INTO videos (id_video, titulo, position) VALUES (?,?,?);',
+            [id_video, titulo, videoPosition]
+          );
         }
       } catch (e) {
         console.error(e);
       }
     };
+
     saveVideoPosition();
   }, [id_video, titulo, videoPosition]);
 
@@ -90,7 +103,7 @@ export default function Video1() {
     setVideoPosition(event.currentTime);
     setVideoDuration(event.duration);
     if (isLoading && event.currentTime > 0) {
-      setIsLoading(false);
+      setIsLoading(false); // Marca o vídeo como carregado quando começa a reproduzir
     }
   };
 
@@ -104,7 +117,9 @@ export default function Video1() {
   const handleSliderSlidingComplete = (value) => {
     if (videoDuration > 0) {
       const newPosition = value * videoDuration;
-      videoRef.current?.seek(newPosition / 1000);
+      if (videoRef.current) {
+        videoRef.current.seek(newPosition / 1000); // Convertendo para segundos
+      }
     }
   };
 
@@ -122,7 +137,11 @@ export default function Video1() {
     setTapPosition({ x: touchLocation.locationX, y: touchLocation.locationY });
 
     if (lastTap && (now - lastTap) < 300) {
-      tapPosition.x < width / 2 ? skipBackward() : skipForward();
+      if (tapPosition.x < width / 2) {
+        skipBackward();
+      } else {
+        skipForward();
+      }
     } else {
       setLastTap(now);
       setControlsVisible(true);
@@ -130,16 +149,20 @@ export default function Video1() {
     }
   };
 
-  const skipForward = () => {
+  const skipForward = async () => {
     const newPosition = Math.min(videoPosition + 10000, videoDuration);
     setVideoPosition(newPosition);
-    videoRef.current?.seek(newPosition / 1000);
+    if (videoRef.current) {
+      videoRef.current.seek(newPosition / 1000);
+    }
   };
 
-  const skipBackward = () => {
+  const skipBackward = async () => {
     const newPosition = Math.max(videoPosition - 10000, 0);
     setVideoPosition(newPosition);
-    videoRef.current?.seek(newPosition / 1000);
+    if (videoRef.current) {
+      videoRef.current.seek(newPosition / 1000);
+    }
   };
 
   const formatTime = (timeInSeconds) => {
@@ -151,10 +174,16 @@ export default function Video1() {
   return (
     <SafeAreaView style={styles.containerArea}>
       <StatusBar hidden={true} />
-      <Stack.Screen options={{ headerShown: false }} />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+      />
       <TouchableWithoutFeedback onPress={handleTouchScreen}>
         <View style={[styles.videoContainer, isFullscreen && styles.fullscreenVideoContainer]}>
-          {isLoading && <ActivityIndicator size="large" color="#FFFFFF" style={styles.loadingIndicator} />}
+          {isLoading && ( // Mostra o loading enquanto estiver carregando
+            <ActivityIndicator size="large" color="#FFFFFF" style={styles.loadingIndicator} />
+          )}
           <VLCPlayer
             ref={videoRef}
             source={{ uri: videoAtual }}
@@ -170,7 +199,7 @@ export default function Video1() {
             }}
           />
 
-          {!isFullscreen && controlsVisible && !isLoading && (
+          {!isFullscreen && controlsVisible && !isLoading && ( // Mostra os controles apenas quando não estiver carregando
             <>
               <View style={styles.controlsContainer2}>
                 <Text style={styles.timeDisplay}>{titulo}</Text>
@@ -190,7 +219,10 @@ export default function Video1() {
                   maximumTrackTintColor="#000000"
                   thumbTintColor="#FFFFFF"
                 />
-                <Text style={styles.timeDisplay}>{formatTime(Math.floor(videoPosition / 1000))} / {formatTime(Math.floor(videoDuration / 1000))}</Text>
+
+                <Text style={styles.timeDisplay}>
+                  {formatTime(Math.floor(videoPosition / 1000))} / {formatTime(Math.floor(videoDuration / 1000))}
+                </Text>
                 <TouchableOpacity onPress={decreaseSpeed} style={styles.controlButton}>
                   <MaterialIcons name="remove" size={24} color="white" />
                 </TouchableOpacity>
@@ -248,26 +280,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   controlButton: {
-    marginHorizontal: 10,
+    paddingHorizontal: 10,
   },
   controlText: {
     color: 'white',
     fontSize: 18,
-    marginHorizontal: 10,
   },
   slider: {
     flex: 1,
-    height: 40,
     marginHorizontal: 10,
   },
   timeDisplay: {
     color: 'white',
     fontSize: 14,
+    marginHorizontal: 10,
   },
   loadingIndicator: {
     position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: -25 }, { translateY: -25 }],
+    alignSelf: 'center',
   },
 });
