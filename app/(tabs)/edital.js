@@ -135,11 +135,29 @@ const EditalVerticalizado = () => {
 
 
       <View style={styles.container}>
+
+        <Pressable
+          onPress={() => {
+            navigation.navigate('timeline');
+          }}
+          style={({ pressed }) => ({
+            backgroundColor: pressed ? '#333333' : '#1B1B1B',
+            marginTop: 5,
+            marginBottom: 5,
+            marginLeft: 5,
+            marginRight: 5,
+            padding:10,
+            borderWidth: 1,
+            borderColor: '#ccc',
+          })}
+        >
+          <Text style={styles.buttonTimeLine}>TIME LINE</Text>
+        </Pressable>
         {materiasPorBloco.length > 0 ? (
           <SectionList
             sections={materiasPorBloco}
             keyExtractor={(item, index) => `${item}-${index}`}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <Pressable
                 onPress={() => {
                   navigation.navigate('edital_materia', { materia: item, assunto: JSON.stringify(item) });
@@ -150,16 +168,17 @@ const EditalVerticalizado = () => {
                   marginBottom: 5,
                   marginLeft: 5,
                   marginRight: 5,
+
                 })}
               >
 
                 <View style={styles.materiaContainer}>
-                  <Text style={styles.materiaText}>{item}</Text>
+                  <Text style={styles.materiaText}>{index} - {item}</Text>
                 </View>
               </Pressable>
             )}
             renderSectionHeader={({ section: { title } }) => (
-              <Text style={styles.blocoTitle}> BLOCO {title}</Text>
+              <Text style={styles.blocoTitle}> 0{title} - BLOCO</Text>
             )}
             ListEmptyComponent={<Text style={styles.noMateriasText}>Nenhuma matéria encontrada.</Text>}
           />
@@ -190,16 +209,41 @@ const styles = StyleSheet.create({
     padding: 15,
     color: '#A5B99C',
     marginBottom: 10,
+    fontWeight: 'bold',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#1B1B1B',
+    textAlign: 'center',
+    backgroundColor: '#2C2C2C',
+
+  },
+  buttonTimeLine: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    // marginBottom: 10,
+    // marginTop: 10,
+    color: '#A5B99C',
+    // marginBottom: 10,
+    fontWeight: 'bold',
+
+    textAlign: 'center',
 
   },
   materiaContainer: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#444444',
+    // paddingVertical: 12,
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#444444',
   },
   materiaText: {
-    fontSize: 18,
+    fontSize: 15,
     color: '#ffffff',
+    // fontWeight: 'bold',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#1B1B1B',
+    textAlign: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   noMateriasText: {
     fontSize: 16,
