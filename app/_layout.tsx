@@ -38,6 +38,8 @@ export default function RootLayout() {
     if (session && session.user) {
       // console.log(session.user);
       router.replace('(tabs)'); // Redireciona para a tab
+      // router.push('/home');
+
 
     } else {
       router.replace('auth'); // Redireciona para a tela de autenticação
