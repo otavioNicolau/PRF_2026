@@ -365,6 +365,9 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
 
 
 
+
+
+
 const PdfList = ({ pdfs, aula }) => {
   const navigation = useNavigation();
   const db = useSQLiteContext();

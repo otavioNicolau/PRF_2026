@@ -126,7 +126,7 @@ const EditalVerticalizado = () => {
             <Text style={[styles.editalTitle, { color: getTitleColor(item.peso) }]}>{item.nome}</Text>
           </View>
           <Text style={styles.estudadovezes}>
-            Esse assunto foi estudado {item.estudado[0].count} vez{item.estudado[0].count !== 1 ? 'es' : ''}
+            Esse assunto foi estudado {item.estudado[0].count} vez {item.estudado[0].count > 1 ? 'es' : ''}
           </Text>
         </View>
       </Pressable>
