@@ -8,5 +8,5 @@
       "~/*": ["*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "app/curso.js", "app/(tabs)/index.js", "app/aula.js", "app/(tabs)/video.js", "app/(tabs)/edital.js", "app/(tabs)/downloads.js", "lib/SessionContext.js", "app/account.js", "app/(tabs)/account.js", "components/VideoList.JS", "app/pef.js", "app/video.js", "app/video copy 3.js"]
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "app/curso.js", "app/(tabs)/index.js", "app/aula.js", "app/(tabs)/video.js", "trash/edital.js", "app/(tabs)/downloads.js", "trash/lib/SessionContext.js", "app/account.js", "app/(trash/account.jsomponents/VideoList.JS", "app/pef.js", "app/video.js", "app/video copy 3.js"]
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, useRouter, useNavigation } from 'expo-router';
 import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
-import { supabase } from '~/lib/supabase';
+import { supabase } from '~/trash/lib/supabase';
 import { Session } from '@supabase/supabase-js';
 
 export const unstable_settings = {
@@ -10,39 +10,39 @@ export const unstable_settings = {
 
 export default function RootLayout() {
 
-  const [session, setSession] = useState(null);
+  // const [session, setSession] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const getSession = async () => {
-      const { data: session, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error('Error fetching session:', error.message);
-        return;
-      }
-      setSession(session);
-      handleRedirect(session);
-    };
+  // useEffect(() => {
+  //   const getSession = async () => {
+  //     const { data: session, error } = await supabase.auth.getSession();
+  //     if (error) {
+  //       console.error('Error fetching session:', error.message);
+  //       return;
+  //     }
+  //     setSession(session);
+  //     handleRedirect(session);
+  //   };
 
-    getSession();
+  //   getSession();
 
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      handleRedirect(session);
-    });
+  //   const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+  //     setSession(session);
+  //     handleRedirect(session);
+  //   });
 
 
-  }, []);
+  // }, []);
 
-  const handleRedirect = (session: Session | null) => {
-    if (session && session.user) {
-      // console.log(session.user);
-      router.replace('(tabs)'); // Redireciona para a tab
+  // const handleRedirect = (session: Session | null) => {
+  //   if (session && session.user) {
+  //     // console.log(session.user);
+  //     router.replace('(tabs)'); // Redireciona para a tab
 
-    } else {
-      router.replace('auth'); // Redireciona para a tela de autenticação
-    }
-  };
+  //   } else {
+  //     router.replace('auth'); // Redireciona para a tela de autenticação
+  //   }
+  // };
 
 
   return (
@@ -50,7 +50,7 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="auth" options={{ headerShown: false }} />
+        {/* <Stack.Screen name="auth" options={{ headerShown: false }} /> */}
       </Stack>
     </SQLiteProvider>
   );

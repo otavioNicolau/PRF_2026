@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator, SectionList, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { supabase } from '~/lib/supabase';
+import { supabase } from '~/trash/lib/supabase';
 import * as Network from 'expo-network';
 import { useNavigation, Stack, useRouter } from 'expo-router';
 

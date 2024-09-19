@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, StyleSheet, TextInput, View, Pressable, Text, AppState, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native';
-import { supabase } from '~/lib/supabase';
+import { supabase } from '~/trash/lib/supabase';
 import { Slide } from '~/components/Slide';
 import * as Network from 'expo-network';
 

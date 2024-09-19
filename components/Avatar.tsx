@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Alert, Image, Pressable, Text, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Network from 'expo-network';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../trash/lib/supabase';
 
 interface Props {
   size: number;
