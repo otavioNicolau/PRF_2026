@@ -67,7 +67,6 @@ const PdfViewerScreen = () => {
     loadPdf();
   }, [uri]);
 
-  // useEffect(() => {
     const savePage = async (page) => {
       try {
         const result = await db.getAllAsync('SELECT COUNT(*) AS count FROM pdfs WHERE id_aula = ? AND tipo = ?;', [id_aula, tipo]);
@@ -89,11 +88,6 @@ const PdfViewerScreen = () => {
       }
     };
 
-  //   if (pageState > 0) {
-  //     savePage();
-  //   }
-  // }, [pageState, id_aula, tipo, db]);
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <Stack.Screen
@@ -102,13 +96,11 @@ const PdfViewerScreen = () => {
         }}
       />
       <StatusBar hidden={true} />
-
       {localPdfUri ? (
         <Pdf
           source={{ uri: localPdfUri }}
           
           onPageChanged={(page, numberOfPages) => {
-            // console.log(`Current page: ${page}`);
             savePage(page);
           }}
           onError={(error) => {
@@ -130,13 +122,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#ccc', // Ajuste para garantir que a tela tenha um fundo consistente
+    backgroundColor: '#ccc', 
   },
   pdf: {
     flex: 1,
-    // width: Dimensions.get('window').width,
-    // height: Dimensions.get('window').height,
-
     width: '100%',
     height:  '100%',
   },

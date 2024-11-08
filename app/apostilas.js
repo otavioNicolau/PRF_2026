@@ -255,27 +255,6 @@ export default function Apostilas() {
       ) : (
         <ScrollView style={{ padding: 10 }}>
 
-          <Text style={[styles.materia, styles.whiteText]}>APOSTILAS</Text>
-          <Text style={[styles.whiteText]}>
-            Aqui você encontra uma variedade de arquivos essenciais para seus estudos e preparação, incluindo:
-          </Text>
-          <Text style={[styles.whiteText]}> </Text>
-          <Text style={[styles.whiteText]}>
-            * Apostilas Bizuradas: Materiais de estudo resumidos e otimizados para facilitar a assimilação rápida de conteúdo.
-          </Text>
-          <Text style={[styles.whiteText]}> </Text>
-
-          <Text style={[styles.whiteText]}>
-            * Leis: Textos completos de leis relevantes para a sua área de estudo, permitindo uma compreensão detalhada dos fundamentos legais.
-          </Text>
-          <Text style={[styles.whiteText]}> </Text>
-
-          <Text style={[styles.whiteText]}>
-            * Resoluções: Documentos oficiais que detalham normas e diretrizes específicas, fundamentais para o seu conhecimento e aplicação prática.
-          </Text>
-
-          <Text style={[styles.videoTitle, styles.whiteText]}>ARQUIVOS:</Text>
-
           {data ? (
             <PdfList pdfs={data} />
           ) : (
@@ -412,7 +391,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // marginVertical: 8,
+    marginVertical: 1,
     borderWidth: 1,
     borderColor: '#ffffff',
     padding: 10,

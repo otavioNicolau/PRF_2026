@@ -20,18 +20,15 @@ export default function Curso() {
   const url = `https://api.estrategiaconcursos.com.br/api/aluno/curso/${id}`;
 
   useEffect(() => {
-    // Trava a orientação da tela em horizontal
     const lockOrientation = async () => {
       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
     };
     lockOrientation();
-    // Desbloqueia a orientação da tela ao desmontar o componente
     return () => {
       ScreenOrientation.unlockAsync();
     };
   }, []);
 
-  // Função para obter o token da API
   const getToken = async () => {
     try {
       const response = await axios.get('https://teal-crostata-aea03c.netlify.app/api/config');
@@ -44,24 +41,22 @@ export default function Curso() {
     }
   };
 
-  // Função para buscar os dados da API
   const fetchData = async () => {
     try {
       let token = await AsyncStorage.getItem('BEARER_TOKEN');
       if (!token) {
-        token = await getToken(); // Obtém um novo token se não estiver armazenado
+        token = await getToken();
       }
-      // console.log(token);
       const headers = {
         Authorization: `${token}`,
       };
 
       const response = await axios.get(url, { headers });
+
       await AsyncStorage.setItem(url, JSON.stringify(response.data.data));
       setData(response.data.data);
       setError(null);
     } catch (err) {
-      console.error('Erro ao buscar os dados:', err);
       const cachedData = await AsyncStorage.getItem(url);
       if (cachedData) {
         setData(JSON.parse(cachedData));
@@ -76,19 +71,14 @@ export default function Curso() {
 
   const initializeData = async () => {
     try {
-      // Verificar a conexão com a internet
-      const networkState = await Network.getNetworkStateAsync();
-      if (networkState.isConnected) {
-        await getToken();  // Garantir que o token esteja obtido antes de buscar os dados
-        await fetchData();
+      const cachedData = await AsyncStorage.getItem(url);
+      
+      if (cachedData) {
+        setData(JSON.parse(cachedData));
+      } else if ((await Network.getNetworkStateAsync()).isConnected) {
+        setData(await fetchData());
       } else {
-        // Usar dados em cache se não houver conexão
-        const cachedData = await AsyncStorage.getItem(url);
-        if (cachedData) {
-          setData(JSON.parse(cachedData));
-        } else {
-          throw new Error('Sem conexão e sem dados em cache disponíveis');
-        }
+        throw new Error('Sem conexão e sem dados em cache disponíveis');
       }
     } catch (error) {
       console.error('Erro ao inicializar os dados:', error);
@@ -102,10 +92,22 @@ export default function Curso() {
     initializeData();
   }, []);
 
-  const handleRefresh = () => {
+
+
+  const handleRefresh = async () => {
     setRefreshing(true);
-    initializeData();
+    setError(null);
+    try {
+      const courseData = await fetchData();
+      setData(courseData);
+    } catch (error) {
+      console.error('Erro ao atualizar os dados:', error);
+      setError(error);
+    } finally {
+      setRefreshing(false);
+    }
   };
+
 
   if (error) {
     return (
@@ -144,18 +146,6 @@ export default function Curso() {
     );
   }
 
-  const renderProfessor = ({ item }) => (
-    <View style={styles.professorContainer}>
-      <Image source={{ uri: item.imagem }} style={styles.professorImage} />
-      <Text style={styles.professorName}>{item.nome}</Text>
-    </View>
-  );
-
-  const uniqueProfessores = data.professores
-    .filter((professor, index, self) =>
-      professor.imagem && index === self.findIndex((p) => p.id === professor.id)
-    );
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
@@ -182,16 +172,6 @@ export default function Curso() {
         }} />
         <Slide />
 
-        <Text style={[styles.title, styles.whiteText]}>PROFESSORES:</Text>
-
-        <FlatList
-          data={uniqueProfessores} // Use a lista de professores sem duplicados e com imagem
-          renderItem={renderProfessor}
-          keyExtractor={(item) => item.id.toString()}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={styles.flatList}
-        />
 
         <Text style={[styles.title, styles.whiteText]}>{data.nome.toUpperCase()}</Text>
         <Text style={styles.label}>Data de Início: {data.data_inicio}</Text>

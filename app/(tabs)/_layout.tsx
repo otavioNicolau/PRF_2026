@@ -33,28 +33,6 @@ export default function TabLayout() {
         }}
       />
 
-      <Tabs.Screen
-        name="update"
-        options={{
-          title: 'UPDATE',
-          tabBarIcon: ({ color }) => <TabBarIcon name="download" color={color} />,
-        }}
-      />
-      {/* <Tabs.Screen
-        name="edital"
-        options={{
-          title: 'EDITAL',
-          tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
-        }}
-      /> */}
-
-      {/* <Tabs.Screen
-        name="account"
-        options={{
-          title: 'CONTA',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-        }}
-      /> */}
     </Tabs>
 
 

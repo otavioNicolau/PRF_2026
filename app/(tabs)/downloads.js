@@ -55,7 +55,7 @@ const DownloadedVideosScreen = () => {
       setLoading(false); // Define o estado de carregamento como falso quando terminar
     }
   };
-
+  
   useEffect(() => {
     loadDownloadedVideos();
     lockOrientation();

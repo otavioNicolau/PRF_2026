@@ -8,7 +8,6 @@ import { useSQLiteContext } from 'expo-sqlite';
 
 const VideoList = ({ videos, aula, assunto, materia }) => {
   const navigation = useNavigation();
-
   const db = useSQLiteContext();
   const [downloadProgress, setDownloadProgress] = useState({});
   const [downloading, setDownloading] = useState({});
@@ -28,7 +27,9 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
 
   const deleteVideo = async (db, id_video) => {
     try {
-      await db.runAsync(`DELETE FROM videos WHERE id_video = ?;`, [id_video]);
+      // await db.runAsync(`DELETE FROM videos WHERE id_video = ?;`, [id_video]);
+      await db.runAsync('UPDATE videos SET watched = 0 WHERE id_video = ?;', [id_video]);
+
     } catch (error) {
       console.error('Erro ao deletar vídeo:', error);
     }
@@ -134,26 +135,20 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
 
   const markAsWatched = async (video) => {
     try {
-      const isWatched = watchedVideos[video.id]; // Verifica se o vídeo já está marcado como assistido
+      const isWatched = watchedVideos[video.id];
 
       if (isWatched) {
-        // Se já estiver marcado, desmarca
         await db.runAsync('UPDATE videos SET watched = 0 WHERE id_video = ?;', [video.id]);
-        setWatchedVideos((prev) => ({ ...prev, [video.id]: false })); // Atualiza o estado local para desmarcado
-        // Alert.alert('Aviso', 'Vídeo desmarcado como assistido.');
+        setWatchedVideos((prev) => ({ ...prev, [video.id]: false }));
       } else {
-        // Se não estiver marcado, marca como assistido
         const result = await db.getAllAsync('SELECT COUNT(*) AS count FROM videos WHERE id_video = ?;', [video.id]);
         const count = result[0]?.count || 0;
-
         if (count > 0) {
           await db.runAsync('UPDATE videos SET watched = 1 WHERE id_video = ?;', [video.id]);
         } else {
           await db.runAsync('INSERT INTO videos (id_video, titulo, watched) VALUES (?,?,?);', [video.id, video.titulo, 1]);
         }
-
-        setWatchedVideos((prev) => ({ ...prev, [video.id]: true })); // Atualiza o estado local para marcado
-        // Alert.alert('Aviso', 'Vídeo marcado como assistido.');
+        setWatchedVideos((prev) => ({ ...prev, [video.id]: true }));
       }
     } catch (error) {
       console.error('Erro ao marcar como assistido:', error);
@@ -281,7 +276,7 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
               })}
             >
               <View style={styles.videoBox}>
-              <Text style={[styles.videoLink, styles.whiteText]}>
+                <Text style={[styles.videoLink, styles.whiteText]}>
                   {video.titulo}
                 </Text>
                 <View style={styles.buttonsContainer}>
@@ -364,10 +359,6 @@ const VideoList = ({ videos, aula, assunto, materia }) => {
 };
 
 
-
-
-
-
 const PdfList = ({ pdfs, aula }) => {
   const navigation = useNavigation();
   const db = useSQLiteContext();
@@ -444,7 +435,7 @@ const PdfList = ({ pdfs, aula }) => {
       }));
       checkDownloadedPdfs();
 
-      navigation.navigate('pdf', { uri, id_aula: pdf.id, tipo });
+      //navigation.navigate('pdf', { uri, id_aula: pdf.id, tipo });
     } catch (error) {
       console.error('Erro ao baixar o PDF:', error);
       Alert.alert('Erro', 'Erro ao baixar o PDF. Por favor, tente novamente.');
@@ -555,7 +546,7 @@ export default function Aula() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 200));
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
       } finally {
@@ -602,8 +593,8 @@ export default function Aula() {
         <View key={aulaJson.id} style={styles.aulaContainer}>
           <View style={styles.cursoContainer}>
             <Text style={[styles.materia, styles.whiteText]}>{materia.toUpperCase()}</Text>
-            <Text style={[styles.aula, styles.whiteText]}>{aulaJson.nome.toUpperCase()}</Text>
 
+            <Text style={[styles.aula, styles.whiteText]}>{aulaJson.nome.toUpperCase()}</Text>
             <Text style={styles.whiteText}>{aulaJson.conteudo}</Text>
             <Text style={[styles.videoTitle, styles.whiteText]}>ARQUIVOS:</Text>
             {!aulaJson.pdf && !aulaJson.pdf_grifado && !aulaJson.pdf_simplificado ? (
@@ -611,6 +602,8 @@ export default function Aula() {
             ) : (
               <PdfList pdfs={[aulaJson]} aula={aulaJson.nome} />
             )}
+
+
             <Text style={[styles.videoTitle, styles.whiteText]}>VIDEOS:</Text>
             <VideoList materia={materia} aula={aulaJson.nome} assunto={aulaJson.conteudo} videos={aulaJson.videos} />
 
@@ -670,8 +663,9 @@ const styles = StyleSheet.create({
   aula: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 1,
+    marginTop: 5,
     marginBottom: 5,
+    
   },
   cursoContainer: {
     flexDirection: 'column',

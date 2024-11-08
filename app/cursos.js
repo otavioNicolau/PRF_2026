@@ -13,18 +13,15 @@ export default function Cursos() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simular carregamento dos dados
     setTimeout(() => {
       setIsLoading(false);
-    }, 500); // Simula um carregamento de 2 segundos
+    }, 200); 
 
-    // Trava a orientação da tela em horizontal
     const lockOrientation = async () => {
       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
     };
 
     lockOrientation();
-    // Desbloqueia a orientação da tela ao desmontar o componente
     return () => {
       ScreenOrientation.unlockAsync();
     };
@@ -71,7 +68,7 @@ export default function Cursos() {
 
         <View style={styles.subtitleContainer}>
           <Text style={styles.subtitle}>
-            {concursoJson.titulo} -
+            {concursoJson.titulo} 
           </Text>
         </View>
 
@@ -90,10 +87,6 @@ export default function Cursos() {
               >
                 <View style={styles.cursoContainer}>
                   <Text style={styles.cursoNome}>{curso.nome}</Text>
-                  <Text style={styles.cursoInfo}>DATA DE INÍCIO: {curso.data_inicio}</Text>
-                  <Text style={styles.cursoInfo}>DATA DE RETIRADA: {curso.data_retirada}</Text>
-                  <Text style={styles.cursoInfo}>TOTAL DE AULAS: {curso.total_aulas}</Text>
-                  <Text style={styles.cursoInfo}>TOTAL DE AULAS VISUALIZADAS: {curso.total_aulas_visualizadas}</Text>
                 </View>
               </Pressable>
             </View>
@@ -127,17 +120,15 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   stepContainer: {
-    marginBottom: 20,
+    marginBottom: 5,
   },
   cursoContainer: {
     width: "99%",
-    padding: 10,
+    padding: 5,
     borderWidth: 0.5,
     borderColor: '#ccc',
   },
-  whiteText: {
-    color: '#ffffff',
-  },
+
   cursoNome: {
     fontSize: 16,
     fontWeight: 'bold',
